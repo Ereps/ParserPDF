@@ -1,0 +1,89 @@
+Coling 2008: Companion volume – Posters and Demonstrations, pages 23–26
+Manchester, August 2008
+A Scalable MMR Approach to Sentence Scoring
+for Multi-Document Update Summarization
+Florian Boudin/naturaland Marc El-B `eze/natural
+/naturalLaboratoire Informatique d’Avignon
+339 chemin des Meinajaries, BP1228,
+84911 Avignon Cedex 9, France.
+florian.boudin@univ-avignon.fr
+marc.elbeze@univ-avignon.frJuan-Manuel Torres-Moreno/natural,/flat
+/flat´Ecole Polytechnique de Montr ´eal
+CP 6079 Succ. Centre Ville H3C 3A7
+Montr ´eal (Qu ´ebec), Canada.
+juan-manuel.torres@univ-avignon.fr
+Abstract
+We present S MMR , a scalable sentence
+scoring method for query-oriented up-
+date summarization. Sentences are scored
+thanks to a criterion combining query rele-
+vance and dissimilarity with already read
+documents (history). As the amount of
+data in history increases, non-redundancy
+is prioritized over query-relevance. We
+show that S MMR achieves promising re-
+sults on the DUC 2007 update corpus.
+1 Introduction
+Extensive experiments on query-oriented multi-
+document summarization have been carried out
+over the past few years. Most of the strategies
+to produce summaries are based on an extrac-
+tion method, which identiﬁes salient textual seg-
+ments, most often sentences, in documents. Sen-
+tences containing the most salient concepts are se-
+lected, ordered and assembled according to their
+relevance to produce summaries (also called ex-
+tracts) (Mani and Maybury, 1999).
+Recently emerged from the Document Under-
+standing Conference (DUC) 20071, update sum-
+marization attempts to enhance summarization
+when more information about knowledge acquired
+by the user is available. It asks the following ques-
+tion: has the user already read documents on the
+topic? In the case of a positive answer, producing
+an extract focusing on only new facts is of inter-
+est. In this way, an important issue is introduced:
+c/circlecopyrt2008. Licensed under the Creative Commons
+Attribution-Noncommercial-Share Alike 3.0 Unported li-
+cense (http://creativecommons.org/licenses/by-nc-sa/3.0/).
+Some rights reserved.
+1Document Understanding Conferences are conducted
+since 2000 by the National Institute of Standards and Tech-
+nology (NIST), http://www-nlpir.nist.govredundancy with previously read documents (his-
+tory) has to be removed from the extract.
+A natural way to go about update summarization
+would be extracting temporal tags (dates, elapsed
+times, temporal expressions...) (Mani and Wilson,
+2000) or to automatically construct the timeline
+from documents (Swan and Allan, 2000). These
+temporal marks could be used to focus extracts on
+the most recently written facts. However, most re-
+cently written facts are not necessarily new facts.
+Machine Reading (MR) was used by (Hickl et
+al., 2007) to construct knowledge representations
+from clusters of documents. Sentences contain-
+ing “new” information (i.e. that could not be in-
+ferred by any previously considered document)
+are selected to generate summary. However, this
+highly efﬁcient approach (best system in DUC
+2007 update) requires large linguistic resources.
+(Witte et al., 2007) propose a rule-based system
+based on fuzzy coreference cluster graphs. Again,
+this approach requires to manually write the sen-
+tence ranking scheme. Several strategies remain-
+ing on post-processing redundancy removal tech-
+niques have been suggested. Extracts constructed
+from history were used by (Boudin and Torres-
+Moreno, 2007) to minimize history’s redundancy.
+(Lin et al., 2007) have proposed a modiﬁed Max-
+imal Marginal Relevance (MMR) (Carbonell and
+Goldstein, 1998) re-ranker during sentence selec-
+tion, constructing the summary by incrementally
+re-ranking sentences.
+In this paper, we propose a scalable sentence
+scoring method for update summarization derived
+from MMR. Motivated by the need for relevant
+novelty, candidate sentences are selected accord-
+ing to a combined criterion of query relevance and
+dissimilarity with previously read sentences. The
+rest of the paper is organized as follows. Section 223

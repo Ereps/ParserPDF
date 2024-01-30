@@ -1,19 +1,14 @@
-import pdftotext
+from PyPDF2 import PdfReader
+ 
+#create file object variable
+#opening method will be rb
+reader=PdfReader("Corpus_test/Boudin-Torres-2006.pdf",'rb')
+numPages = reader.numPages
 
-# Load your PDF
-with open("Corpus_test/Boudin-Torres-2006.pdf", "rb") as f:
-    pdf = pdftotext.PDF(f)
+for(i in range(0,numPages)):
+    
+page = reader.pages[0]
 
-# How many pages?
-print(len(pdf))
-
-# Iterate over all the pages
-for page in pdf:
-    print(page)
-
-# Read some individual pages
-print(pdf[0])
-print(pdf[1])
-
-# Read all the text into one string
-print("\n\n".join(pdf))
+text = page.extract_text()
+file1=open("Corpus_result/Boudin-Torres-2006.txt","a")
+file1.writelines(text)

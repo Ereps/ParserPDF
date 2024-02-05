@@ -15,7 +15,7 @@ with open("Corpus_result/Boudin-Torres-2006.txt", 'w', encoding='utf-8') as fich
     fichier_sortie.close() """
 
 
-import pathlib, fitz
+import pathlib, fitz,time
 """
 vowel = ['a','e','i','o','u','y']
 """
@@ -37,14 +37,20 @@ pdf = ironpdf.load(fname)
 pdf = ironpdf.PdfDocument.FromFile("sample.pdf")
 pdf.SaveAsPdfA("Converted_pdfa.pdf", ironpdf.PdfAVersions.PdfA3)
 """
-fname = "Corpus_test/Boudin-Torres-2006 (1).pdf"  # get document filename
+
+startTime = time.time()
+fname = "Corpus_test/Boudin-Torres-2006.pdf"  # get document filename
 outputFname = "Corpus_result/Boudin-Torres-2006" + ".txt"
 
 with fitz.open(fname) as doc:  # open document
     pageTest = doc.load_page(0)
     text = pageTest.get_text()
 with open(outputFname,'w') as file:
+    print(doc.metadata)
     file.write(text)
+
+print("--- %s seconds ---" % (time.time() - startTime))
+
     #text = chr(12).join([page.get_text() for page in doc])
 # write as a binary file to support non-ASCII characters
 #pathlib.Path("Corpus_result/Boudin-Torres-2006" + ".txt").write_bytes(text.encode())

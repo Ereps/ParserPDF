@@ -3,9 +3,9 @@
 
 import fitz
 
-doc = fitz.open("Corpus_test/test_accent.pdf") # open a document
+doc = fitz.open("Corpus_test/Gonzalez_2018_Wisebe.pdf") # open a document
 
-with open("Corpus_result/test_accent.txt", 'w', encoding='utf-8') as fichier_sortie:
+with open("Corpus_result/Gonzalez_2018_Wisebe.txt", 'w', encoding='utf-8') as fichier_sortie:
     for page in doc: # iterate the document pages
         #text = page.get_text().encode("utf-8")#extract_text().encode('UTF-8') # get plain text (is in UTF-8)
         text = page.get_text()

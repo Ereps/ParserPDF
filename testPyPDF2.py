@@ -9,7 +9,7 @@ import codecs
 #opening method will be rb
 reader=PdfReader("Corpus_test/Boudin-Torres-2006.pdf",strict=False)
 numPages = len(reader.pages)
-file1=codecs.open("Corpus_result/Boudin-Torres-2006.txt","a",encoding='utf-8')
+file1=codecs.open("Corpus_result/Boudin-Torres-2006PyPDF2.txt","a",encoding='utf-8')
 
 text = ""
 

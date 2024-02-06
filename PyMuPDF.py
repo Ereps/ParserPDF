@@ -16,6 +16,15 @@ def readfiles(path):
        pdfs.append(file)
     return pdfs
 
+#Remove directory
+def rmdir(directory):
+    directory = pathlib.Path(directory)
+    for item in directory.iterdir():
+        if item.is_dir():
+            rmdir(item)
+        else:
+            item.unlink()
+    directory.rmdir()
 
 
 
@@ -23,7 +32,7 @@ startTime = time.time()
 pdf_list = readfiles(input_name)
 print(os.getcwd())
 if(pathlib.Path(output_name).exists()):
-    pathlib.Path(output_name).rmdir()
+    rmdir(output_name)
 pathlib.Path(output_name).mkdir(parents=True, exist_ok=True)
 
 fname = ""  # get document filename

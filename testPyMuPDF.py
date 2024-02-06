@@ -45,6 +45,7 @@ outputFname = "Corpus_result/Boudin-Torres-2006" + ".txt"
 
 with fitz.open(fname) as doc:  # open document
     pageTest = doc.load_page(0)
+    #test
     text = pageTest.get_text()
 with open(outputFname,'w') as file:
     print(doc.metadata)

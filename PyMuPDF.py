@@ -39,7 +39,27 @@ pdf = ironpdf.PdfDocument.FromFile("sample.pdf")
 pdf.SaveAsPdfA("Converted_pdfa.pdf", ironpdf.PdfAVersions.PdfA3)
 """
 
+import glob, os
+
+
+#Lire les fichiers pdf
+def readfiles(path,pdfs):
+   os.chdir(path)
+   pdfs = []
+   for file in glob.glob("*.pdf"):
+       print(file)
+       pdfs.append(file)
+
+
+
+
+
+pdfs = []
+readfiles("Corpus_test/",pdfs)
 startTime = time.time()
+
+
+"""
 fname = "Corpus_test/Boudin-Torres-2006.pdf"  # get document filename
 outputFname = "Corpus_result/Boudin-Torres-2006" + ".txt"
 
@@ -49,9 +69,9 @@ with fitz.open(fname) as doc:  # open document
 with open(outputFname,'w') as file:
     print(doc.metadata)
     file.write(text)
-
+"""
 print("--- %s seconds ---" % (time.time() - startTime))
 
-    #text = chr(12).join([page.get_text() for page in doc])
+#text = chr(12).join([page.get_text() for page in doc])
 # write as a binary file to support non-ASCII characters
 #pathlib.Path("Corpus_result/Boudin-Torres-2006" + ".txt").write_bytes(text.encode())

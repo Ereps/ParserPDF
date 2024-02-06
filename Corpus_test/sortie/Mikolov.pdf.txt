@@ -1,0 +1,48 @@
+Efﬁcient Estimation of Word Representations in
+Vector Space
+Tomas Mikolov
+Google Inc., Mountain View, CA
+tmikolov@google.com
+Kai Chen
+Google Inc., Mountain View, CA
+kaichen@google.com
+Greg Corrado
+Google Inc., Mountain View, CA
+gcorrado@google.com
+Jeffrey Dean
+Google Inc., Mountain View, CA
+jeff@google.com
+Abstract
+We propose two novel model architectures for computing continuous vector repre-
+sentations of words from very large data sets. The quality of these representations
+is measured in a word similarity task, and the results are compared to the previ-
+ously best performing techniques based on different types of neural networks. We
+observe large improvements in accuracy at much lower computational cost, i.e. it
+takes less than a day to learn high quality word vectors from a 1.6 billion words
+data set. Furthermore, we show that these vectors provide state-of-the-art perfor-
+mance on our test set for measuring syntactic and semantic word similarities.
+1
+Introduction
+Many current NLP systems and techniques treat words as atomic units - there is no notion of similar-
+ity between words, as these are represented as indices in a vocabulary. This choice has several good
+reasons - simplicity, robustness and the observation that simple models trained on huge amounts of
+data outperform complex systems trained on less data. An example is the popular N-gram model
+used for statistical language modeling - today, it is possible to train N-grams on virtually all available
+data (trillions of words [3]).
+However, the simple techniques are at their limits in many tasks. For example, the amount of
+relevant in-domain data for automatic speech recognition is limited - the performance is usually
+dominated by the size of high quality transcribed speech data (often just millions of words). In
+machine translation, the existing corpora for many languages contain only a few billions of words
+or less. Thus, there are situations where simple scaling up of the basic techniques will not result in
+any signiﬁcant progress, and we have to focus on more advanced techniques.
+With progress of machine learning techniques in recent years, it has become possible to train more
+complex models on much larger data set, and they typically outperform the simple models. Probably
+the most successful concept is to use distributed representations of words [10]. For example, neural
+network based language models signiﬁcantly outperform N-gram models [1, 27, 17].
+1.1
+Goals of the Paper
+The main goal of this paper is to introduce techniques that can be used for learning high-quality word
+vectors from huge data sets with billions of words, and with millions of words in the vocabulary. As
+far as we know, none of the previously proposed architectures has been successfully trained on more
+1
+arXiv:1301.3781v3  [cs.CL]  7 Sep 2013

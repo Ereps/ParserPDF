@@ -13,3 +13,5 @@ with open(file, 'r', encoding="utf-8") as txtFile :
         print("Line{}: {}".format(count, line.strip()))
 
         if (count == 20) : break
+
+        # TODO: Réécrire dans le fichier ensuite

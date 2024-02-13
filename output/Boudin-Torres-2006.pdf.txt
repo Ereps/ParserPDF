@@ -1,0 +1,2 @@
+Title: A Scalable MMR Approach to Sentence Scoring for Multi-Document Update Summarization
+Author: Florian Boudin ; Marc El-Beze ; Juan-Manuel Torres-Moreno

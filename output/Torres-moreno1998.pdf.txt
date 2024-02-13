@@ -1,0 +1,2 @@
+Title: Efficient Adaptive Learning for Classification Tasks with Binary Units
+Author: joe@next.castanet.com Joe Pickert

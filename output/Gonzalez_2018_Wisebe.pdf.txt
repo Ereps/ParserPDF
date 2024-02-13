@@ -1,0 +1,2 @@
+Title: WiSeBE: Window-Based Sentence Boundary Evaluation
+Author: Carlos-Emiliano González-Gallardo 

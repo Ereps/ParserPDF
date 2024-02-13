@@ -1,2 +1,3 @@
-Title: On the Development of the RST Spanish Treebank
-Author: Iria da Cunha ; Juan-Manuel Torres-Moreno ; Gerardo Sierra
+PDF File: Iria_Juan-Manuel_Gerardo.pdf
+Title:    On the Development of the RST Spanish Treebank
+Author:   Iria da Cunha ; Juan-Manuel Torres-Moreno ; Gerardo Sierra

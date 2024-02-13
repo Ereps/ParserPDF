@@ -8,5 +8,6 @@ for pdf in directory.readfiles(directory.input_name) :
         if (doc.metadata.get("title") != "") :
             with open("../" + outputName, 'w+', encoding="utf-8") as output :
                 print(doc.metadata)
-                output.write("Title: " + doc.metadata.get("title") + "\n")
-                output.write("Author: " + doc.metadata.get("author"))
+                output.write("PDF File: " + pdf + "\n")
+                output.write("Title:    " + doc.metadata.get("title") + "\n")
+                output.write("Author:   " + doc.metadata.get("author") + "\n")

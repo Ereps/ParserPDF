@@ -1,2 +1,3 @@
-Title: Cut and Paste Based Text Summarization
-Author: Hongyan Jing; Kathleen R. McKeown
+PDF File: jing-cutepaste.pdf
+Title:    Cut and Paste Based Text Summarization
+Author:   Hongyan Jing; Kathleen R. McKeown

@@ -1,2 +1,3 @@
-Title: WiSeBE: Window-Based Sentence Boundary Evaluation
-Author: Carlos-Emiliano González-Gallardo 
+PDF File: Gonzalez_2018_Wisebe.pdf
+Title:    WiSeBE: Window-Based Sentence Boundary Evaluation
+Author:   Carlos-Emiliano González-Gallardo 

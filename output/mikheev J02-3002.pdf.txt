@@ -1,2 +1,3 @@
-Title: /c/1997c/tops/dvips
-Author: joe@diskserver.castanet.com Joe Pickert
+PDF File: mikheev J02-3002.pdf
+Title:    /c/1997c/tops/dvips
+Author:   joe@diskserver.castanet.com Joe Pickert

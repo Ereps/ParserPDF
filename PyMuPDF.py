@@ -3,6 +3,7 @@
 
 import pathlib, fitz,time
 import glob, os
+import linecache as lc
 
 
 output_name = "sortie/"
@@ -56,6 +57,42 @@ for pdf in pdf_list:
             print(doc.metadata)
             pathlib.Path(outputFname).write_bytes(text.encode())
             file.write(text)
+
+            with open("../" + "output/" + fname + ".txt", 'w+', encoding="utf-8") as output:
+                output.write("PDF File: " + pdf + "\n")
+                if doc.metadata.get("title") != "":
+                    txt=""
+                    line=" "
+                    i = 1
+                    if "<" in lc.getline(outputFname, i):
+                        i += 1
+                    while line != "":
+                        line = lc.getline(outputFname, i).rstrip("\n")
+                        txt += line + " "
+                        i += 1
+                    if txt.rstrip(" ") == doc.metadata.get("title"):
+                        output.write("Title:    " + txt + "\n")
+                    else:
+                        txt = " "
+                        line = " "
+                        while line != "":
+                            line = lc.getline(outputFname, i).rstrip("\n")
+                            txt += line + " "
+                            i += 1
+                        output.write("Title:    " + txt.rstrip(" ") + "\n")
+                else:
+                    txt = ""
+                    line = " "
+                    i = 1
+                    while line != "":
+                        line = lc.getline(outputFname, i).rstrip("\n")
+                        txt += line
+                        i += 1
+                    output.write("Title:    " + txt + "\n")
+
+#si le titre(metadata) n'est pas null et est différent du premier paragraphe
+#alors prendre le deuxième paragraphe comme référence
+#sinon prendre le premier paragraphe comme référence
 
 
 print("--- %s seconds ---" % (time.time() - startTime))

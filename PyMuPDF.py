@@ -58,41 +58,37 @@ for pdf in pdf_list:
             pathlib.Path(outputFname).write_bytes(text.encode())
             file.write(text)
 
-            with open("../" + "output/" + fname + ".txt", 'w+', encoding="utf-8") as output:
-                output.write("PDF File: " + pdf + "\n")
-                if doc.metadata.get("title") != "":
-                    txt=""
-                    line=" "
-                    i = 1
-                    if "<" in lc.getline(outputFname, i):
-                        i += 1
-                    while line != "":
+        with open("../" + "output/" + fname + ".txt", 'w+', encoding="utf-8") as output:
+            output.write("PDF File: " + pdf + "\n")
+            if doc.metadata.get("title") != "": #si le titre(metadata) n'est pas null
+                txt=""
+                line=" "
+                i = 1
+                if "<" in lc.getline(outputFname, i): #si la première ligne n'est pas une image
+                    i += 1
+                while line != "": #on récupère le premier paragraphe
+                    line = lc.getline(outputFname, i).rstrip("\n")
+                    txt += line + " "
+                    i += 1
+                if txt.rstrip(" ") == doc.metadata.get("title"): #si le titre(metadata) est différent du premier paragraphe
+                    output.write("Title:    " + txt + "\n")
+                else:
+                    txt = " "
+                    line = " "
+                    while line != "": #on récupère le deuxième paragraphe
                         line = lc.getline(outputFname, i).rstrip("\n")
                         txt += line + " "
                         i += 1
-                    if txt.rstrip(" ") == doc.metadata.get("title"):
-                        output.write("Title:    " + txt + "\n")
-                    else:
-                        txt = " "
-                        line = " "
-                        while line != "":
-                            line = lc.getline(outputFname, i).rstrip("\n")
-                            txt += line + " "
-                            i += 1
-                        output.write("Title:    " + txt.rstrip(" ") + "\n")
-                else:
-                    txt = ""
-                    line = " "
-                    i = 1
-                    while line != "":
-                        line = lc.getline(outputFname, i).rstrip("\n")
-                        txt += line
-                        i += 1
-                    output.write("Title:    " + txt + "\n")
-
-#si le titre(metadata) n'est pas null et est différent du premier paragraphe
-#alors prendre le deuxième paragraphe comme référence
-#sinon prendre le premier paragraphe comme référence
+                    output.write("Title:    " + txt.rstrip(" ") + "\n")
+            else:
+                txt = ""
+                line = " "
+                i = 1
+                while line != "": #on récupère le premier paragraphe
+                    line = lc.getline(outputFname, i).rstrip("\n")
+                    txt += line
+                    i += 1
+                output.write("Title:    " + txt + "\n")
 
 
 print("--- %s seconds ---" % (time.time() - startTime))

@@ -37,17 +37,25 @@ pathlib.Path(output_name).mkdir(parents=True, exist_ok=True)
 
 fname = ""  # get document filename
 outputFname = "" + ".txt"
+text = ""
 
 for pdf in pdf_list:
     fname = pdf
     outputFname = output_name +fname + ".txt"
-    #print(fname)
+    print(fname)
+    text = ""
     with fitz.open(fname) as doc:  # open document
-        pageTest = doc.load_page(0)
-        text = pageTest.get_text()
-    with open(outputFname,'w') as file:
-        #print(doc.metadata)
-        file.write(text)
+        for page_num in range(len(doc)):
+            page = doc.load_page(page_num)
+            blocks = page.get_text_blocks()
+
+            for b in blocks:
+                text += b[4] + "\n"  # Concatenate text from each block with a newline character
+
+        with open(outputFname,'w', encoding='utf-8') as file:
+            print(doc.metadata)
+            pathlib.Path(outputFname).write_bytes(text.encode())
+            file.write(text)
 
 
 print("--- %s seconds ---" % (time.time() - startTime))

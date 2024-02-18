@@ -1,2 +1,4 @@
 PDF File: Torres-moreno1998.pdf
-Title:     Efﬁcient Adaptive Learning for Classiﬁcation Tasks with Binary Units
+Title:    Efficient Adaptive Learning for Classification Tasks with Binary Units
+Author:   joe@next.castanet.com Joe Pickert
+Abstract: 

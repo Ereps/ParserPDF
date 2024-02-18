@@ -1,2 +1,0 @@
-PDF File: Mikolov.pdf
-Title:    Efﬁcient Estimation of Word Representations inVector Space

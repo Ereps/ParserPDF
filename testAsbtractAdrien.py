@@ -122,27 +122,50 @@ def extract_title(outputFname, doc):
             txt += line
             i += 1
         title = txt
+
+    title = title.replace('\n', ' ')
     
     return title
 
-def extract_authors(full_text, title_text, abstract):
-    # Find the index of the title text in the full text
-    title_index = full_text.find(title_text)
+def extract_authors(outputFname, title):
+    author_string = ""
+    with open(outputFname, 'r', encoding='utf-8') as file:
+        # Initialize variables
+        line = file.readline()
+        # Search for the first occurrence of the three first words of the title
+        target_words = title.split()[:3]
+        # Initialize a buffer to store lines for searching the target words
+        buffer = []
+        while line:
+            buffer.append(line)
+            if len(buffer) > len(target_words):
+                buffer.pop(0)
+            if all(word in ' '.join(buffer) for word in target_words):
+                break
+            line = file.readline()
+        
+        # Move to the next paragraph
+        while line.strip():  # Skip empty lines
+            line = file.readline()
 
-    # Find the index of the abstract text in the full text
-    abstract_index = full_text.find(abstract)
+        # Read and store characters until a keyword is found
+        while line:
+            author_string += line
+            line = file.readline()
+            if re.search(r'Abstract|In this article|This article', line):
+                break
+    
 
-    # Extract the section between the title and the abstract
-    authors_section = full_text[title_index + len(title_text):abstract_index]
+    # Clean author string
+    author_string = author_string.strip()
+    author_string = author_string.replace('\n', ' ')
+    author_string = author_string.replace('- ', '')
+    author_string = author_string.replace('´e', 'é')
+    author_string = author_string.replace('`e', 'è')
+    author_string = author_string.replace('´a', 'à')
 
-    # Return the extracted authors section
-    authors_section = authors_section.strip()
-    authors_section = authors_section.replace('\n', ' ')
-    authors_section = authors_section.replace('- ', '')
-
-    # Return the extracted authors section
-    return authors_section
-
+    # Return the extracted author information
+    return author_string
 
 startTime = time.time()
 pdf_list = read_files(input_name)
@@ -150,6 +173,18 @@ print(os.getcwd())
 if pathlib.Path(output_name).exists():
     rmdir(output_name)
 pathlib.Path(output_name).mkdir(parents=True, exist_ok=True)
+
+def remove_before_pdf_file(text):
+    match = re.search(r'PDF File', text)
+    if match:
+        return text[match.start():]
+    else:
+        return text
+
+def clear_file(filename):
+    with open(filename, 'w', encoding='utf-8') as file:
+        file.write('')
+
 
 for pdf in pdf_list:
     fname = pdf
@@ -176,11 +211,16 @@ for pdf in pdf_list:
             title_text = extract_title(outputFname, doc)
             output.write("Title: " + title_text + "\n")
 
-            authors_text = extract_authors(text, extract_title(outputFname, doc), extract_abstract(text))
+            authors_text = extract_authors(outputFname, extract_title(outputFname, doc))
             output.write("Authors: " + authors_text + "\n")
 
             # Extract and write abstract
             abstract = extract_abstract(text)
             output.write("Abstract: " + abstract + "\n")
+
+            clear_file(outputFname)
+
+            new_text = remove_before_pdf_file(outputFname)
+            output.write(new_text)
 
 print("--- %s seconds ---" % (time.time() - startTime))

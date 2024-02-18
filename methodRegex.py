@@ -2,6 +2,7 @@ import re, directory, fitz
 import spacy
 
 nlp = spacy.load("en_core_web_sm")
+import re, irrelevant.directory as directory, fitz
 
 # Method with Regex
 for pdf in directory.readfiles(directory.input_name) :

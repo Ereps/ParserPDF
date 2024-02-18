@@ -46,7 +46,7 @@ for pdf in pdf_list:
     print(fname)
     text = ""
     with fitz.open(fname) as doc:  # open document
-        for page_num in range(len(doc)):
+        for page_num in range(1):
             page = doc.load_page(page_num)
             blocks = page.get_text_blocks()
 

@@ -1,4 +1,4 @@
-import directory, fitz
+import irrelevant.directory as directory, fitz
 
 # First method with metadata fields
 for pdf in directory.readfiles(directory.input_name) :

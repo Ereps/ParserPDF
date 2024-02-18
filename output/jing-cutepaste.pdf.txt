@@ -1,4 +1,12 @@
 PDF File: jing-cutepaste.pdf
+<<<<<<< HEAD
 Title:    Cut and Paste Based Text Summarization
 Author:   Hongyan Jing; Kathleen R. McKeown
 Abstract: 
+=======
+Title:    Cut and Paste Based Text Summarization   
+PDF File: jing-cutepaste.pdf
+Title:    Cut and Paste Based Text Summarization   
+PDF File: jing-cutepaste.pdf
+Title:    Cut and Paste Based Text Summarization   
+>>>>>>> 5bee38b (manque plus que la partie autheurs - j'y travaille)

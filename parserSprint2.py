@@ -119,7 +119,7 @@ def extract_title(outputFname, doc):
         i = 1
         while line != "":
             line = lc.getline(outputFname, i).rstrip("\n")
-            txt += line
+            txt += line + " "
             i += 1
         title = txt
 

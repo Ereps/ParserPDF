@@ -47,7 +47,7 @@ def extract_abstract(text):
         abs_rev = ""
         
         # Counter for the number of paragraphs found
-        paragraph_count = 0
+        paragraph_count = 0 # TODO USELESS
 
         # Search backwards from the introduction keyword to find the abstract
         abstract_match = abstract_pattern.search(text[:intro_index])
@@ -153,6 +153,7 @@ def extract_authors(outputFname, title):
             author_string += line
             line = file.readline()
             if re.search(r'Abstract|In this article|This article', line):
+                #TODO Comme titre, trouver les cinqs premiers mots
                 break
     
 

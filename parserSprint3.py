@@ -101,7 +101,9 @@ def replace_accent(text):
     # Return the extracted author information
     return text
 
-def extract_abstract(text):
+def extract_abstract(blocks):
+
+    """
     # Regex pattern to find "Introduction" or "INTRODUCTION"
     intro_pattern = re.compile(r'Introduction|INTRODUCTION')
 
@@ -160,7 +162,7 @@ def extract_abstract(text):
             abs_rev = abs_rev.replace('- ', '')
 
             return abs_rev.strip()  # Return abstract string stripped of leading/trailing whitespaces
-    
+    """
 
     """_______________________________________________________________________________________________________"""
     #TODO modif pl

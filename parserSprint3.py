@@ -27,7 +27,8 @@ def rmdir(directory):
             item.unlink()
     directory.rmdir()
 
-def extract_abstract(text):
+def extract_abstract(blocks):
+    """
     # Regex pattern to find "Introduction" or "INTRODUCTION"
     intro_pattern = re.compile(r'Introduction|INTRODUCTION')
 
@@ -86,10 +87,27 @@ def extract_abstract(text):
             abs_rev = abs_rev.replace('- ', '')
 
             return abs_rev.strip()  # Return abstract string stripped of leading/trailing whitespaces
+    """
 
+    """_______________________________________________________________________________________________________"""
+    #TODO modif pl
+    abstract_string = ""
+    abstract_pattern = re.compile(r'Abstract|ABSTRACT')
+    for i in range(len(blocks)):
+        block_text = blocks[i][4]
+        abstract_match = abstract_pattern.search(block_text)
+        if(abstract_match):
+
+            print("____________________________\n\n\n"+block_text)
+            pattern_with_text = re.compile(r'(ABSTRACT|Abstract)((.|\n|_| )*([a-z])+)*')
+            pattern_with_text_match = pattern_with_text.search()
+            if(pattern_with_text_match):
+                #si le block contient le texte du abstract
+                #TODO enlever le abstract du début
+                abstract_string = block_text
 
     # If either introduction keyword is not found, return empty string
-    return ""
+    return abstract_string
 
 def extract_title(outputFname, doc):
     title = ""
@@ -186,7 +204,6 @@ def clear_file(filename):
     with open(filename, 'w', encoding='utf-8') as file:
         file.write('')
 
-
 for pdf in pdf_list:
     fname = pdf
     outputFname = output_name + fname + ".txt"
@@ -196,8 +213,11 @@ for pdf in pdf_list:
         for page_num in range(1):
             page = doc.load_page(page_num)
             blocks = page.get_text_blocks()
+            
 
+            #TODO work with blocks, not the text
             for b in blocks:
+                #print(b)
                 text += b[4] + "\n"  # Concatenate text from each block with a newline character
 
         with open(outputFname,'w', encoding='utf-8') as file:
@@ -208,15 +228,16 @@ for pdf in pdf_list:
         with open(outputFname, 'a', encoding='utf-8') as output:
             output.write("PDF File: " + pdf + "\n")
 
+            """
             # Extract and write title
             title_text = extract_title(outputFname, doc)
             output.write("Title: " + title_text + "\n")
 
-            authors_text = extract_authors(outputFname, extract_title(outputFname, doc))
+            authors_text = extract_authors(blocks) #TODO modif pl
             output.write("Authors: " + authors_text + "\n")
-
+            """
             # Extract and write abstract
-            abstract = extract_abstract(text)
+            abstract = extract_abstract(blocks)
             output.write("Abstract: " + abstract + "\n")
 
             clear_file(outputFname)

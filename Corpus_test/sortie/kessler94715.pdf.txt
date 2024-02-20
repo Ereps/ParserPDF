@@ -1,5 +1,3 @@
 PDF File: kessler94715.pdf
-Title: Extraction of terminology in the ﬁeld of construction  
-Authors: 1st Rémy Kessler Université Bretagne Sud CNRS 6074A 56017 Vannes,France remy.kessler@univ-ubs.fr  2nd Nicolas Béchet Université Bretagne Sud CNRS 6074A 56017 Vannes,France nicolas.bechet@irisa.fr  3rd Giuseppe Berio Université Bretagne Sud CNRS 6074A 56017 Vannes,France giuseppe.berio@univ-ubs.fr
-Abstract: —We describe a corpus analysis method to extract terminology from a collection of technical speciﬁcations in the ﬁeld of construction. Using statistics and word n-grams analysis, we extract the terminology of the domain and then perform pruning steps with linguistic patterns and internet queries to improve the quality of the ﬁnal terminology. Results are evaluated by using a manual evaluation carried out by 6 experts in the ﬁeld.  Index Terms—terminology extraction, Internet queries, linguistic patterns.
+Abstract: 
 sortie/kessler94715.pdf.txt

@@ -27,7 +27,83 @@ def rmdir(directory):
             item.unlink()
     directory.rmdir()
 
-def extract_abstract(text):
+def replace_accent(text):
+    text = text.strip()
+    text = text.replace('\n', ' ')
+    text = text.replace('- ', '')
+    text = text.replace('`A', 'À')
+    text = text.replace('^A', 'Â')
+    text = text.replace('"A', 'Ä')
+    text = text.replace('`E', 'È')
+    text = text.replace('¨E', 'Ë')
+    text = text.replace('^E', 'Ê')
+    text = text.replace('¨I', 'Ï')
+    text = text.replace('^I', 'Î')
+    text = text.replace('`I', 'Ì')
+    text = text.replace('`U', 'Ù')
+    text = text.replace('¨U', 'Ü')
+    text = text.replace('`¨U', 'Ǜ')
+    text = text.replace('^U', 'Û')
+    text = text.replace('`O', 'Ò')
+    text = text.replace('¨O', 'Ö')
+    text = text.replace('^O', 'Ô')
+    text = text.replace('`Y', 'Ỳ')
+    text = text.replace('¨Y', 'Ÿ')
+    text = text.replace('^Y', 'Ŷ')
+    text = text.replace('^Z', 'Ẑ')
+    text = text.replace('^S', 'Ŝ')
+    text = text.replace('^G', 'Ĝ')
+    text = text.replace('^H', 'Ĥ')
+    text = text.replace('¨H', 'Ḧ')
+    text = text.replace('^J', 'Ĵ')
+    text = text.replace('¨W', 'Ẅ')
+    text = text.replace('^W', 'Ŵ')
+    text = text.replace('`W', 'Ẁ')
+    text = text.replace('^C', 'Ĉ')
+    text = text.replace('¨X', 'Ẍ')
+    text = text.replace('`N', 'Ǹ')
+    text = text.replace('´e', 'é')
+    text = text.replace('`e', 'è')
+    text = text.replace('^e', 'ê')
+    text = text.replace('"e', 'ë')
+    text = text.replace('"a', 'ä')
+    text = text.replace('^a', 'â')
+    text = text.replace('`a', 'à')
+    text = text.replace('°a', 'å')
+    text = text.replace('"i', 'ï')
+    text = text.replace('^i', 'î')
+    text = text.replace('`i', 'ì')
+    text = text.replace('`u', 'ù')
+    text = text.replace('`¨u', 'ǜ')
+    text = text.replace('"u', 'ü')
+    text = text.replace('^u', 'û')
+    text = text.replace('`o', 'ò')
+    text = text.replace('"o', 'ö')
+    text = text.replace('^o', 'ô')
+    text = text.replace('`y', 'ỳ')
+    text = text.replace('"y', 'ÿ')
+    text = text.replace('^y', 'ŷ')
+    text = text.replace('´y', 'ý')
+    text = text.replace('^z', 'ẑ')
+    text = text.replace('^s', 'ŝ')
+    text = text.replace('^g', 'ĝ')
+    text = text.replace('^h', 'ĥ')
+    text = text.replace('"h', 'ḧ')
+    text = text.replace('^j', 'ĵ')
+    text = text.replace('`w', 'ẁ')
+    text = text.replace('^w', 'ŵ')
+    text = text.replace('"w', 'ẅ')
+    text = text.replace('^c', 'ĉ')
+    text = text.replace('"t', 'ẗ')
+    text = text.replace('"x', 'ẍ')
+    text = text.replace('`n', 'ǹ')
+
+    # Return the extracted author information
+    return text
+
+def extract_abstract(blocks):
+
+    """
     # Regex pattern to find "Introduction" or "INTRODUCTION"
     intro_pattern = re.compile(r'Introduction|INTRODUCTION')
 
@@ -86,39 +162,57 @@ def extract_abstract(text):
             abs_rev = abs_rev.replace('- ', '')
 
             return abs_rev.strip()  # Return abstract string stripped of leading/trailing whitespaces
+    """
 
+    """_______________________________________________________________________________________________________"""
+    #TODO modif pl
+    abstract_string = ""
+    abstract_pattern = re.compile(r'Abstract|ABSTRACT')
+    for i in range(len(blocks)):
+        block_text = blocks[i][4]
+        abstract_match = abstract_pattern.search(block_text)
+        if(abstract_match):
+
+            print("____________________________\n\n\n"+block_text)
+            pattern_with_text = re.compile(r'(ABSTRACT|Abstract)((.|\n|_| )*([a-z])+)*')
+            pattern_with_text_match = pattern_with_text.search()
+            if(pattern_with_text_match):
+                #si le block contient le texte du abstract
+                #TODO enlever le abstract du début
+                abstract_string = block_text
 
     # If either introduction keyword is not found, return empty string
-    return ""
+    return abstract_string
 
+"""récupération du titre du pdf"""
 def extract_title(outputFname, doc):
     title = ""
-    if doc.metadata.get("title") != "":
+    if doc.metadata.get("title") != "": #si le titre apparaît dans la metadata
         txt = ""
         line = " "
         i = 1
-        if "<" in lc.getline(outputFname, i):
+        if "<" in lc.getline(outputFname, i): #si le premier paragraphe commence par un "<"
             i += 1
-        while line != "":
-            line = lc.getline(outputFname, i).rstrip("\n")
+        while line != "": #tant qu'on est pas à la fin du paragraphe
+            line = lc.getline(outputFname, i).rstrip("\n") #on récupère la ligne et on enlève le caractère de fin de ligne
             txt += line + " "
             i += 1
-        if txt.rstrip(" ") == doc.metadata.get("title"):
+        if txt.rstrip(" ") == doc.metadata.get("title"): #si le titre est égal au paragraphe récupéré
             title = txt
-        else:
+        else: #sinon
             txt = " "
             line = " "
-            while line != "":
-                line = lc.getline(outputFname, i).rstrip("\n")
+            while line != "": #tant qu'on est pas à la fin du paragraphe
+                line = lc.getline(outputFname, i).rstrip("\n") #on récupère la ligne et on enlève le caractère de fin de ligne
                 txt += line + " "
                 i += 1
-            title = txt.rstrip(" ")
-    else:
+            title = txt.rstrip(" ") #on enlève le dernier espace du titre
+    else: #sinon
         txt = ""
         line = " "
         i = 1
-        while line != "":
-            line = lc.getline(outputFname, i).rstrip("\n")
+        while line != "": #tant qu'on est pas à la fin du paragraphe
+            line = lc.getline(outputFname, i).rstrip("\n") #on récupère la ligne et on enlève le caractère de fin de ligne
             txt += line + " "
             i += 1
         title = txt
@@ -153,20 +247,26 @@ def extract_authors(outputFname, title):
             author_string += line
             line = file.readline()
             if re.search(r'Abstract|In this article|This article', line):
-                #TODO Comme titre, trouver les cinqs premiers mots
                 break
-    
 
-    # Clean author string
-    author_string = author_string.strip()
-    author_string = author_string.replace('\n', ' ')
-    author_string = author_string.replace('- ', '')
-    author_string = author_string.replace('´e', 'é')
-    author_string = author_string.replace('`e', 'è')
-    author_string = author_string.replace('´a', 'à')
+#idée de manue : partir de la fin. si on rencontre un "References," vérifier si la ligne = title
+def extract_biblio(text):
+    intro_pattern = re.compile(r'References|REFERENCES')
 
-    # Return the extracted author information
-    return author_string
+    intro_match = intro_pattern.search(text)
+
+    if intro_match:
+        intro_index = intro_match.start()
+        biblio_string = text[intro_index:]
+        biblio_string = biblio_string.strip()
+        biblio_string = biblio_string.replace('\n', ' ')
+        biblio_string = biblio_string.replace('References', '')
+        biblio_string = biblio_string.replace('REFERENCES', '')
+        biblio_string = biblio_string.replace('- ', '')
+        biblio_string = biblio_string.replace('´e', 'é')
+        biblio_string = biblio_string.replace('`e', 'è')
+        biblio_string = biblio_string.replace('´a', 'à')
+        return biblio_string
 
 startTime = time.time()
 pdf_list = read_files(input_name)
@@ -186,18 +286,20 @@ def clear_file(filename):
     with open(filename, 'w', encoding='utf-8') as file:
         file.write('')
 
-
 for pdf in pdf_list:
     fname = pdf
     outputFname = output_name + fname + ".txt"
     print(fname)
     text = ""
     with fitz.open(fname) as doc:  # open document
-        for page_num in range(1):
+        for page_num in range(len(doc)):
             page = doc.load_page(page_num)
             blocks = page.get_text_blocks()
+            
 
+            #TODO work with blocks, not the text
             for b in blocks:
+                #print(b)
                 text += b[4] + "\n"  # Concatenate text from each block with a newline character
 
         with open(outputFname,'w', encoding='utf-8') as file:
@@ -208,15 +310,21 @@ for pdf in pdf_list:
         with open(outputFname, 'a', encoding='utf-8') as output:
             output.write("PDF File: " + pdf + "\n")
 
+            """
             # Extract and write title
             title_text = extract_title(outputFname, doc)
             output.write("Title: " + title_text + "\n")
 
-            authors_text = extract_authors(outputFname, extract_title(outputFname, doc))
+            authors_text = extract_authors(blocks) #TODO modif pl
             output.write("Authors: " + authors_text + "\n")
-
+            """
             # Extract and write abstract
-            abstract = extract_abstract(text)
+            abstract_text = extract_abstract(text)
+            output.write("Abstract: " + abstract_text + "\n")
+
+           # biblio_text = extract_biblio(text)
+          #  output.write("References: " + biblio_text + "\n")
+            abstract = extract_abstract(blocks)
             output.write("Abstract: " + abstract + "\n")
 
             clear_file(outputFname)

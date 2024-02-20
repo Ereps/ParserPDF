@@ -113,3 +113,7 @@ def extract_authors(outputFname, title):
 
     # Return the extracted author information
     return author_string
+
+# TODO: extract email from authors
+def extract_email() :
+    print()

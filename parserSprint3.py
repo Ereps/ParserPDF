@@ -230,6 +230,25 @@ def extract_authors(outputFname, title):
             if re.search(r'Abstract|In this article|This article', line):
                 break
 
+#idée de manue : partir de la fin. si on rencontre un "References," vérifier si la ligne = title
+def extract_biblio(text):
+    intro_pattern = re.compile(r'References|REFERENCES')
+
+    intro_match = intro_pattern.search(text)
+
+    if intro_match:
+        intro_index = intro_match.start()
+        biblio_string = text[intro_index:]
+        biblio_string = biblio_string.strip()
+        biblio_string = biblio_string.replace('\n', ' ')
+        biblio_string = biblio_string.replace('References', '')
+        biblio_string = biblio_string.replace('REFERENCES', '')
+        biblio_string = biblio_string.replace('- ', '')
+        biblio_string = biblio_string.replace('´e', 'é')
+        biblio_string = biblio_string.replace('`e', 'è')
+        biblio_string = biblio_string.replace('´a', 'à')
+        return biblio_string
+
 startTime = time.time()
 pdf_list = read_files(input_name)
 print(os.getcwd())
@@ -255,7 +274,7 @@ for pdf in pdf_list:
     print(fname)
     text = ""
     with fitz.open(fname) as doc:  # open document
-        for page_num in range(1):
+        for page_num in range(len(doc)):
             page = doc.load_page(page_num)
             blocks = page.get_text_blocks()
 
@@ -278,8 +297,11 @@ for pdf in pdf_list:
             output.write("Authors: " + authors_text + "\n")
 
             # Extract and write abstract
-            abstract = extract_abstract(text)
-            output.write("Abstract: " + abstract + "\n")
+            abstract_text = extract_abstract(text)
+            output.write("Abstract: " + abstract_text + "\n")
+
+           # biblio_text = extract_biblio(text)
+          #  output.write("References: " + biblio_text + "\n")
 
             clear_file(outputFname)
 

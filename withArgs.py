@@ -22,7 +22,7 @@ def toText() :
 # main function with args
 def main(argv) :
     try :
-        opts, args = getopt.getopt(argv, 'hxta', ['help', 'xml', 'text', 'all'])
+        opts, args = getopt.getopt(argv, 'hxtad', ['help', 'xml', 'text', 'all'])
     except getopt.GetoptError as err :
         print(err)
         sys.exit(2)

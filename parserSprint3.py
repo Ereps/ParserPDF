@@ -101,6 +101,11 @@ def replace_accent(text):
     # Return the extracted author information
     return text
 
+def replace_special_char(text):
+    text = text.replace('\n', ' ')
+    text = text.replace('- ', '')
+    return text
+
 def extract_abstract(blocks):
 
     """
@@ -167,20 +172,28 @@ def extract_abstract(blocks):
     """_______________________________________________________________________________________________________"""
     #TODO modif pl
     abstract_string = ""
-    abstract_pattern = re.compile(r'Abstract|ABSTRACT')
+    abstract_pattern = re.compile(r'(Abstract|ABSTRACT)')
     for i in range(len(blocks)):
-        block_text = blocks[i][4]
+        block_text = replace_accent(blocks[i][4])
         abstract_match = abstract_pattern.search(block_text)
         if(abstract_match):
-
-            print("____________________________\n\n\n"+block_text)
-            pattern_with_text = re.compile(r'(ABSTRACT|Abstract)((.|\n|_| )*([a-z])+)*')
-            pattern_with_text_match = pattern_with_text.search()
-            if(pattern_with_text_match):
+            print("____________________________\n\n\n",block_text)
+            words = block_text.split()
+            #if the blocks have the abstract content
+            if(len(words) > 5):
                 #si le block contient le texte du abstract
                 #TODO enlever le abstract du début
-                abstract_string = block_text
-
+                remove_pattern = re.compile(r'(Abstract|ABSTRACT)(\.| |_|\\|-|—)*')
+                abstract_string = re.sub(remove_pattern,"",block_text,1)
+                #TODO a faire c'est pour si le abstract fait parti du block
+            else:
+                while(blocks[i][4] == ""):
+                    i+=1
+                abstract_string = blocks[i+1][4]
+            while(abstract_string[len(abstract_string)-1] != "."):
+                abstract_string+= replace_accent(blocks[i+1][4])
+                i+=1
+            break
     # If either introduction keyword is not found, return empty string
     return abstract_string
 
@@ -292,9 +305,10 @@ for pdf in pdf_list:
     print(fname)
     text = ""
     with fitz.open(fname) as doc:  # open document
+        blocks=  [] #list of all the text blocks
         for page_num in range(len(doc)):
             page = doc.load_page(page_num)
-            blocks = page.get_text_blocks()
+            blocks += page.get_text_blocks()
             
 
             #TODO work with blocks, not the text
@@ -302,6 +316,10 @@ for pdf in pdf_list:
                 #print(b)
                 text += b[4] + "\n"  # Concatenate text from each block with a newline character
 
+        with open(outputFname+"test.txt",'w', encoding='utf-8') as file:
+            for b in blocks:
+                #print(b)
+                file.write("________________________________"+b[4])
         with open(outputFname,'w', encoding='utf-8') as file:
             #print(doc.metadata)
             pathlib.Path(outputFname).write_bytes(text.encode())
@@ -319,13 +337,11 @@ for pdf in pdf_list:
             output.write("Authors: " + authors_text + "\n")
             """
             # Extract and write abstract
-            abstract_text = extract_abstract(text)
+            abstract_text = extract_abstract(blocks)
             output.write("Abstract: " + abstract_text + "\n")
 
            # biblio_text = extract_biblio(text)
           #  output.write("References: " + biblio_text + "\n")
-            abstract = extract_abstract(blocks)
-            output.write("Abstract: " + abstract + "\n")
 
             clear_file(outputFname)
 

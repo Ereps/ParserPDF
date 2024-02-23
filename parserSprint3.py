@@ -27,8 +27,10 @@ def rmdir(directory):
             item.unlink()
     directory.rmdir()
 
-def replace_accent(text):
+def replace_special_char(text):
     text = text.strip()
+    continus_word = re.compile(r'-( )*\n')
+    text = re.sub(continus_word,"",text)
     text = text.replace('\n', ' ')
     text = text.replace('- ', '')
     text = text.replace('`A', 'À')
@@ -98,86 +100,18 @@ def replace_accent(text):
     text = text.replace('"x', 'ẍ')
     text = text.replace('`n', 'ǹ')
 
-    # Return the extracted author information
-    return text
-
-def replace_special_char(text):
-    text = text.replace('\n', ' ')
-    text = text.replace('- ', '')
     return text
 
 def extract_abstract(blocks):
-
-    """
-    #Regex pattern to find "Introduction" or "INTRODUCTION"
-    intro_pattern = re.compile(r'Introduction|INTRODUCTION')
-
-    # Regex pattern to find "Abstract" or "ABSTRACT"
-    abstract_pattern = re.compile(r'Abstract|ABSTRACT')
-
-    this_pattern = re.compile(r'In this article|This article')
-
-    # Search for the introduction keyword
-    intro_match = intro_pattern.search(text)
-
-    if intro_match:
-        # Get the index of the introduction keyword
-        intro_index = intro_match.start()
-
-        # Initialize abstract string
-        abs_rev = ""
-        
-        # Counter for the number of paragraphs found
-        paragraph_count = 0 # TODO USELESS
-
-        # Search backwards from the introduction keyword to find the abstract
-        abstract_match = abstract_pattern.search(text[:intro_index])
-        this_match = this_pattern.search(text[:intro_index])
-
-        # If abstract keyword found, extract abstract
-        if abstract_match:
-            abstract_index = abstract_match.start()
-
-            # Extract abstract in reverse order
-            abs_rev = text[abstract_index:intro_index]
-
-            #remplacer ce qu'il faut pour de la mise en forme
-            abs_rev = abs_rev.replace('\n', ' ')
-            abs_rev = abs_rev.replace('Abstract', ' ')
-            abs_rev = abs_rev.replace('Abstract.', ' ')
-            abs_rev = abs_rev.replace('1', ' ')
-            abs_rev = abs_rev.replace('I.', ' ')
-            abs_rev = abs_rev.replace('1.', ' ')
-            abs_rev = abs_rev.replace('- ', '')
-
-            return abs_rev.strip()  # Return abstract string stripped of leading/trailing whitespaces
-        else:
-    # Abstract keyword not found, search backward for two paragraphs
-            this_index = this_match.start()
-
-            abs_rev = text[this_index:intro_index]
-
-            # Replace newline characters with spaces
-            abs_rev = abs_rev.replace('\n', ' ')
-            abs_rev = abs_rev.replace('Abstract', ' ')
-            abs_rev = abs_rev.replace('Abstract.', ' ')
-            abs_rev = abs_rev.replace('1', ' ')
-            abs_rev = abs_rev.replace('I.', ' ')
-            abs_rev = abs_rev.replace('1.', ' ')
-            abs_rev = abs_rev.replace('- ', '')
-
-            return abs_rev.strip()  # Return abstract string stripped of leading/trailing whitespaces
-    """
-
     """_______________________________________________________________________________________________________"""
     #TODO modif pl
     abstract_string = ""
     abstract_pattern = re.compile(r'(Abstract|ABSTRACT)')
     for i in range(len(blocks)):
-        block_text = replace_accent(blocks[i][4])
+        block_text = replace_special_char(blocks[i][4])
         abstract_match = abstract_pattern.search(block_text)
         if(abstract_match):
-            print("____________________________\n\n\n",block_text)
+            #print("____________________________\n\n\n",block_text) TODO remove
             words = block_text.split()
             #if the blocks have the abstract content
             if(len(words) > 5):
@@ -189,11 +123,12 @@ def extract_abstract(blocks):
             else:
                 while(blocks[i][4] == ""):
                     i+=1
-                abstract_string = blocks[i+1][4]
+                abstract_string = blocks[i][4]
             while(abstract_string[len(abstract_string)-1] != "."):
-                abstract_string+= replace_accent(blocks[i+1][4])
+                abstract_string+= replace_special_char(blocks[i+1][4])
                 i+=1
             break
+    print(abstract_string)
     # If either introduction keyword is not found, return empty string
     return abstract_string
 

@@ -109,7 +109,7 @@ def replace_special_char(text):
 def extract_abstract(blocks):
 
     """
-    # Regex pattern to find "Introduction" or "INTRODUCTION"
+    #Regex pattern to find "Introduction" or "INTRODUCTION"
     intro_pattern = re.compile(r'Introduction|INTRODUCTION')
 
     # Regex pattern to find "Abstract" or "ABSTRACT"

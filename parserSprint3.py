@@ -102,6 +102,15 @@ def replace_special_char(text):
 
     return text
 
+#nomalize every blocks using replace_special_char
+#TODO ne marche pas parce que les blocks sont des tuples, essayer de trouver une solution
+def blocks_normalization(blocks):
+    for i in range(len(blocks)):
+        blocks[i][4] = replace_special_char(blocks[i][4])
+    return blocks
+
+#TODO return l'indice des blocks de text au lieu du text en lui meme, comme ca on peut les utilisers pour baliser le champ auteurs(entre celui du titre et celui ce l'abstract)
+#TODO faire une autre méthode qui += tout les blocks avec leurs indices 
 def extract_abstract(blocks):
     """_______________________________________________________________________________________________________"""
     #TODO modif pl
@@ -116,23 +125,23 @@ def extract_abstract(blocks):
             #if the blocks have the abstract content
             if(len(words) > 5):
                 #si le block contient le texte du abstract
-                #TODO enlever le abstract du début
+                #remove the abstract in the text
                 remove_pattern = re.compile(r'(Abstract|ABSTRACT)(\.| |_|\\|-|—)*')
-                abstract_string = re.sub(remove_pattern,"",block_text,1)
-                #TODO a faire c'est pour si le abstract fait parti du block
+                abstract_string = replace_special_char(re.sub(remove_pattern,"",block_text,1))
             else:
+                #si le block ne contient pas le texte du abstract
+                #passe les blocks vide
                 while(blocks[i][4] == ""):
-                    i+=1
-                abstract_string = blocks[i][4]
+                    i+=1  
+                abstract_string = replace_special_char(blocks[i+1][4])
             while(abstract_string[len(abstract_string)-1] != "."):
                 abstract_string+= replace_special_char(blocks[i+1][4])
                 i+=1
             break
-    print(abstract_string)
-    # If either introduction keyword is not found, return empty string
     return abstract_string
 
 """récupération du titre du pdf"""
+#TODO extraction du titre avec la taille de police plutot qu'a la louche
 def extract_title(outputFname, doc):
     title = ""
     if doc.metadata.get("title") != "": #si le titre apparaît dans la metadata
@@ -166,7 +175,6 @@ def extract_title(outputFname, doc):
         title = txt
 
     title = title.replace('\n', ' ')
-    
     return title
 
 def extract_authors(outputFname, title):
@@ -244,12 +252,14 @@ for pdf in pdf_list:
         for page_num in range(len(doc)):
             page = doc.load_page(page_num)
             blocks += page.get_text_blocks()
-            
-
             #TODO work with blocks, not the text
             for b in blocks:
                 #print(b)
                 text += b[4] + "\n"  # Concatenate text from each block with a newline character
+        
+        
+        #nomalization_______________________________
+        #blocks = blocks_normalization(blocks)
 
         with open(outputFname+"test.txt",'w', encoding='utf-8') as file:
             for b in blocks:

@@ -103,11 +103,14 @@ def replace_special_char(text):
     return text
 
 #nomalize every blocks using replace_special_char
-#TODO ne marche pas parce que les blocks sont des tuples, essayer de trouver une solution
 def blocks_normalization(blocks):
-    for i in range(len(blocks)):
-        blocks[i][4] = replace_special_char(blocks[i][4])
-    return blocks
+    normal_blocks = []
+    #tuple to list
+    normal_blocks = [list(item) for item in blocks]
+    #normalize
+    for i in range(len(normal_blocks)):
+        normal_blocks[i][4] = replace_special_char(normal_blocks[i][4])
+    return normal_blocks
 
 #TODO return l'indice des blocks de text au lieu du text en lui meme, comme ca on peut les utilisers pour baliser le champ auteurs(entre celui du titre et celui ce l'abstract)
 #TODO faire une autre méthode qui += tout les blocks avec leurs indices 
@@ -259,10 +262,10 @@ for pdf in pdf_list:
         
         
         #nomalization_______________________________
-        #blocks = blocks_normalization(blocks)
+        normal_blocks = blocks_normalization(blocks)
 
         with open(outputFname+"test.txt",'w', encoding='utf-8') as file:
-            for b in blocks:
+            for b in normal_blocks:
                 #print(b)
                 file.write("________________________________"+b[4])
         with open(outputFname,'w', encoding='utf-8') as file:
@@ -278,11 +281,11 @@ for pdf in pdf_list:
             title_text = extract_title(outputFname, doc)
             output.write("Title: " + title_text + "\n")
 
-            authors_text = extract_authors(blocks) #TODO modif pl
+            authors_text = extract_authors(normal_blocks) #TODO modif pl
             output.write("Authors: " + authors_text + "\n")
             """
             # Extract and write abstract
-            abstract_text = extract_abstract(blocks)
+            abstract_text = extract_abstract(normal_blocks)
             output.write("Abstract: " + abstract_text + "\n")
 
            # biblio_text = extract_biblio(text)

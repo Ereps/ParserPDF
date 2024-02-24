@@ -1,3 +1,4 @@
 PDF File: Boudin-Torres-2006.pdf
+Title: A Scalable MMR Approach to Sentence Scoring for Multi-Document Update Summarization
 Abstract: We present SMMR, a scalable sentence scoring method for query-oriented update summarization. Sentences are scored thanks to a criterion combining query relevance and dissimilarity with already read documents (history). As the amount of data in history increases, non-redundancy is prioritized over query-relevance. We show that SMMR achieves promising results on the DUC 2007 update corpus.
 sortie/Boudin-Torres-2006.pdf.txt

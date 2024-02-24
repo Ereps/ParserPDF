@@ -71,10 +71,11 @@ def replace_special_char(text):
     text = text.replace('"a', 'ä')
     text = text.replace('^a', 'â')
     text = text.replace('`a', 'à')
+    text = text.replace('´a', 'á')
     text = text.replace('°a', 'å')
-    text = text.replace('"i', 'ï')
-    text = text.replace('^i', 'î')
-    text = text.replace('`i', 'ì')
+    text = text.replace('"ı', 'ï')
+    text = text.replace('ˆı', 'î')
+    text = text.replace('`ı', 'ì')
     text = text.replace('`u', 'ù')
     text = text.replace('`¨u', 'ǜ')
     text = text.replace('"u', 'ü')
@@ -96,6 +97,7 @@ def replace_special_char(text):
     text = text.replace('^w', 'ŵ')
     text = text.replace('"w', 'ẅ')
     text = text.replace('^c', 'ĉ')
+    text = text.replace('c¸', 'ç')
     text = text.replace('"t', 'ẗ')
     text = text.replace('"x', 'ẍ')
     text = text.replace('`n', 'ǹ')
@@ -118,6 +120,7 @@ def extract_abstract(blocks):
     """_______________________________________________________________________________________________________"""
     #TODO modif pl
     abstract_string = ""
+    abstract_index = 0
     abstract_pattern = re.compile(r'(Abstract|ABSTRACT)')
     for i in range(len(blocks)):
         block_text = replace_special_char(blocks[i][4])
@@ -129,6 +132,7 @@ def extract_abstract(blocks):
             if(len(words) > 5):
                 #si le block contient le texte du abstract
                 #remove the abstract in the text
+                abstract_index = i
                 remove_pattern = re.compile(r'(Abstract|ABSTRACT)(\.| |_|\\|-|—)*')
                 abstract_string = replace_special_char(re.sub(remove_pattern,"",block_text,1))
             else:
@@ -136,12 +140,13 @@ def extract_abstract(blocks):
                 #passe les blocks vide
                 while(blocks[i][4] == ""):
                     i+=1  
+                abstract_index = i
                 abstract_string = replace_special_char(blocks[i+1][4])
             while(abstract_string[len(abstract_string)-1] != "."):
                 abstract_string+= replace_special_char(blocks[i+1][4])
                 i+=1
             break
-    return abstract_string
+    return abstract_string, abstract_index
 
 """récupération du titre du pdf"""
 #TODO extraction du titre avec la taille de police plutot qu'a la louche
@@ -177,36 +182,88 @@ def extract_title(outputFname, doc):
             i += 1
         title = txt
 
-    title = title.replace('\n', ' ')
+    title = title.replace('\n', '')
+    title = title.strip()
     return title
 
-def extract_authors(outputFname, title):
+def extract_authors(blocks, title, abstract_index):
     author_string = ""
-    with open(outputFname, 'r', encoding='utf-8') as file:
-        # Initialize variables
-        line = file.readline()
-        # Search for the first occurrence of the three first words of the title
-        target_words = title.split()[:3]
-        # Initialize a buffer to store lines for searching the target words
-        buffer = []
-        while line:
-            buffer.append(line)
-            if len(buffer) > len(target_words):
-                buffer.pop(0)
-            if all(word in ' '.join(buffer) for word in target_words):
-                break
-            line = file.readline()
-        
-        # Move to the next paragraph
-        while line.strip():  # Skip empty lines
-            line = file.readline()
+    email = []
+    author = []
+    author_pattern = re.compile(r'\b[A-Z][a-z]+(?:-[A-Z][a-z]+)?, [A-Z][a-z]+(?:-[A-Z][a-z]+)?\b|\b[A-Z][a-z]+(?:-[A-Z][a-z]+)? [A-Z][a-z]+(?:-[A-Z][a-z]+)?\b')
+    email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
+    index = 0
+    # Trouver l'indice du bloc contenant le titre
+    for x in range(len(blocks)):
+        print(x)
+        if title in blocks[x][4]:
+            index = x+1
+            break
+    print(index)
+    for i in range(index, abstract_index, 1):
+        block_text = replace_special_char(blocks[i][4])
+        author_match = author_pattern.search(block_text)
+        email_match = email_pattern.search(block_text)
+        print(block_text)
+        if(author_match):
+            author.append(author_pattern.findall(block_text))
+        if(email_match):
+            email.append(email_pattern.findall(block_text))
+    print(author)
+    print(email)
 
-        # Read and store characters until a keyword is found
-        while line:
-            author_string += line
-            line = file.readline()
-            if re.search(r'Abstract|In this article|This article', line):
-                break
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    """
+    # Extraire les paragraphes des auteurs entre le titre et le résumé
+    block_text = replace_special_char(blocks[i][4])  # Supposant que replace_special_char est défini
+
+    # Recherche de modèles d'adresses e-mail
+    #email_pattern = re.compile(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')
+    #emails = email_pattern.findall(block_text)
+
+    # Recherche de modèles de noms d'auteurs
+    while(index < abstract_index):
+
+        author_pattern = re.compile(r'\b[A-Z][a-z]+(?:-[A-Z][a-z]+)?, [A-Z][a-z]+(?:-[A-Z][a-z]+)?\b|\b[A-Z][a-z]+(?:-[A-Z][a-z]+)? [A-Z][a-z]+(?:-[A-Z][a-z]+)?\b')  # Pattern pour les noms propres
+        authors.extend(author_pattern.findall(block_text))
+    
+    for a in authors:
+        author_string += a + ","
+    
+    return author_string"""
+
+    """while line:
+        buffer.append(line)
+        if len(buffer) > len(target_words):
+            buffer.pop(0)
+        if all(word in ' '.join(buffer) for word in target_words):
+            break
+        line = file.readline()"""
+        
+    # Move to the next paragraph
+    """while line.strip():  # Skip empty lines
+        line = file.readline()"""
+
+    # Read and store characters until a keyword is found
+    """while line:
+        author_string += line
+        line = file.readline()
+        if re.search(r'Abstract|In this article|This article', line):
+            break"""
 
 #idée de manue : partir de la fin. si on rencontre un "References," vérifier si la ligne = title
 # def extract_biblio(text):
@@ -276,16 +333,18 @@ for pdf in pdf_list:
         with open(outputFname, 'a', encoding='utf-8') as output:
             output.write("PDF File: " + pdf + "\n")
 
-            """
+            
             # Extract and write title
             title_text = extract_title(outputFname, doc)
             output.write("Title: " + title_text + "\n")
 
-            authors_text = extract_authors(normal_blocks) #TODO modif pl
-            output.write("Authors: " + authors_text + "\n")
-            """
+            
+            
             # Extract and write abstract
-            abstract_text = extract_abstract(normal_blocks)
+            abstract_text, abstract_index= extract_abstract(normal_blocks)
+            #authors_text = 
+            extract_authors(normal_blocks, title_text, abstract_index) #TODO modif pl
+            #output.write("Authors: " + authors_text + "\n")
             output.write("Abstract: " + abstract_text + "\n")
 
            # biblio_text = extract_biblio(text)

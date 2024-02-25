@@ -189,20 +189,24 @@ def extract_title(outputFname, doc):
     return title
 
 def extract_authors(blocks, title, abstract_index):
-    author_string = ""
     email = []
     author = []
-    author_pattern = re.compile(r'\b[A-Z][a-z]+(?:-[A-Z][a-z]+)?, [A-Z][a-z]+(?:-[A-Z][a-z]+)?\b|\b[A-Z][a-z]+(?:-[A-Z][a-z]+)? [A-Z][a-z]+(?:-[A-Z][a-z]+)?\b')
+    emails = []
+    authors = []
+    a = []
+    e = []
+    no_no_in = False
+    author_pattern = re.compile(r'[A-Z][a-zàáâäçèéêëìíîïñòóôöùúûüýÿ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ]*)?(?: +[A-Zdlaeiouàáâäçèéêëìíîïñòóôöùúûüýÿ.]{0,3})?(?:[.]*)? [A-Z][A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ-]*)?')
     email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
     semi_mail_pattern = re.compile(r'[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}')
+    no_no_words = ['Université', 'Bretagne', 'Sud', 'University', 'South', 'Laboratoire', 'Laboratory', 'Rennes', 'Informatique', 'Google', 'Inc', 'Fondamentale', 'Marseille', 'France', 'Aix-Marseille', 'Vannes', 'Canada', 'Montréal', 'Polytechnique', 'Mexico', 'Avignon', 'Instituto', 'Ingeniería', 'Institute', 'Institue', 'Linguistics', 'Spain', 'Mexique', 'Espagne', 'Québec', 'Pays', 'Vaucluse', 'Meinajaries', 'Département', 'Centre-ville', 'New York', 'Department', 'Computer', 'Science', 'Columbia', 'Technologies', 'Carnegie', 'Mountain', 'View', 'Ecole', 'Centre', 'Ville', 'Cedex']
     index = 0
     # Trouver l'indice du bloc contenant le titre
     for x in range(len(blocks)):
-        print(x)
         if title in blocks[x][4]:
             index = x+1
             break
-    print(index)
+
     for i in range(index, abstract_index, 1):
         block_text = replace_special_char(blocks[i][4]) #remplace tous les accents
         author_match = author_pattern.search(block_text) #cherche les auteurs
@@ -210,15 +214,27 @@ def extract_authors(blocks, title, abstract_index):
         semi_mail_match = semi_mail_pattern.search(block_text) #cherche les fins de mails
         print(block_text)
         if(author_match): #si on a trouvé des auteurs
-            author.append(author_pattern.findall(block_text)) #ajoute dans la liste auteurs
+            a.append(author_pattern.findall(block_text)) #ajoute dans la liste auteurs
         if(email_match): #si on a trouvé des mails
             email.append(email_pattern.findall(block_text)) #ajoute dans la liste de mails
+            emails = [element for sous_liste in email for element in sous_liste]
+            if len(email) == 1: #si on a qu'un seul mail
+                email_match = email_pattern.search(block_text)
+                email_index = email_match.start()
+                if block_text[email_index-1] == ',' or block_text[email_index-2] == ',': #si jamais on trouve une virgule avant le mail
+                    block_text = block_text.replace(' ', '')
+                    email_match = email_pattern.search(block_text)
+                    email_index = email_match.start()
+                    semi_mail_match = semi_mail_pattern.search(block_text)
+                    end_email = semi_mail_pattern.findall(block_text)
+                    e = block_text.split(',') #on sépare le texte grâce qux virgules
+                    for m in e: #on boucle sur les éléments du texte séparé
+                        if m != email[0][0]: #si l'élément est différent du mail
+                            emails.append(m+end_email[0]) #on l'ajoute à la liste des mails
         elif(semi_mail_match): # sinon si on a trouvé une fin de mail
             block_text = block_text.replace(' ', '') #on enlève tous les espaces
-            print(block_text)
             semi_mail_match = semi_mail_pattern.search(block_text)
             semi_mail_index = semi_mail_match.start() #on cherche où la fin du mail commence
-            print(semi_mail_index)
             end_email = semi_mail_pattern.findall(block_text) #on récupère la fin du mail
             mails = ""
             if block_text[(semi_mail_index-1)] == ')':#si l'ensemble des débuts de mails est contenu entre parenthèse
@@ -228,7 +244,7 @@ def extract_authors(blocks, title, abstract_index):
                     y -= 1
                 mail_sep = mails.split(',')
                 for mail in mail_sep:
-                    email.append(mail+end_email[0])
+                    emails.append(mail+end_email[0])
             elif block_text[(semi_mail_index-1)] == '}':#sinon si l'ensemble des débuts de mails est contenu entre chevrons
                 y = semi_mail_index-2
                 while block_text[y] != '{': #on boucle jusqu'à ce qu'on trouve le chevron fermant
@@ -236,7 +252,7 @@ def extract_authors(blocks, title, abstract_index):
                     y -= 1
                 mail_sep = mails.split(',')
                 for mail in mail_sep:
-                    email.append(mail+end_email[0])
+                    emails.append(mail+end_email[0])
             elif block_text[(semi_mail_index-1)] == ']':#sinon si l'ensemble des débuts de mails est contenu entre crochets
                 y = semi_mail_index-2
                 while block_text[y] != '[':#on boucle jusqu'à ce qu'on trouve le crochet fermant
@@ -244,64 +260,21 @@ def extract_authors(blocks, title, abstract_index):
                     y -= 1
                 mail_sep = mails.split(',') #on sépare le texte grâce aux virgules
                 for mail in mail_sep:#boucle sur chaques débuts de mails
-                    email.append(mail+end_email[0])#on ajoute le début de mail et la fin à la liste email
+                    emails.append(mail+end_email[0])#on ajoute le début de mail et la fin à la liste email
 
-    print(author)
-    print(email)
-    return author, email
+    for w in a:
+        for x in w:
+            author.append(x)
 
-    
+    for y in range(len(author)): #boucle sur la liste auteur
+        for z in no_no_words: #boucle sur la liste des mots non voulu
+            if z in author[y]: #si un mot non voulu est trouvé dans la string
+                no_no_in = True #on passe no_no_in a true
+        if no_no_in == False: #si no_no_in est false
+            authors.append(author[y]) #on l'ajoute à la liste définitive des auteurs
+        no_no_in = False #on remet no_no_in a false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    """
-    # Extraire les paragraphes des auteurs entre le titre et le résumé
-    block_text = replace_special_char(blocks[i][4])  # Supposant que replace_special_char est défini
-
-    # Recherche de modèles d'adresses e-mail
-    #email_pattern = re.compile(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')
-    #emails = email_pattern.findall(block_text)
-
-    # Recherche de modèles de noms d'auteurs
-    while(index < abstract_index):
-
-        author_pattern = re.compile(r'\b[A-Z][a-z]+(?:-[A-Z][a-z]+)?, [A-Z][a-z]+(?:-[A-Z][a-z]+)?\b|\b[A-Z][a-z]+(?:-[A-Z][a-z]+)? [A-Z][a-z]+(?:-[A-Z][a-z]+)?\b')  # Pattern pour les noms propres
-        authors.extend(author_pattern.findall(block_text))
-    
-    for a in authors:
-        author_string += a + ","
-    
-    return author_string"""
-
-    """while line:
-        buffer.append(line)
-        if len(buffer) > len(target_words):
-            buffer.pop(0)
-        if all(word in ' '.join(buffer) for word in target_words):
-            break
-        line = file.readline()"""
-        
-    # Move to the next paragraph
-    """while line.strip():  # Skip empty lines
-        line = file.readline()"""
-
-    # Read and store characters until a keyword is found
-    """while line:
-        author_string += line
-        line = file.readline()
-        if re.search(r'Abstract|In this article|This article', line):
-            break"""
+    return authors, emails
 
 def extract_biblio(blocks, title):
     """Extracts bibliography from a list of text blocks."""
@@ -407,9 +380,11 @@ for pdf in pdf_list:
             
             # Extract and write abstract
             abstract_text, abstract_index= extract_abstract(normal_blocks)
-            #authors_text = 
-            #extract_authors(normal_blocks, title_text, abstract_index) #TODO modif pl
-            #output.write("Authors: " + authors_text + "\n")
+            author_list, email_list = extract_authors(normal_blocks, title_text, abstract_index)
+            authors_text = ""
+            for author in author_list:
+                authors_text += author + ", "
+            output.write("Authors: " + authors_text[:-2] + "\n")
             output.write("Abstract: " + abstract_text + "\n")
 
             biblio_text, biblio_index= extract_biblio(normal_blocks, extract_title(outputFname, doc))

@@ -24,13 +24,14 @@ def rmdir(directory):
     directory.rmdir()
 ##
 
-
+# calls ARTICLE
 def buildXML(pdf, doc) :
     output_filename = output_directory_xml + os.sep + pdf + '.xml'
     print(output_filename)
     with open(output_filename, 'w', encoding='utf-8') as output :
         output.write(buildArticle(pdf, doc, 0))
 
+# calls TITLE, AUTHORS, ABSTRACT
 def buildArticle(pdf, doc, tabcount) :
     s = '\t' * tabcount + '<article>\n'
     s += buildTitle(pdf, doc, tabcount+1)
@@ -67,3 +68,14 @@ for pdf in pdf_list :
     with fitz.open(pdf) as doc :
         page = doc.load_page(0)
         buildXML(pdf, doc)
+
+        '''
+        page = doc.load_page(0)
+        blocks = page.get_textpage().extractDICT().get('blocks')
+        font_size = blocks[0]['lines'][0]['spans'][0]['size']
+        for text_instance in blocks :
+            
+            for line in text_instance['lines'] :
+                for span in line['spans'] :
+                    font_sizes = span['size']
+        '''

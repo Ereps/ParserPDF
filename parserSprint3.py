@@ -178,12 +178,14 @@ def extract_title(outputFname, doc):
         i = 1
         while line != "": #tant qu'on est pas à la fin du paragraphe
             line = lc.getline(outputFname, i).rstrip("\n") #on récupère la ligne et on enlève le caractère de fin de ligne
+            print(line)
             txt += line + " "
             i += 1
         title = txt
 
     title = title.replace('\n', '')
     title = title.strip()
+    #print(title)
     return title
 
 def extract_authors(blocks, title, abstract_index):
@@ -343,7 +345,7 @@ for pdf in pdf_list:
             # Extract and write abstract
             abstract_text, abstract_index= extract_abstract(normal_blocks)
             #authors_text = 
-            extract_authors(normal_blocks, title_text, abstract_index) #TODO modif pl
+            #extract_authors(normal_blocks, title_text, abstract_index) #TODO modif pl
             #output.write("Authors: " + authors_text + "\n")
             output.write("Abstract: " + abstract_text + "\n")
 

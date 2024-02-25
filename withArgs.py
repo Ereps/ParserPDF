@@ -1,4 +1,5 @@
 import sys, getopt, time, os
+import toXML
 
 def helpUsage() :
     print(os.path.basename(__file__), '[options]')
@@ -11,12 +12,14 @@ def helpUsage() :
 def toXml() :
     startTime = time.time()
     print('exporting to xml...')
+    #toXML.buildXML()
     print('--- XML in %s seconds ---' % (time.time() - startTime))
     
 # TODO: to Text
 def toText() :
     startTime = time.time()
     print('exporting to text...')
+    
     print('--- Text in %s seconds ---' % (time.time() - startTime))
 
 # main function with args

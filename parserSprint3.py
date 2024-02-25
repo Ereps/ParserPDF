@@ -192,6 +192,7 @@ def extract_authors(blocks, title, abstract_index):
     author = []
     author_pattern = re.compile(r'\b[A-Z][a-z]+(?:-[A-Z][a-z]+)?, [A-Z][a-z]+(?:-[A-Z][a-z]+)?\b|\b[A-Z][a-z]+(?:-[A-Z][a-z]+)? [A-Z][a-z]+(?:-[A-Z][a-z]+)?\b')
     email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
+    semi_mail_pattern = re.compile(r'[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}')
     index = 0
     # Trouver l'indice du bloc contenant le titre
     for x in range(len(blocks)):
@@ -201,16 +202,51 @@ def extract_authors(blocks, title, abstract_index):
             break
     print(index)
     for i in range(index, abstract_index, 1):
-        block_text = replace_special_char(blocks[i][4])
-        author_match = author_pattern.search(block_text)
-        email_match = email_pattern.search(block_text)
+        block_text = replace_special_char(blocks[i][4]) #remplace tous les accents
+        author_match = author_pattern.search(block_text) #cherche les auteurs
+        email_match = email_pattern.search(block_text) #cherche les mails
+        semi_mail_match = semi_mail_pattern.search(block_text) #cherche les fins de mails
         print(block_text)
-        if(author_match):
-            author.append(author_pattern.findall(block_text))
-        if(email_match):
-            email.append(email_pattern.findall(block_text))
+        if(author_match): #si on a trouvé des auteurs
+            author.append(author_pattern.findall(block_text)) #ajoute dans la liste auteurs
+        if(email_match): #si on a trouvé des mails
+            email.append(email_pattern.findall(block_text)) #ajoute dans la liste de mails
+        elif(semi_mail_match): # sinon si on a trouvé une fin de mail
+            block_text = block_text.replace(' ', '') #on enlève tous les espaces
+            print(block_text)
+            semi_mail_match = semi_mail_pattern.search(block_text)
+            semi_mail_index = semi_mail_match.start() #on cherche où la fin du mail commence
+            print(semi_mail_index)
+            end_email = semi_mail_pattern.findall(block_text) #on récupère la fin du mail
+            mails = ""
+            if block_text[(semi_mail_index-1)] == ')':#si l'ensemble des débuts de mails est contenu entre parenthèse
+                y = semi_mail_index-2
+                while block_text[y] != '(':#on boucle jusqu'à ce qu'on trouve la parenthèse fermante
+                    mails = block_text[y] + mails #on récupère le texte dans entre parenthèse
+                    y -= 1
+                mail_sep = mails.split(',')
+                for mail in mail_sep:
+                    email.append(mail+end_email[0])
+            elif block_text[(semi_mail_index-1)] == '}':#sinon si l'ensemble des débuts de mails est contenu entre chevrons
+                y = semi_mail_index-2
+                while block_text[y] != '{': #on boucle jusqu'à ce qu'on trouve le chevron fermant
+                    mails = block_text[y] + mails #on récupère le texte entre chevrons
+                    y -= 1
+                mail_sep = mails.split(',')
+                for mail in mail_sep:
+                    email.append(mail+end_email[0])
+            elif block_text[(semi_mail_index-1)] == ']':#sinon si l'ensemble des débuts de mails est contenu entre crochets
+                y = semi_mail_index-2
+                while block_text[y] != '[':#on boucle jusqu'à ce qu'on trouve le crochet fermant
+                    mails = block_text[y] + mails #on récupère le texte entre crochets
+                    y -= 1
+                mail_sep = mails.split(',') #on sépare le texte grâce aux virgules
+                for mail in mail_sep:#boucle sur chaques débuts de mails
+                    email.append(mail+end_email[0])#on ajoute le début de mail et la fin à la liste email
+
     print(author)
     print(email)
+    return author, email
 
     
 

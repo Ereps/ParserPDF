@@ -54,7 +54,7 @@ def buildAuthors(authors, tabcount) :
     s = '\t' * tabcount + '<auteurs>\n'
     # TODO: extract authors
     for author in authors :
-        s += '\t' * tabcount+1 + '<auteur>' + author + '</auteur>'
+        s += '\t' * tabcount+1 + '<auteur>' + author + '</auteur>\n'
     s += '\t' * tabcount + '</auteurs>\n'
     return s
 

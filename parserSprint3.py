@@ -301,24 +301,51 @@ def extract_authors(blocks, title, abstract_index):
         if re.search(r'Abstract|In this article|This article', line):
             break"""
 
-#idée de manue : partir de la fin. si on rencontre un "References," vérifier si la ligne = title
-# def extract_biblio(text):
-#     intro_pattern = re.compile(r'References|REFERENCES')
+def extract_biblio(blocks, title):
+    """Extracts bibliography from a list of text blocks."""
+    biblio_string = ""
+    biblio_index = 0
+    biblio_pattern = re.compile(r'(References|REFERENCES)')
 
-#     intro_match = intro_pattern.search(text)
+    # Check if "References" or "REFERENCES" is in the title
+    title_has_references = bool(re.search(biblio_pattern, title))
 
-#     if intro_match:
-#         intro_index = intro_match.start()
-#         biblio_string = text[intro_index:]
-#         biblio_string = biblio_string.strip()
-#         biblio_string = biblio_string.replace('\n', ' ')
-#         biblio_string = biblio_string.replace('References', '')
-#         biblio_string = biblio_string.replace('REFERENCES', '')
-#         biblio_string = biblio_string.replace('- ', '')
-#         biblio_string = biblio_string.replace('´e', 'é')
-#         biblio_string = biblio_string.replace('`e', 'è')
-#         biblio_string = biblio_string.replace('´a', 'à')
-#         return biblio_string
+    if not title_has_references:
+    # If "References" is not in the title, search from the end
+        for i in range(len(blocks)-1, -1, -1):
+            block_text = replace_special_char(blocks[i][4])
+            biblio_match = biblio_pattern.search(block_text)
+        
+            if biblio_match:
+                biblio_index = i
+                # Extract text from biblio_match.start() to the end of the whole text
+                biblio_string = replace_special_char(" ".join([block[4] for block in blocks[i:]]))
+                break
+
+    else:
+        # If "References" is in the title, check each block
+        for i in range(len(blocks)):
+            block_text = replace_special_char(blocks[i][4])
+            biblio_match = biblio_pattern.search(block_text)
+            
+            if biblio_match:
+                # If "References" is found, check if this block contains the title
+                if re.search(title, block_text, re.IGNORECASE):
+                    # If title is found in this block, skip it and continue
+                    continue
+                
+                # If title is not found, extract bibliography from this block
+                biblio_index = i
+                biblio_string = replace_special_char(block_text[biblio_match.start():])
+                
+                # Continue adding text to biblio_string until the end of the block
+                while i + 1 < len(blocks) and block_text[-1] != ".":
+                    i += 1
+                    biblio_string += replace_special_char(blocks[i][4])
+                
+                break  # Stop searching after finding the first occurrence
+    
+    return biblio_string, biblio_index
 
 startTime = time.time()
 pdf_list = read_files(input_name)
@@ -383,8 +410,8 @@ for pdf in pdf_list:
             #output.write("Authors: " + authors_text + "\n")
             output.write("Abstract: " + abstract_text + "\n")
 
-           # biblio_text = extract_biblio(text)
-          #  output.write("References: " + biblio_text + "\n")
+            biblio_text, biblio_index= extract_biblio(normal_blocks, extract_title(outputFname, doc))
+            output.write(biblio_text + "\n")
 
             clear_file(outputFname)
 

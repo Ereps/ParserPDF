@@ -361,7 +361,6 @@ for pdf in pdf_list:
             # Extract and write title
             title_text = extract_title(normal_blocks, doc)
             output.write("Title: " + title_text + "\n")
-
             
             
             # Extract and write abstract

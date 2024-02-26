@@ -150,42 +150,28 @@ def extract_abstract(blocks):
 
 """récupération du titre du pdf"""
 #TODO extraction du titre avec la taille de police plutot qu'a la louche
-def extract_title(outputFname, doc):
+def extract_title(blocks, doc):
     title = ""
+    i = 0
     if doc.metadata.get("title") != "": #si le titre apparaît dans la metadata
         txt = ""
         line = " "
-        i = 1
-        if "<" in lc.getline(outputFname, i): #si le premier paragraphe commence par un "<"
+        block_text = replace_special_char(blocks[i][4])
+        if "<" in block_text: #si le premier paragraphe commence par un "<"
             i += 1
-        while line != "": #tant qu'on est pas à la fin du paragraphe
-            line = lc.getline(outputFname, i).rstrip("\n") #on récupère la ligne et on enlève le caractère de fin de ligne
-            txt += line + " "
-            i += 1
+        txt = replace_special_char(blocks[i][4])
+        i += 1
         if txt.rstrip(" ") == doc.metadata.get("title"): #si le titre est égal au paragraphe récupéré
             title = txt
         else: #sinon
-            txt = " "
-            line = " "
-            while line != "": #tant qu'on est pas à la fin du paragraphe
-                line = lc.getline(outputFname, i).rstrip("\n") #on récupère la ligne et on enlève le caractère de fin de ligne
-                txt += line + " "
-                i += 1
+            txt = replace_special_char(blocks[i][4]) #on récupère la ligne et on enlève le caractère de fin de ligne
             title = txt.rstrip(" ") #on enlève le dernier espace du titre
     else: #sinon
-        txt = ""
-        line = " "
-        i = 1
-        while line != "": #tant qu'on est pas à la fin du paragraphe
-            line = lc.getline(outputFname, i).rstrip("\n") #on récupère la ligne et on enlève le caractère de fin de ligne
-            print(line)
-            txt += line + " "
-            i += 1
+        txt = replace_special_char(blocks[i][4]) #on récupère la ligne et on enlève le caractère de fin de ligne
         title = txt
 
     title = title.replace('\n', '')
     title = title.strip()
-    #print(title)
     return title
 
 def extract_authors(blocks, title, abstract_index):
@@ -373,7 +359,7 @@ for pdf in pdf_list:
 
             
             # Extract and write title
-            title_text = extract_title(outputFname, doc)
+            title_text = extract_title(normal_blocks, doc)
             output.write("Title: " + title_text + "\n")
 
             
@@ -387,7 +373,7 @@ for pdf in pdf_list:
             output.write("Authors: " + authors_text[:-2] + "\n")
             output.write("Abstract: " + abstract_text + "\n")
 
-            biblio_text, biblio_index= extract_biblio(normal_blocks, extract_title(outputFname, doc))
+            biblio_text, biblio_index= extract_biblio(normal_blocks, extract_title(normal_blocks, doc))
             output.write(biblio_text + "\n")
 
             clear_file(outputFname)

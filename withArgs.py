@@ -1,5 +1,4 @@
-import sys, getopt, time, os
-import toXML
+import sys, getopt, time, os, argparse
 
 def helpUsage() :
     print(os.path.basename(__file__), '[options]')
@@ -23,7 +22,23 @@ def toText() :
     print('--- Text in %s seconds ---' % (time.time() - startTime))
 
 # main function with args
-def main(argv) :
+def main() :
+    parser = argparse.ArgumentParser(prog=os.path.basename(__file__), usage='%(prog)s [options]')
+    parser.add_argument('-x', '--xml', help='export the PDF file to XML', action='store_true')
+    parser.add_argument('-t', '--text', help='export the PDF file to text', action='store_true')
+    parser.add_argument('--input', help='input files to convert', action='store', type=str, nargs='+', metavar=('FILE | FOLDER'))
+    args = vars(parser.parse_args())
+    print(args.get('input'))
+    '''
+    nargs stands for Number Of Arguments
+
+        3: 3 values, can be any number you want
+        ?: a single value, which can be optional
+        *: a flexible number of values, which will be gathered into a list
+        +: like *, but requiring at least one value
+        argparse.REMAINDER: all the values that are remaining in the command line
+    '''
+    '''
     try :
         opts, args = getopt.getopt(argv, 'hxtad', ['help', 'xml', 'text', 'all'])
     except getopt.GetoptError as err :
@@ -45,8 +60,9 @@ def main(argv) :
             debug = 1
         else :
             assert False, "unhandled option"
+    '''
 
 if __name__ == '__main__' :
-    main(sys.argv[1:])
+    main()
     
     

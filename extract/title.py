@@ -1,4 +1,4 @@
-from block_treatement import *
+from extract.block_treatement import *
 
 """récupération du titre du pdf"""
 #TODO extraction du titre avec la taille de police plutot qu'a la louche

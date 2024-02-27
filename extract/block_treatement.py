@@ -1,5 +1,4 @@
 import re
-from block_treatement import *
 #nomalize every blocks using replace_special_char
 def blocks_normalization(blocks):
     normal_blocks = []

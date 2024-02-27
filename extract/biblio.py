@@ -1,5 +1,5 @@
 import re
-from block_treatement import *
+from extract.block_treatement import *
 
 def extract(blocks, title):
     """Extracts bibliography from a list of text blocks."""

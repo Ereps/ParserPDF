@@ -83,22 +83,21 @@ for pdf in pdf_list:
 
             
             # Extract and write title
-            title_text = title(normal_blocks, doc)
+            title_text = title.extract(normal_blocks, doc)
             output.write("Title: " + title_text + "\n")
             
             
             # Extract and write abstract
-            abstract_text, abstract_index= abstract(normal_blocks)
-            author_list, email_list = authors.extract_authors(normal_blocks, title_text, abstract_index)
+            abstract_text, abstract_index= abstract.extract(normal_blocks)
+            author_list, email_list = authors.extract(normal_blocks, title_text, abstract_index)
             authors_text = ""
             for author in author_list:
                 authors_text += author + ", "
             output.write("Authors: " + authors_text[:-2] + "\n")
             output.write("Abstract: " + abstract_text + "\n")
 
-            biblio_text, biblio_index= biblio.extract(normal_blocks, title(normal_blocks, doc))
+            biblio_text, biblio_index= biblio.extract(normal_blocks, title.extract(normal_blocks, doc))
             output.write(biblio_text + "\n")
-
             clear_file(outputFname)
 
             new_text = remove_before_pdf_file(outputFname)

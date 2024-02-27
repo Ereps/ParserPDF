@@ -147,36 +147,24 @@ def extract_abstract(blocks):
 
 """récupération du titre du pdf"""
 #TODO extraction du titre avec la taille de police plutot qu'a la louche
-def extract_title(outputFname, doc):
+def extract_title(blocks, doc):
     title = ""
+    i = 0
     if doc.metadata.get("title") != "": #si le titre apparaît dans la metadata
         txt = ""
         line = " "
-        i = 1
-        if "<" in lc.getline(outputFname, i): #si le premier paragraphe commence par un "<"
+        block_text = replace_special_char(blocks[i][4])
+        if "<" in block_text: #si le premier paragraphe commence par un "<"
             i += 1
-        while line != "": #tant qu'on est pas à la fin du paragraphe
-            line = lc.getline(outputFname, i).rstrip("\n") #on récupère la ligne et on enlève le caractère de fin de ligne
-            txt += line + " "
-            i += 1
+        txt = replace_special_char(blocks[i][4])
+        i += 1
         if txt.rstrip(" ") == doc.metadata.get("title"): #si le titre est égal au paragraphe récupéré
             title = txt
         else: #sinon
-            txt = " "
-            line = " "
-            while line != "": #tant qu'on est pas à la fin du paragraphe
-                line = lc.getline(outputFname, i).rstrip("\n") #on récupère la ligne et on enlève le caractère de fin de ligne
-                txt += line + " "
-                i += 1
+            txt = replace_special_char(blocks[i][4]) #on récupère la ligne et on enlève le caractère de fin de ligne
             title = txt.rstrip(" ") #on enlève le dernier espace du titre
     else: #sinon
-        txt = ""
-        line = " "
-        i = 1
-        while line != "": #tant qu'on est pas à la fin du paragraphe
-            line = lc.getline(outputFname, i).rstrip("\n") #on récupère la ligne et on enlève le caractère de fin de ligne
-            txt += line + " "
-            i += 1
+        txt = replace_special_char(blocks[i][4]) #on récupère la ligne et on enlève le caractère de fin de ligne
         title = txt
 
     title = title.replace('\n', '')
@@ -184,17 +172,23 @@ def extract_title(outputFname, doc):
     return title
 
 def extract_authors(blocks, title, abstract_index):
-    author_string = ""
     email = []
     author = []
-    author_pattern = re.compile(r'\b[A-Z][a-z]+(?:-[A-Z][a-z]+)?, [A-Z][a-z]+(?:-[A-Z][a-z]+)?\b|\b[A-Z][a-z]+(?:-[A-Z][a-z]+)? [A-Z][a-z]+(?:-[A-Z][a-z]+)?\b')
+    emails = []
+    authors = []
+    a = []
+    e = []
+    no_no_in = False
+    author_pattern = re.compile(r'[A-Z][a-zàáâäçèéêëìíîïñòóôöùúûüýÿ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ]*)?(?: +[A-Zdlaeiouàáâäçèéêëìíîïñòóôöùúûüýÿ.]{0,3})?(?:[.]*)? [A-Z][A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ-]*)?')
     email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
     semi_mail_pattern = re.compile(r'[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}')
+    no_no_words = ['Université', 'Bretagne', 'Nord', 'Sud', 'Est', 'Ouest', 'University', 'North', 'South', 'West', 'Laboratoire', 'Laboratory', 'Rennes', 'Informatique', 'Google', 'Inc', 'Fondamentale', 'Marseille', 'France', 'Aix-Marseille', 'Vannes', 'Canada', 'Montréal', 'Polytechnique', 'Mexico', 'Avignon', 'Instituto', 'Ingeniería', 'Institute', 'Institue', 'Linguistics', 'Spain', 'Mexique', 'Espagne', 'Québec', 'Pays', 'Vaucluse', 'Meinajaries', 'Département', 'Centre-ville', 'New York', 'Department', 'Computer', 'Science', 'Columbia', 'Technologies', 'Carnegie', 'Mountain', 'View', 'Ecole', 'Centre', 'Ville', 'Cedex']
     index = 0
     # Trouver l'indice du bloc contenant le titre
     for x in range(len(blocks)):
-        print(x)
+        #print(x)
         if title in blocks[x][4]:
+            print(blocks[x][4])
             index = x+1
             break
     print(index)
@@ -203,17 +197,29 @@ def extract_authors(blocks, title, abstract_index):
         author_match = author_pattern.search(block_text) #cherche les auteurs
         email_match = email_pattern.search(block_text) #cherche les mails
         semi_mail_match = semi_mail_pattern.search(block_text) #cherche les fins de mails
-        print(block_text)
+        #print(block_text)
         if(author_match): #si on a trouvé des auteurs
-            author.append(author_pattern.findall(block_text)) #ajoute dans la liste auteurs
+            a.append(author_pattern.findall(block_text)) #ajoute dans la liste auteurs
         if(email_match): #si on a trouvé des mails
             email.append(email_pattern.findall(block_text)) #ajoute dans la liste de mails
+            emails = [element for sous_liste in email for element in sous_liste]
+            if len(email) == 1: #si on a qu'un seul mail
+                email_match = email_pattern.search(block_text)
+                email_index = email_match.start()
+                if block_text[email_index-1] == ',' or block_text[email_index-2] == ',': #si jamais on trouve une virgule avant le mail
+                    block_text = block_text.replace(' ', '')
+                    email_match = email_pattern.search(block_text)
+                    email_index = email_match.start()
+                    semi_mail_match = semi_mail_pattern.search(block_text)
+                    end_email = semi_mail_pattern.findall(block_text)
+                    e = block_text.split(',') #on sépare le texte grâce qux virgules
+                    for m in e: #on boucle sur les éléments du texte séparé
+                        if m != email[0][0]: #si l'élément est différent du mail
+                            emails.append(m+end_email[0]) #on l'ajoute à la liste des mails
         elif(semi_mail_match): # sinon si on a trouvé une fin de mail
             block_text = block_text.replace(' ', '') #on enlève tous les espaces
-            print(block_text)
             semi_mail_match = semi_mail_pattern.search(block_text)
             semi_mail_index = semi_mail_match.start() #on cherche où la fin du mail commence
-            print(semi_mail_index)
             end_email = semi_mail_pattern.findall(block_text) #on récupère la fin du mail
             mails = ""
             if block_text[(semi_mail_index-1)] == ')':#si l'ensemble des débuts de mails est contenu entre parenthèse
@@ -223,7 +229,7 @@ def extract_authors(blocks, title, abstract_index):
                     y -= 1
                 mail_sep = mails.split(',')
                 for mail in mail_sep:
-                    email.append(mail+end_email[0])
+                    emails.append(mail+end_email[0])
             elif block_text[(semi_mail_index-1)] == '}':#sinon si l'ensemble des débuts de mails est contenu entre chevrons
                 y = semi_mail_index-2
                 while block_text[y] != '{': #on boucle jusqu'à ce qu'on trouve le chevron fermant
@@ -231,7 +237,7 @@ def extract_authors(blocks, title, abstract_index):
                     y -= 1
                 mail_sep = mails.split(',')
                 for mail in mail_sep:
-                    email.append(mail+end_email[0])
+                    emails.append(mail+end_email[0])
             elif block_text[(semi_mail_index-1)] == ']':#sinon si l'ensemble des débuts de mails est contenu entre crochets
                 y = semi_mail_index-2
                 while block_text[y] != '[':#on boucle jusqu'à ce qu'on trouve le crochet fermant
@@ -239,10 +245,64 @@ def extract_authors(blocks, title, abstract_index):
                     y -= 1
                 mail_sep = mails.split(',') #on sépare le texte grâce aux virgules
                 for mail in mail_sep:#boucle sur chaques débuts de mails
-                    email.append(mail+end_email[0])#on ajoute le début de mail et la fin à la liste email
+                    emails.append(mail+end_email[0])#on ajoute le début de mail et la fin à la liste email
 
-    return author, email
+    for w in a:
+        for x in w:
+            author.append(x)
 
-# TODO: extract email from authors
-def extract_email() :
-    print()
+    for y in range(len(author)): #boucle sur la liste auteur
+        for z in no_no_words: #boucle sur la liste des mots non voulu
+            if z in author[y]: #si un mot non voulu est trouvé dans la string
+                no_no_in = True #on passe no_no_in a true
+        if no_no_in == False: #si no_no_in est false
+            authors.append(author[y]) #on l'ajoute à la liste définitive des auteurs
+        no_no_in = False #on remet no_no_in a false
+
+    return authors, emails
+
+def extract_biblio(blocks, title):
+    """Extracts bibliography from a list of text blocks."""
+    biblio_string = ""
+    biblio_index = 0
+    biblio_pattern = re.compile(r'(References|REFERENCES)')
+
+    # Check if "References" or "REFERENCES" is in the title
+    title_has_references = bool(re.search(biblio_pattern, title))
+
+    if not title_has_references:
+    # If "References" is not in the title, search from the end
+        for i in range(len(blocks)-1, -1, -1):
+            block_text = replace_special_char(blocks[i][4])
+            biblio_match = biblio_pattern.search(block_text)
+        
+            if biblio_match:
+                biblio_index = i
+                # Extract text from biblio_match.start() to the end of the whole text
+                biblio_string = replace_special_char(" ".join([block[4] for block in blocks[i:]]))
+                break
+
+    else:
+        # If "References" is in the title, check each block
+        for i in range(len(blocks)):
+            block_text = replace_special_char(blocks[i][4])
+            biblio_match = biblio_pattern.search(block_text)
+            
+            if biblio_match:
+                # If "References" is found, check if this block contains the title
+                if re.search(title, block_text, re.IGNORECASE):
+                    # If title is found in this block, skip it and continue
+                    continue
+                
+                # If title is not found, extract bibliography from this block
+                biblio_index = i
+                biblio_string = replace_special_char(block_text[biblio_match.start():])
+                
+                # Continue adding text to biblio_string until the end of the block
+                while i + 1 < len(blocks) and block_text[-1] != ".":
+                    i += 1
+                    biblio_string += replace_special_char(blocks[i][4])
+                
+                break  # Stop searching after finding the first occurrence
+    
+    return biblio_string, biblio_index

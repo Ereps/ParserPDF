@@ -33,14 +33,16 @@ def buildXML(pdf, doc, blocks) :
 
 # calls TITLE, AUTHORS, ABSTRACT
 def buildArticle(pdf, doc, tabcount, blocks) :
-    title = extract.extract_title(doc)
+    title = extract.extract_title(blocks, doc)
     abstract, abstract_i = extract.extract_abstract(blocks)
-    authors, mails = extract.extract_authors(blocks, title, abstract_i)
+    #print(title)
+    authors_list, mails = extract.extract_authors(blocks, title, abstract_i)
+    refs, refs_i = extract.extract_biblio(blocks, title)
     s = '\t' * tabcount + '<article>\n'
-    s += buildTitle(pdf, doc, tabcount+1)
-    s += buildAuthors(authors, tabcount+1)
-    print(authors)
+    s += buildTitle(title, tabcount+1)
+    s += buildAuthors(authors_list, tabcount+1)
     s += buildAbstract(abstract, tabcount+1)
+    s += buildRefs(refs, tabcount+1)
     s += '\t' * tabcount + '</article>\n'
     return s 
 
@@ -53,13 +55,24 @@ def buildAuthors(authors, tabcount) :
     s = '\t' * tabcount + '<auteurs>\n'
     # TODO: extract authors
     for author in authors :
-        s += '\t' * tabcount+1 + '<auteur>' + author + '</auteur>\n'
+        s += buildAuthor(author, '', tabcount+1)
     s += '\t' * tabcount + '</auteurs>\n'
+    return s
+
+def buildAuthor(name, mail, tabcount) :
+    s = '\t' *tabcount + '<auteur>\n'
+    s += '\t' *(tabcount+1) + '<name>' + name + '</name>\n'
+    s += '\t' *(tabcount+1) + '<mail>' + mail + '</mail>\n'
+    s += '\t' *tabcount + '</auteur>\n'
     return s
 
 def buildAbstract(abstract_string, tabcount) :
     # TODO: extract abstract
     s = '\t' *tabcount + '<abstract>' + abstract_string + '</abstract>\n'
+    return s
+
+def buildRefs(refs, tabcount) :
+    s = '\t' *tabcount + '<biblio>' + refs + '</biblio>\n'
     return s
 
 pdf_list = read_files(input_directory)

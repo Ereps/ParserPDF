@@ -96,7 +96,7 @@ for pdf in pdf_list:
             output.write("Authors: " + authors_text[:-2] + "\n")
             output.write("Abstract: " + abstract_text + "\n")
 
-            biblio_text, biblio_index= extract_biblio(normal_blocks, title(normal_blocks, doc))
+            biblio_text, biblio_index= biblio.extract(normal_blocks, title(normal_blocks, doc))
             output.write(biblio_text + "\n")
 
             clear_file(outputFname)

@@ -2,7 +2,7 @@ import glob
 import os
 import pathlib
 import fitz
-import extract
+import aaaa
 import parserCopyBiblio
 
 output_directory_xml = "xml_output"
@@ -34,9 +34,9 @@ def buildXML(pdf, doc, blocks) :
 
 # calls TITLE, AUTHORS, ABSTRACT
 def buildArticle(pdf, doc, tabcount, blocks) :
-    title = extract.extract_title("", doc)
-    abstract, abstract_i = extract.extract_abstract(blocks)
-    authors, mails = extract.extract_authors(blocks, title, abstract_i)
+    title = aaaa.extract_title("", doc)
+    abstract, abstract_i = aaaa.extract_abstract(blocks)
+    authors, mails = aaaa.extract_authors(blocks, title, abstract_i)
     s = '\t' * tabcount + '<article>\n'
     s += buildTitle(pdf, doc, tabcount+1)
     s += buildAuthors(authors, tabcount+1)

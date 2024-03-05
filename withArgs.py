@@ -26,9 +26,13 @@ def main() :
     parser = argparse.ArgumentParser(prog=os.path.basename(__file__), usage='%(prog)s [options]')
     parser.add_argument('-x', '--xml', help='export the PDF file to XML', action='store_true')
     parser.add_argument('-t', '--text', help='export the PDF file to text', action='store_true')
-    parser.add_argument('--input', help='input files to convert', action='store', type=str, nargs='+', metavar=('FILE | FOLDER'))
+    parser.add_argument('-i', '--input', help='input, use with --dir or --file', action='store_true')
+    # TODO: use sub_parser I think
+    parser.add_argument('--dir', help='directory with PDF files to convert', action='store', type=str, nargs=1, metavar=('folder'))
+    parser.add_argument('--file', help='PDF file(s) to convert', action='append', type=str, nargs='+', metavar=('file'))
     args = vars(parser.parse_args())
-    print(args.get('input'))
+    print(args) # https://stackoverflow.com/questions/51495070/python-argparse-subparsers
+    
     '''
     nargs stands for Number Of Arguments
 

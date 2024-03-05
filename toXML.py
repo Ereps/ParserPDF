@@ -2,7 +2,10 @@ import glob
 import os
 import pathlib
 import fitz
-import extract
+import extract.abstract
+import extract.authors
+import extract.biblio
+import extract.title
 
 output_directory_xml = "xml_output"
 input_directory = "Corpus_test"
@@ -33,11 +36,11 @@ def buildXML(pdf, doc, blocks) :
 
 # calls TITLE, AUTHORS, ABSTRACT
 def buildArticle(pdf, doc, tabcount, blocks) :
-    title = extract.extract_title(blocks, doc)
-    abstract, abstract_i = extract.extract_abstract(blocks)
+    title = extract.title.extract_title(blocks, doc)
+    abstract, abstract_i = extract.abstract.abstract.extract_abstract(blocks)
     #print(title)
-    authors_list, mails = extract.extract_authors(blocks, title, abstract_i)
-    refs, refs_i = extract.extract_biblio(blocks, title)
+    authors_list, mails = extract.authors.extract_authors(blocks, title, abstract_i)
+    refs, refs_i = extract.biblio.extract_biblio(blocks, title)
     s = '\t' * tabcount + '<article>\n'
     s += buildTitle(title, tabcount+1)
     s += buildAuthors(authors_list, tabcount+1)

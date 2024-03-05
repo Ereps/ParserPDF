@@ -57,14 +57,20 @@ for pdf in pdf_list:
     text = ""
     with fitz.open(fname) as doc:  # open document
         blocks=  [] #list of all the text blocks
+        dict_blocks = []
         for page_num in range(len(doc)):
             page = doc.load_page(page_num)
-            blocks += page.get_text_blocks()
+            blocks += page.get_text("blocks")
+            """dict_blocks += page.get_text("dict")["blocks"]
             #TODO work with blocks, not the text
             for b in blocks:
                 #print(b)
                 text += b[4] + "\n"  # Concatenate text from each block with a newline character
-        
+            for i in dict_blocks:
+                for j in i["lines"]:
+                    for k in j["spans"]:
+                        print(k["text"])
+                print("\n\n")"""
         
         #nomalization_______________________________
         normal_blocks = block_treatement.blocks_normalization(blocks)
@@ -83,7 +89,7 @@ for pdf in pdf_list:
 
             
             # Extract and write title
-            title_text = title.extract(normal_blocks, doc)
+            title_text,title_index = title.extract(normal_blocks, doc)
             output.write("Title: " + title_text + "\n")
             
             
@@ -96,7 +102,7 @@ for pdf in pdf_list:
             output.write("Authors: " + authors_text[:-2] + "\n")
             output.write("Abstract: " + abstract_text + "\n")
 
-            biblio_text, biblio_index= biblio.extract(normal_blocks, title.extract(normal_blocks, doc))
+            biblio_text, biblio_index= biblio.extract(normal_blocks, title.extract(normal_blocks, doc)[0])
             output.write(biblio_text + "\n")
             clear_file(outputFname)
 

@@ -1,4 +1,5 @@
 import re
+from extract import introduction
 from extract.block_treatement import *
 
 #TODO return l'indice des blocks de text au lieu du text en lui meme, comme ca on peut les utilisers pour baliser le champ auteurs(entre celui du titre et celui ce l'abstract)
@@ -8,7 +9,7 @@ def extract(blocks):
     #TODO modif pl
     abstract_string = ""
     abstract_index = 0
-    abstract_pattern = re.compile(r'(Abstract|ABSTRACT)')
+    abstract_pattern = re.compile(r'([A][Bb][Ss][Tt][Rr][Aa][Cc][Tt])')
     for i in range(len(blocks)):
         block_text = replace_special_char(blocks[i][4])
         abstract_match = abstract_pattern.search(block_text)
@@ -16,7 +17,6 @@ def extract(blocks):
         if(abstract_match):
             #print("____________________________\n\n\n",block_text) TODO remove
             words = block_text.split()
-            #if the blocks have the abstract content
             if(len(words) > 5):
                 #si le block contient le texte du abstract
                 #remove the abstract in the text
@@ -36,6 +36,10 @@ def extract(blocks):
             break
         #si le mot clef abstract n'existe pas
         else:
-            print("test")
+            #appel extract title
+            introduction_index = introduction.extract(blocks)
+            if(introduction_index != 0):
+                abstract_index = introduction_index-1
+                abstract_string = replace_special_char(blocks[abstract_index][4])
             pass
     return abstract_string, abstract_index

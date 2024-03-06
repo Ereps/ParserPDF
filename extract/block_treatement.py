@@ -1,5 +1,7 @@
 import re
-#nomalize every blocks using replace_special_char
+
+
+#return the normalize version of the text blocks
 def blocks_normalization(blocks):
     normal_blocks = []
     #tuple to list
@@ -85,3 +87,5 @@ def replace_special_char(text):
     text = text.replace('`n', 'ǹ')
 
     return text
+
+

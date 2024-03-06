@@ -1,7 +1,34 @@
 import re
-from extract.block_treatement import *
+from nltk import ne_chunk, pos_tag, word_tokenize
+from nltk.tree import Tree
 
-def extract(blocks, title, abstract_index):
+from extract.block_treatement import *
+from nameparser import HumanName
+#TODO pip install nameparser
+#TODO python -m nltk.downloader popular
+
+
+def get_human_names(text):
+    nltk_results = ne_chunk(pos_tag(word_tokenize(text)))
+    for nltk_result in nltk_results:
+        if type(nltk_result) == Tree:
+            name = ''
+            for nltk_result_leaf in nltk_result.leaves():
+                name += nltk_result_leaf[0] + ' '
+            print ('Type: ', nltk_result.label(), 'Name: ', name)
+
+def extract(blocks,title,abstract_index):
+    index = 0
+    name_list = []
+    for x in range(len(blocks)):
+        if title in blocks[x][4]:
+            index = x+1
+            break
+    for i in range(index, abstract_index[0], 1):
+        name_list.append(get_human_names(blocks[i][4]))
+
+#TODO toress moreno faux positif avec matière condensée
+def extract2(blocks, title, abstract_index):
     email = []
     author = []
     emails = []
@@ -19,12 +46,13 @@ def extract(blocks, title, abstract_index):
         if title in blocks[x][4]:
             index = x+1
             break
-    for i in range(index, abstract_index, 1):
+    #abstract_index[0] == premier abstract block
+    for i in range(index, abstract_index[0], 1):
         block_text = replace_special_char(blocks[i][4]) #remplace tous les accents
         author_match = author_pattern.search(block_text) #cherche les auteurs
         email_match = email_pattern.search(block_text) #cherche les mails
         semi_mail_match = semi_mail_pattern.search(block_text) #cherche les fins de mails
-        print(block_text)
+        #print(block_text)
         if(author_match): #si on a trouvé des auteurs
             a.append(author_pattern.findall(block_text)) #ajoute dans la liste auteurs
         if(email_match): #si on a trouvé des mails

@@ -94,7 +94,7 @@ for pdf in pdf_list:
             
             
             # Extract and write abstract
-            abstract_text, abstract_index= abstract.extract(normal_blocks)
+            abstract_index,abstract_text= abstract.extract(normal_blocks)
             author_list, email_list = authors.extract(normal_blocks, title_text, abstract_index)
             authors_text = ""
             for author in author_list:

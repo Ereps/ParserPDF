@@ -44,6 +44,7 @@ def extract2(blocks, title, abstract_index):
     author = []
     emails = []
     authors = []
+    author_email=[]
     a = []
     e = []
     no_no_in = False
@@ -125,4 +126,46 @@ def extract2(blocks, title, abstract_index):
             authors.append(author[y]) #on l'ajoute à la liste définitive des auteurs
         no_no_in = False #on remet no_no_in a false
 
+    # for aut in authors:
+    #     auth = suppr_special_char(aut).lower()
+    #     cpte = 0
+    #     cpt = 0
+    #     ema = ''
+    #     for em in emails:
+    #         for e in em:
+    #             if e == '@' or e=='q' or e=='Q':
+    #                 break
+    #             elif e in auth:
+    #                 cpt += 1
+    #         if cpt > cpte:
+    #             ema = em
+    #     author_email.append([aut, ema])
+    
+    for em in emails:
+        ema = ''
+        for c in em:
+            if c == '@' or c == 'Q':
+                break
+            else:
+                ema += c
+        print(ema)
+        cpta = 0
+        cpt = 0
+        auth=''
+        for aut in authors:
+            for au in aut:
+                if suppr_special_char(au).lower() in ema:
+                    cpt += 1
+                    print(suppr_special_char(au).lower())
+            if cpt > cpta:
+                auth = aut
+                print(auth)
+                print(cpt)
+            cpt = 0
+        author_email.append([auth, em])
+
+    print(author_email)
+
+    #print(authors)
+    #print(emails)
     return authors, emails

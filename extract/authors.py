@@ -1,6 +1,10 @@
 import re
-from nltk import ne_chunk, pos_tag, word_tokenize
-from nltk.tree import Tree
+import nltk
+from nltk.tag.stanford import StanfordNERTagger
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('maxent_ne_chunker')
+nltk.download('words')
 
 from extract.block_treatement import *
 from nameparser import HumanName
@@ -8,24 +12,31 @@ from nameparser import HumanName
 #TODO python -m nltk.downloader popular
 
 
+PATH_TO_JAR='../NER/stanford-corenlp-french.jar'
+PATH_TO_MODEL = '../NER/classifiers/english.all.3class.distsim.crf.ser.gz'
 def get_human_names(text):
-    nltk_results = ne_chunk(pos_tag(word_tokenize(text)))
-    for nltk_result in nltk_results:
-        if type(nltk_result) == Tree:
-            name = ''
-            for nltk_result_leaf in nltk_result.leaves():
-                name += nltk_result_leaf[0] + ' '
-            print ('Type: ', nltk_result.label(), 'Name: ', name)
+    print(text)
+    for sent in nltk.sent_tokenize(text):
+        for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
+            if hasattr(chunk, 'label'):
+                print(chunk.label(), ' '.join(c[0] for c in chunk))
+    tagger = StanfordNERTagger(model_filename=PATH_TO_MODEL,path_to_jar=PATH_TO_JAR, encoding='utf-8')
+    words = nltk.word_tokenize(text) 
+    tagged = tagger.tag(words)
+    print(tagged)
+
 
 def extract(blocks,title,abstract_index):
     index = 0
     name_list = []
+    text = ""
     for x in range(len(blocks)):
         if title in blocks[x][4]:
             index = x+1
             break
     for i in range(index, abstract_index[0], 1):
-        name_list.append(get_human_names(blocks[i][4]))
+        text += blocks[i][4]
+    name_list.append(get_human_names(text))
 
 #TODO toress moreno faux positif avec matière condensée
 def extract2(blocks, title, abstract_index):

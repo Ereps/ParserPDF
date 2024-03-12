@@ -1,0 +1,12 @@
+PDF File: Gonzalez_2018_Wisebe.pdf
+<<<<<<< HEAD
+Title:    WiSeBE: Window-Based Sentence Boundary Evaluation
+Author:   Carlos-Emiliano González-Gallardo 
+Abstract: 
+=======
+Title:    WiSeBE: Window-Based Sentence Boundary Evaluation  
+PDF File: Gonzalez_2018_Wisebe.pdf
+Title:    WiSeBE: Window-Based Sentence Boundary Evaluation  
+PDF File: Gonzalez_2018_Wisebe.pdf
+Title:    WiSeBE: Window-Based Sentence Boundary Evaluation  
+>>>>>>> 5bee38b (manque plus que la partie autheurs - j'y travaille)

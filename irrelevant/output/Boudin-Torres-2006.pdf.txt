@@ -1,0 +1,10 @@
+PDF File: Boudin-Torres-2006.pdf
+<<<<<<< HEAD
+Title:    A Scalable MMR Approach to Sentence Scoring for Multi-Document Update Summarization
+Author:   Florian Boudin ; Marc El-Beze ; Juan-Manuel Torres-Moreno
+Abstract: 
+=======
+Title:     A Scalable MMR Approach to Sentence Scoring for Multi-Document Update Summarization
+PDF File: Boudin-Torres-2006.pdf
+Title:     A Scalable MMR Approach to Sentence Scoring for Multi-Document Update Summarization
+>>>>>>> 5bee38b (manque plus que la partie autheurs - j'y travaille)

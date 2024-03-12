@@ -1,0 +1,12 @@
+PDF File: mikheev J02-3002.pdf
+<<<<<<< HEAD
+Title:    /c/1997c/tops/dvips
+Author:   joe@diskserver.castanet.com Joe Pickert
+Abstract: 
+=======
+Title:     Periods, Capitalized Words, etc.
+PDF File: mikheev J02-3002.pdf
+Title:     Periods, Capitalized Words, etc.
+PDF File: mikheev J02-3002.pdf
+Title:     Periods, Capitalized Words, etc.
+>>>>>>> 5bee38b (manque plus que la partie autheurs - j'y travaille)

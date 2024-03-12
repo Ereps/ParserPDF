@@ -1,1 +1,2 @@
 # ParserPDF
+# Ce rendu de Sprint 2 contient Le corpus de test, le fichier python contenant notre programme, ainsi que deux artéfacts : un schéma de notre réunion de revue de sprint 1 et de plannification de sprint 2, et un exemple de daily scrum.

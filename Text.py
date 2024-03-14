@@ -31,3 +31,4 @@ def buildTEXT(pdf) :
         #Extract and write references 
         biblio_text, biblio_index= biblio.extract(normal_blocks, title_text)
         output.write('References:\n' + biblio_text + "\n"*2)
+    print('%s created.' % os.path.basename(output_filename))

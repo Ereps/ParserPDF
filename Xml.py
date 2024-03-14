@@ -21,6 +21,7 @@ def buildXML(pdf) :
             
     with open(output_filename, 'w', encoding='utf-8') as output :
         output.write(buildArticle(pdf_basename, doc, 0, normal_blocks))
+    print('%s created' % os.path.basename(output_filename))
         
         
 def buildArticle(pdf, doc, tabcount, blocks) :

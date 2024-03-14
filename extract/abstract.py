@@ -55,4 +55,4 @@ def extract(blocks):
                 #si on ne trouve pas l'introduction, on assume que c'est le block 4
                 abstract_index.append(4)
 
-    return abstract_index,abstract_string
+    return abstract_string, abstract_index

@@ -11,16 +11,17 @@ def helpUsage() :
 # TODO: to XML
 def toXml(files : list) :
     startTime = time.time()
-    print('exporting to xml...')
+    print('--- exporting to xml ---')
+    Xml.buildDir()
     for f in files :
         Xml.buildXML(f)
-    #toXML.buildXML()
     print('--- XML in %s seconds ---' % (time.time() - startTime))
     
 # TODO: to Text
 def toText(files : list) :
     startTime = time.time()
-    print('exporting to text...')
+    print('--- exporting to text ---')
+    Text.buildDir()
     for f in files :
         Text.buildTEXT(f)
     print('--- Text in %s seconds ---' % (time.time() - startTime))

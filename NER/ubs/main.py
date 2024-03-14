@@ -1,5 +1,6 @@
-import glob,json,spacy,en_core_web_sm,os,fitz,unicodedata,re
-from extract import block_treatement
+import glob,json,spacy,en_core_web_sm,os,fitz,unicodedata,re,sys
+
+import block_treatement
 # Function to read PDF files
 def read_files(path):
     os.chdir(path)
@@ -39,10 +40,9 @@ def generate_better_dataset(file):
             item = re.sub(pattern_initial,"",item)
     for item in new_data:
         if(pattern_and.match(item)):
-            print(item)
             item = re.sub(pattern_and,"",item)
-    print(len(new_data))
     final_data = []
+    print(len(new_data))
     titles = ["Mr.","Ms.","Dr.","PhD.","Mrs.","Prof."]
     for item in new_data:
         final_data.append(item)
@@ -56,6 +56,7 @@ def generate_better_dataset(file):
         for title in titles:
             titled_data = f"{title} {item}"
             final_data.append(titled_data)
+    print(len(final_data))
     return final_data
         
 
@@ -96,13 +97,16 @@ authors_list = []
 for pdf in pdf_list:
     fname = pdf
     with fitz.open(fname) as doc:
-        authors_list += get_authors(doc)
+        #authors_list += get_authors(doc)
         outputFname = output_name +fname + ".txt"
+        blocks = []
         with open(outputFname,"w") as file:
             file.write(''.join(authors_list))
-        blocks = block_treatement.get_blocks(doc)
+        for page_num in range(len(doc)):
+            page = doc.load_page(page_num)
+            blocks += page.get_text("blocks")
         normal_blocks = block_treatement.blocks_normalization(blocks)
-        with open(outputFname+"test.txt",'w', encoding='utf-8') as file:
+        with open(outputFname,'w', encoding='utf-8') as file:
             for b in normal_blocks:
                 file.write(b[4])
         

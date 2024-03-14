@@ -78,7 +78,7 @@ for pdf in pdf_list:
         with open(outputFname+"test.txt",'w', encoding='utf-8') as file:
             for b in normal_blocks:
                 #print(b)
-                file.write("________________________________"+b[4])
+                file.write(b[4])
         with open(outputFname,'w', encoding='utf-8') as file:
             #print(doc.metadata)
             pathlib.Path(outputFname).write_bytes(text.encode())

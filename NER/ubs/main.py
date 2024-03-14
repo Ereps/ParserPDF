@@ -1,4 +1,5 @@
-import glob,json,spacy,en_core_web_sm,os,fitz,unicodedata
+import glob,json,spacy,en_core_web_sm,os,fitz,unicodedata,re
+from extract import block_treatement
 # Function to read PDF files
 def read_files(path):
     os.chdir(path)
@@ -7,22 +8,66 @@ def read_files(path):
         pdf_list.append(file)
     return pdf_list
 
-def load_data():
-    data = []
-    txt_list = read_files(input_name)
-    print(len(txt_list))
-    for txt in txt_list:
-        with open(txt) as file:
-            data.append(file.read())
+def load_data(file):
+    with open(file,"r") as f:
+        data = json.load(f)
     return data
 
-def generate_better_characters(file):
+def generate_better_dataset(file):
     data = load_data(file)
+    print(len(data))
+    
+    pattern_initial = re.compile(r"([A-Z]\.[ ]*)")
+    pattern_and = re.compile(r"(^and[ ]*)")
+    new_data = []
+    for item in data:
+        new_data.append(item)
+    #X. name type of author
+    for item in data:
+        if(re.match(pattern_and,item)):
+            for i in item.split("and"):
+                if(i != ""):
+                    new_data.append(i.replace("and","").strip())
+    #split to get only the name
+    for item in data:
+        if(" " in item):
+            for i in item.split(" "):
+                if(not re.match(pattern_initial,i) and not re.match(pattern_and,i) and i != "" and len(i) > 2):
+                    new_data.append(i)
+    for item in data:
+        while(pattern_initial.match(item)):
+            item = re.sub(pattern_initial,"",item)
+    for item in new_data:
+        if(pattern_and.match(item)):
+            print(item)
+            item = re.sub(pattern_and,"",item)
+    print(len(new_data))
+    final_data = []
+    titles = ["Mr.","Ms.","Dr.","PhD.","Mrs.","Prof."]
+    for item in new_data:
+        final_data.append(item)
+        for title in titles:
+            titled_data = f"{title} {item}"
+            final_data.append(titled_data)
+    #ALL CAPS
+    for item in new_data:
+        item = item.upper()
+        final_data.append(item)
+        for title in titles:
+            titled_data = f"{title} {item}"
+            final_data.append(titled_data)
+    return final_data
+        
+
 
 def get_authors(doc):
     str = doc.metadata.get("author")
     for a in bad_words:
-        str.replace(a,"")
+        words = str.split()
+        # Filtrer les words qui ne contiennent pas la lettre spécifique
+        processed_words = [word for word in words if a not in word]
+        # Rejoindre les words filtrés pour former une nouvelle chaîne
+        str = ' '.join(processed_words)
     if("Windows" in str):
         str = ""
     authors_list = []
@@ -42,9 +87,12 @@ def authors_to_json(authors):
 
 input_name = "NER/trainning_data/"
 output_name = "text/"
-bad_words = ["and","PhD"]
+json_name = "name/name.json"
+bad_words = ["PhD","@"]
+
 pdf_list = read_files(input_name)
 authors_list = []
+
 for pdf in pdf_list:
     fname = pdf
     with fitz.open(fname) as doc:
@@ -52,11 +100,17 @@ for pdf in pdf_list:
         outputFname = output_name +fname + ".txt"
         with open(outputFname,"w") as file:
             file.write(''.join(authors_list))
+        blocks = block_treatement.get_blocks(doc)
+        normal_blocks = block_treatement.blocks_normalization(blocks)
+        with open(outputFname+"test.txt",'w', encoding='utf-8') as file:
+            for b in normal_blocks:
+                file.write(b[4])
+        
 #TODO PhD,Mr,Ms,
-with open("name/name.json","w") as file:
+
+generate_better_dataset(json_name)
+
+with open(json_name,"w") as file:
     file.write(json.dumps(authors_list))
 
 
-
-with open("name/name.json","r") as file:
-    authors_list = json.load(file)

@@ -2,12 +2,15 @@ import glob,json,spacy,en_core_web_sm,os,fitz,unicodedata,re,sys
 
 import block_treatement
 # Function to read PDF files
-def read_files(path):
+def read_files(path,extension):
+    current_path = os.getcwd()
     os.chdir(path)
-    pdf_list = []
-    for file in glob.glob("*.pdf"):
-        pdf_list.append(file)
-    return pdf_list
+    file_list = []
+    for file in glob.glob("*."+extension):
+        file_list.append(file)
+    os.chdir(current_path)
+    return file_list
+
 
 def load_data(file):
     with open(file,"r") as f:
@@ -24,7 +27,6 @@ def generate_better_dataset(file):
         new_data.append(item)
     #X. name type of author
     for item in data:
-        print(item)
         if(re.match(pattern_and,item)):
             for i in item.split("and"):
                 if(i != ""):
@@ -61,11 +63,9 @@ def generate_better_dataset(file):
         
 def generate_rules(patterns):
     nlp = en_core_web_sm.load()
-    ruler = spacy.pipeline.EntityRuler(nlp)
+    ruler = nlp.add_pipe("entity_ruler") #test
     ruler.add_patterns(patterns)
-    nlp.add_pipe("entity_ruler")
-    nlp.to_disk("NER_NAME_V1")
-
+    nlp.to_disk(ner_name)
 
 def create_training_data(file,type):
     data = generate_better_dataset(file)
@@ -102,19 +102,32 @@ def get_authors(doc):
 def authors_to_json(authors):
     y = json.dumps(authors)
 
+def test_model(text):
+    nlp = spacy.load(ner_name)
+    doc = nlp(text)
+    results = []
+    for ent in doc.ents:
+        results.append(ent.text)
+    print(results)
 
-input_name = "NER/trainning_data/"
-output_name = "text/"
-json_name = "name/name.json"
+
+
+pdf_dir = "NER/trainning_data/pdf"
+txt_dir = "NER/trainning_data/text/"
+json_name = "NER/tranning_data/name/name.json"
 bad_words = ["PhD","@"]
 
-pdf_list = read_files(input_name)
+pdf_list = read_files(pdf_dir,"pdf")
+txt_list = read_files(txt_dir,"txt")
 authors_list = []
+ner_name = "NER/ubs/NER_NAME_V1"
 
+#__AUTHORS LIST / PDF TO TEXT
+"""
 for pdf in pdf_list:
     fname = pdf
     with fitz.open(fname) as doc:
-        authors_list += get_authors(doc)
+        #authors_list += get_authors(doc)
         outputFname = output_name +fname + ".txt"
         blocks = []
         with open(outputFname,"w") as file:
@@ -126,9 +139,13 @@ for pdf in pdf_list:
         with open(outputFname,'w', encoding='utf-8') as file:
             for b in normal_blocks:
                 file.write(b[4])
-
-patterns = create_training_data("name/better_name.json","PERSON")
+"""
+#__GENERATE NER
+patterns = create_training_data("NER/trainning_data/name/better_name.json","PERSON")
 generate_rules(patterns)
+
+
+#__GENERATE autor_list json
 """
 with open("name/name.json","w") as file:
     file.write(json.dumps(authors_list))
@@ -136,4 +153,12 @@ with open("name/name.json","w") as file:
 with open(json_name,"w") as file:
     file.write(json.dumps(authors_list))
 """
+
+nlp = spacy.load(ner_name)
+
+for file_name in txt_list:
+    with open(txt_dir+file_name,"r") as file:
+        txt = file.read()
+        test_model(txt)
+
 

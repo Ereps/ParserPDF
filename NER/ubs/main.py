@@ -16,8 +16,7 @@ def load_data(file):
 
 def generate_better_dataset(file):
     data = load_data(file)
-    print(len(data))
-    
+
     pattern_initial = re.compile(r"([A-Z]\.[ ]*)")
     pattern_and = re.compile(r"(^and[ ]*)")
     new_data = []
@@ -25,6 +24,7 @@ def generate_better_dataset(file):
         new_data.append(item)
     #X. name type of author
     for item in data:
+        print(item)
         if(re.match(pattern_and,item)):
             for i in item.split("and"):
                 if(i != ""):
@@ -42,24 +42,41 @@ def generate_better_dataset(file):
         if(pattern_and.match(item)):
             item = re.sub(pattern_and,"",item)
     final_data = []
-    print(len(new_data))
     titles = ["Mr.","Ms.","Dr.","PhD.","Mrs.","Prof."]
     for item in new_data:
-        final_data.append(item)
-        for title in titles:
-            titled_data = f"{title} {item}"
-            final_data.append(titled_data)
+        if item != "":
+            final_data.append(item)
+            for title in titles:
+                titled_data = f"{title} {item}"
+                final_data.append(titled_data)
     #ALL CAPS
     for item in new_data:
         item = item.upper()
-        final_data.append(item)
-        for title in titles:
-            titled_data = f"{title} {item}"
-            final_data.append(titled_data)
-    print(len(final_data))
+        if(item != ""):
+            final_data.append(item)
+            for title in titles:
+                titled_data = f"{title} {item}"
+                final_data.append(titled_data)
     return final_data
         
+def generate_rules(patterns):
+    nlp = en_core_web_sm.load()
+    ruler = spacy.pipeline.EntityRuler(nlp)
+    ruler.add_patterns(patterns)
+    nlp.add_pipe("entity_ruler")
+    nlp.to_disk("NER_NAME_V1")
 
+
+def create_training_data(file,type):
+    data = generate_better_dataset(file)
+    patterns = []
+    for item in data:
+        pattern = {
+            "label": type,
+            "pattern": item
+        }
+        patterns.append(pattern)
+    return patterns
 
 def get_authors(doc):
     str = doc.metadata.get("author")
@@ -97,7 +114,7 @@ authors_list = []
 for pdf in pdf_list:
     fname = pdf
     with fitz.open(fname) as doc:
-        #authors_list += get_authors(doc)
+        authors_list += get_authors(doc)
         outputFname = output_name +fname + ".txt"
         blocks = []
         with open(outputFname,"w") as file:
@@ -109,12 +126,14 @@ for pdf in pdf_list:
         with open(outputFname,'w', encoding='utf-8') as file:
             for b in normal_blocks:
                 file.write(b[4])
-        
-#TODO PhD,Mr,Ms,
 
-generate_better_dataset(json_name)
+patterns = create_training_data("name/better_name.json","PERSON")
+generate_rules(patterns)
+"""
+with open("name/name.json","w") as file:
+    file.write(json.dumps(authors_list))
 
 with open(json_name,"w") as file:
     file.write(json.dumps(authors_list))
-
+"""
 

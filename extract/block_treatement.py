@@ -23,6 +23,7 @@ def replace_special_char(text):
     text = text.replace('`E', 'È')
     text = text.replace('¨E', 'Ë')
     text = text.replace('^E', 'Ê')
+    text = text.replace('´E', 'É')
     text = text.replace('¨I', 'Ï')
     text = text.replace('^I', 'Î')
     text = text.replace('`I', 'Ì')

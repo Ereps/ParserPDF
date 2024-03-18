@@ -107,12 +107,13 @@ def test_model(text):
     doc = nlp(text)
     results = []
     for ent in doc.ents:
-        results.append(ent.text)
+        if ent.label_ == "AUTHOR":
+            results.append(ent.text)
     print(results)
 
 
 
-pdf_dir = "NER/trainning_data/pdf"
+pdf_dir = "NER/trainning_data/pdf/"
 txt_dir = "NER/trainning_data/text/"
 json_name = "NER/tranning_data/name/name.json"
 bad_words = ["PhD","@"]
@@ -123,28 +124,28 @@ authors_list = []
 ner_name = "NER/ubs/NER_NAME_V1"
 
 #__AUTHORS LIST / PDF TO TEXT
-"""
 for pdf in pdf_list:
-    fname = pdf
+    fname = pdf_dir+pdf
     with fitz.open(fname) as doc:
         #authors_list += get_authors(doc)
-        outputFname = output_name +fname + ".txt"
+        outputFname = txt_dir +pdf + ".txt"
         blocks = []
+        """
         with open(outputFname,"w") as file:
             file.write(''.join(authors_list))
+        """
         for page_num in range(len(doc)):
             page = doc.load_page(page_num)
             blocks += page.get_text("blocks")
-        normal_blocks = block_treatement.blocks_normalization(blocks)
+        
         with open(outputFname,'w', encoding='utf-8') as file:
-            for b in normal_blocks:
-                file.write(b[4])
-"""
+            for b in blocks:
+                file.write(block_treatement.replace_special_char(b[4]))
 #__GENERATE NER
-patterns = create_training_data("NER/trainning_data/name/better_name.json","PERSON")
+"""
+patterns = create_training_data("NER/trainning_data/name/better_name.json","AUTHOR")
 generate_rules(patterns)
-
-
+"""
 #__GENERATE autor_list json
 """
 with open("name/name.json","w") as file:
@@ -154,7 +155,7 @@ with open(json_name,"w") as file:
     file.write(json.dumps(authors_list))
 """
 
-nlp = spacy.load(ner_name)
+#nlp = spacy.load(ner_name)
 
 for file_name in txt_list:
     with open(txt_dir+file_name,"r") as file:

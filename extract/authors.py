@@ -12,23 +12,9 @@ from nameparser import HumanName
 #TODO python -m nltk.downloader popular
 
 
-PATH_TO_JAR='../NER/stanford-corenlp-french.jar'
-PATH_TO_MODEL = '../NER/classifiers/english.all.3class.distsim.crf.ser.gz'
-def get_human_names(text):
-    print(text)
-    for sent in nltk.sent_tokenize(text):
-        for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
-            if hasattr(chunk, 'label'):
-                print(chunk.label(), ' '.join(c[0] for c in chunk))
-    tagger = StanfordNERTagger(model_filename=PATH_TO_MODEL,path_to_jar=PATH_TO_JAR, encoding='utf-8')
-    words = nltk.word_tokenize(text) 
-    tagged = tagger.tag(words)
-    print(tagged)
 
-
-def extract(blocks,title,abstract_index):
+def extract2(blocks,title,abstract_index):
     index = 0
-    name_list = []
     text = ""
     for x in range(len(blocks)):
         if title in blocks[x][4]:
@@ -36,10 +22,11 @@ def extract(blocks,title,abstract_index):
             break
     for i in range(index, abstract_index[0], 1):
         text += blocks[i][4]
-    name_list.append(get_human_names(text))
+    return text
+
 
 #TODO toress moreno faux positif avec matière condensée
-def extract2(blocks, title, abstract_index):
+def extract(blocks, title, abstract_index):
     email = []
     author = []
     emails = []

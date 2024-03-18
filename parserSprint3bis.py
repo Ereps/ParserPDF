@@ -5,7 +5,7 @@ import os
 import linecache as lc
 import time
 import re
-from extract import abstract,title,authors,block_treatement,biblio
+from extract import abstract,title,authors,block_treatement,biblio, authors_emails
 output_name = "sortie/"
 input_name = "Corpus_test/"
 
@@ -94,11 +94,12 @@ for pdf in pdf_list:
             
             
             # Extract and write abstract
-            abstract_index,abstract_text= abstract.extract(normal_blocks)
-            author_list, email_list = authors.extract(normal_blocks, title_text, abstract_index)
+            abstract_text,abstract_index= abstract.extract(normal_blocks)
+            print(abstract_index)
+            author_email_list = authors_emails.extract(normal_blocks, title_text, abstract_index)
             authors_text = ""
-            for author in author_list:
-                authors_text += author + ", "
+            for author in author_email_list:
+                authors_text += author[0] + ", "
             output.write("Authors: " + authors_text[:-2] + "\n")
             output.write("Abstract: " + abstract_text + "\n")
 

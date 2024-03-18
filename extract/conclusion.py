@@ -7,9 +7,10 @@ le titre est toujours composé de "conclusion" ou "c onclusion"
 il y a un cas où en remontant le texte à l'envers, le premier "conclusion" trouvé n'est pas celui du titre de la partie conclusion : jing-cutepaste. dans ce cas le "conclusion" est dans la partie Acknowledgments
 note : faut ignorer appendix, future work, acknowledgment pour la sortie
 
+edit : délimiter la section conclusion
 """
 
-def extract_conclu(blocks):
+def extract(blocks):
     """Extracts conclusion from a list of text blocks."""
     conclu_string = ""
     conclu_index = 0
@@ -23,8 +24,5 @@ def extract_conclu(blocks):
             conclu_index = i
             # Extract text from conclu_match.start() to the end of the whole text
             conclu_string = replace_special_char(" ".join([block[4] for block in blocks[i:]]))
-            break
-        else:
-            conclu_string = ("null")
             break
     return conclu_string, conclu_index

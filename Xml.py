@@ -1,5 +1,5 @@
 import os, fitz
-from extract import block_treatement, title, abstract, biblio, authors_emails
+from extract import block_treatement, title, abstract, biblio, authors_emails, conclusion
 
 output_directory_xml = "xml_output"
 
@@ -29,12 +29,14 @@ def buildArticle(pdf, doc, tabcount, blocks) :
     abstract_text, abstract_i = abstract.extract(blocks)
     #print(title)
     authors_emails_list = authors_emails.extract(blocks, title_text, abstract_i)
+    conclu_text, conclu_i = conclusion.extract(blocks)
     #refs, refs_i = biblio.extract(blocks, title)
     s = '\t' * tabcount + '<article>\n'
     s += buildTitle(pdf, title_text, tabcount+1)
     s += buildAuthors(authors_emails_list, tabcount+1)
     s += buildAbstract(abstract_text, tabcount+1)
-    #s += buildRefs(refs, tabcount+1)
+    s += buildConclu(conclu_text, tabcount+1)
+    # += buildRefs(refs, tabcount+1)
     s += '\t' * tabcount + '</article>\n'
     return s 
 
@@ -61,6 +63,10 @@ def buildAuthor(name, mail, tabcount) :
 def buildAbstract(abstract_string, tabcount) :
     # TODO: extract abstract
     s = '\t' *tabcount + '<abstract>' + abstract_string + '</abstract>\n'
+    return s
+
+def buildConclu(conclu_string, tabcount) :
+    s = '\t' *tabcount + '<conclusion>' + conclu_string + '<conclusion>\n'
     return s
 
 def buildRefs(refs, tabcount) :

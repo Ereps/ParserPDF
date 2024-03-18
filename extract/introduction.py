@@ -2,7 +2,7 @@ import re
 from extract.block_treatement import *
 
 #TODO mettre le txt en retour aussi ?
-def extract(blocks):
+def extract(blocks: list) -> int :
     intro_index = -1
     for i in range(len(blocks)):
         block_text = replace_special_char(blocks[i][4])
@@ -22,6 +22,22 @@ def extract(blocks):
                 intro_index = i
                 break
     return intro_index
+
+def searchEnd(blocks: list) -> int :
+    for i in range(len(blocks)) :
+        text = replace_special_char(blocks[i][4])
+        pattern = re.compile(r'(2|I{2})(\ \.)?([A-Z][a-z])*')
+        if pattern.match(text) :
+            #print(i)
+            return i
+        
+def toString(blocks: list) -> str :
+    intro_index = extract(blocks)
+    end_index = searchEnd(blocks)
+    string = ""
+    for i in range(intro_index+1, end_index) :
+        string += blocks[i][4]
+    return string
 
 """
 notes:

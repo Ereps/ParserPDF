@@ -88,21 +88,6 @@ def extract(blocks, title, abstract_index):
         if no_no_in == False: #si no_no_in est false
             authors.append(author[y]) #on l'ajoute à la liste définitive des auteurs
         no_no_in = False #on remet no_no_in a false
-
-    # for aut in authors:
-    #     auth = suppr_special_char(aut).lower()
-    #     cpte = 0
-    #     cpt = 0
-    #     ema = ''
-    #     for em in emails:
-    #         for e in em:
-    #             if e == '@' or e=='q' or e=='Q':
-    #                 break
-    #             elif e in auth:
-    #                 cpt += 1
-    #         if cpt > cpte:
-    #             ema = em
-    #     author_email.append([aut, ema])
     
     for em in emails:
         ema = ''
@@ -111,7 +96,6 @@ def extract(blocks, title, abstract_index):
                 break
             else:
                 ema += c
-        print(ema)
         cpta = 0
         cpt = 0
         auth=''
@@ -131,13 +115,7 @@ def extract(blocks, title, abstract_index):
                         sema = ''.join(lema)
             if cpt > cpta:
                 auth = aut
-                #print(auth)
-                #print(cpt)
             cpt = 0
         author_email.append([auth, em])
 
-    print(author_email)
-
-    #print(authors)
-    #print(emails)
     return author_email

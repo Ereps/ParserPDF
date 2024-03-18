@@ -18,7 +18,7 @@ def getEnd(blocks : list) -> int :
             return i
     return -1
 
-def toString(blocks: list) :
+def toString(blocks: list) -> str :
     start_i = getStart(blocks)
     end_i = getEnd(blocks)
     #print(start_i, end_i)

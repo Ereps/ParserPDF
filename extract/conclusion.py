@@ -8,6 +8,7 @@ il y a un cas où en remontant le texte à l'envers, le premier "conclusion" tro
 note : faut ignorer appendix, future work, acknowledgment pour la sortie
 
 edit : délimiter la section conclusion
+section possible à la suite : Acknowledgements | References | Acknowledgment | R EFERENCES | Follow-Up Work | ACKNOWLEDGMENT | Appendix
 """
 
 def extract(blocks):

@@ -49,7 +49,7 @@ def extract(blocks):
                         abstract_index.append(i)
 
                 #remettre les indices dans l'ordre
-                abstract_index.sort()
+                #abstract_index.sort()
 
             else:
                 #si on ne trouve pas l'introduction, on assume que c'est le block 4

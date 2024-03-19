@@ -66,7 +66,9 @@ def buildAbstract(abstract_string, tabcount) :
     return s
 
 def buildConclu(conclu_string, tabcount) :
-    s = '\t' *tabcount + '<conclusion>' + conclu_string + '<conclusion>\n'
+    s = ""
+    if len(conclu_string) != 0 :
+        s = '\t' *tabcount + '<conclusion>' + conclu_string + '<conclusion>\n'
     return s
 
 def buildRefs(refs, tabcount) :

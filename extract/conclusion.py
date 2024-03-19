@@ -10,6 +10,7 @@ note : faut ignorer appendix, future work, acknowledgment pour la sortie
 edit : délimiter la section conclusion
 section possible à la suite : Acknowledgements | References | Acknowledgment | R EFERENCES | Follow-Up Work | ACKNOWLEDGMENT | Appendix
 """
+#TODO virer le potentiel chiffre à la fin de conclu (exemple avec Iria_Juan-Manuel)
 
 def extract(blocks):
     """Extracts conclusion from a list of text blocks."""

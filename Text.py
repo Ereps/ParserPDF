@@ -1,5 +1,5 @@
 import os, fitz
-from extract import block_treatement, title, abstract, introduction, corpus, biblio, authors_emails
+from extract import block_treatement, title, abstract, introduction, corpus, biblio, authors_emails, conclusion
 
 output_directory_txt = "txt_output"
 
@@ -38,7 +38,11 @@ def buildTEXT(pdf) :
         #Extract CORPS
         output.write("Corps:\n" + corpus.toString(normal_blocks) + "\n"*2)
         # TODO: Extract
+        #Extract and write conclusion
+        conclu_text, conclu_index= conclusion.extract(normal_blocks)
+        if len(conclu_text) :
+            output.write("Conclusion:\n" + conclu_text + "\n"*2)
         #Extract and write references 
-        biblio_text, biblio_index= biblio.extract(normal_blocks, title_text)
+        biblio_text, biblio_index= biblio.extract(normal_blocks, doc)
         output.write('References:\n' + biblio_text + "\n"*2)
     print('%s created.' % os.path.basename(output_filename))

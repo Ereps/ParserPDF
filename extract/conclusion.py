@@ -15,8 +15,8 @@ def extract(blocks):
     """Extracts conclusion from a list of text blocks."""
     conclu_string = ""
     conclu_index = 0
-    concludebut_pattern = re.compile(r'(Conclusions|Conclusion|C ONCLUSION|C ONCLUSIONS)')
-    conclufin_pattern = re.compile(r'(Acknowledgements|References|Acknowledgment|R EFERENCES|Follow-Up Work|ACKNOWLEDGMENT|Appendix)')
+    concludebut_pattern = re.compile(r'(Conclusions|Conclusion|ONCLUSION|ONCLUSIONS)')
+    conclufin_pattern = re.compile(r'(Acknowledgements|References|Acknowledgment|EFERENCES|Follow-Up Work|ACKNOWLEDGMENT|Appendix)')
 
     for i in range(len(blocks)-1, -1, -1):
         block_text = replace_special_char(blocks[i][4])

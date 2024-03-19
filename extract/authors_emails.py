@@ -2,7 +2,7 @@ import re
 
 from extract.block_treatement import *
 
-def extract(blocks, title, abstract_index):
+def extract(blocks, title, abstract_index) -> list:
     email = []
     author = []
     emails = []

@@ -2,7 +2,7 @@ import re
 
 
 #return the normalize version of the text blocks
-def blocks_normalization(blocks):
+def blocks_normalization(blocks) -> list[list]:
     normal_blocks = []
     #tuple to list
     normal_blocks = [list(item) for item in blocks]
@@ -11,7 +11,7 @@ def blocks_normalization(blocks):
         normal_blocks[i][4] = replace_special_char(normal_blocks[i][4])
     return normal_blocks
 
-def replace_special_char(text):
+def replace_special_char(text) -> str:
     text = text.strip()
     continus_word = re.compile(r'-( )*\n')
     text = re.sub(continus_word,"",text)
@@ -89,7 +89,7 @@ def replace_special_char(text):
     return text
 
 
-def suppr_special_char(text):
+def suppr_special_char(text) -> str:
     text = text.strip()
     continus_word = re.compile(r'-( )*\n')
     text = re.sub(continus_word,"",text)

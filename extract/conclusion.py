@@ -8,21 +8,33 @@ il y a un cas où en remontant le texte à l'envers, le premier "conclusion" tro
 note : faut ignorer appendix, future work, acknowledgment pour la sortie
 
 edit : délimiter la section conclusion
+section possible à la suite : Acknowledgements | References | Acknowledgment | R EFERENCES | Follow-Up Work | ACKNOWLEDGMENT | Appendix
 """
+#TODO virer le potentiel chiffre à la fin de conclu (exemple avec Iria_Juan-Manuel)
 
 def extract(blocks):
     """Extracts conclusion from a list of text blocks."""
     conclu_string = ""
     conclu_index = 0
-    conclu_pattern = re.compile(r'(Conclusions|Conclusion|C ONCLUSION|C ONCLUSIONS)')
+    concludebut_pattern = re.compile(r'(Conclusions|Conclusion|ONCLUSION|ONCLUSIONS)')
+    conclufin_pattern = re.compile(r'(Acknowledgements|References|Acknowledgment|EFERENCES|Follow-Up Work|ACKNOWLEDGMENT|Appendix)')
 
     for i in range(len(blocks)-1, -1, -1):
         block_text = replace_special_char(blocks[i][4])
-        conclu_match = conclu_pattern.search(block_text)
+        conclu_match = concludebut_pattern.search(block_text)
         
         if conclu_match:
             conclu_index = i
-            # Extract text from conclu_match.start() to the end of the whole text
+            # Finding the index of the end pattern
+            for j in range(i, len(blocks)):
+                end_match = conclufin_pattern.search(replace_special_char(blocks[j][4]))
+                if end_match:
+                    # Extract text from conclu_match.start() to end_match.start()
+                    conclu_string = replace_special_char(" ".join([block[4] for block in blocks[i:j]]))
+                    return conclu_string, conclu_index
+
+            # If end pattern is not found till the end, return all text from current match
             conclu_string = replace_special_char(" ".join([block[4] for block in blocks[i:]]))
-            break
+            return conclu_string, conclu_index
+
     return conclu_string, conclu_index

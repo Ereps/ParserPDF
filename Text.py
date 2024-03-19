@@ -27,12 +27,25 @@ def buildTEXT(pdf) :
         # TODO: Extract and write authors
         # Extract and write abstract
         output.write("Abstract:\n" + abstract.getAbstract(normal_blocks) + "\n"*2)
+        # Extract and write authors
+        abstract_text, abstract_index = abstract.extract(normal_blocks)
+        author_email_list = authors_emails.extract(normal_blocks, title_text, abstract_index)
+        authors_text = ""
+        for author in author_email_list:
+            authors_text += author[0] + ", "
+        output.write("Authors:\n" + authors_text[:-2] + "\n"*2)
+        # Write abstract
+        output.write("Abstract:\n" + abstract_text + "\n"*2)
         # Extract INTRO
         output.write("Introduction:\n" + introduction.toString(normal_blocks) + "\n"*2)
         #Extract CORPS
         output.write("Corps:\n" + corpus.toString(normal_blocks) + "\n"*2)
         # TODO: Extract
+        #Extract and write conclusion
+        conclu_text, conclu_index= conclusion.extract(normal_blocks)
+        if len(conclu_text) :
+            output.write("Conclusion:\n" + conclu_text + "\n"*2)
         #Extract and write references 
-        biblio_text, biblio_index= biblio.extract(normal_blocks, title_text)
+        biblio_text, biblio_index= biblio.extract(normal_blocks, doc)
         output.write('References:\n' + biblio_text + "\n"*2)
     print('%s created.' % os.path.basename(output_filename))

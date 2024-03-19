@@ -10,7 +10,7 @@ def getStart(blocks: list) -> int :
     return -1
 
 def getEnd(blocks : list) -> int :
-    for i in range(len(blocks)) :
+    for i in range(getStart(blocks), len(blocks)) :
         block_text = replace_special_char(blocks[i][4])
         pattern = re.compile(r'.*(([C][Oo][Nn][Cc][Ll][Uu][Ss][Ii][Oo][Nn][Ss]?)|([D][Ii][Ss][Cc][Uu][Ss][Ss][Ii][Oo][Nn]))')
         #print(block_text)
@@ -25,4 +25,4 @@ def toString(blocks: list) -> str :
     string = ""
     for i in range(start_i+1, end_i) :
         string += blocks[i][4]
-    return string
+    return string if len(string) else None

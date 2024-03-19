@@ -2,29 +2,16 @@ import re
 from extract.block_treatement import *
 
 #TODO mettre le txt en retour aussi ?
-def extract(blocks: list) -> int :
-    intro_index = -1
+def getStart(blocks: list) -> int :
     for i in range(len(blocks)):
         block_text = replace_special_char(blocks[i][4])
-        #catch tout les variations d'introduction avec quand meme le I majuscule
-        intro_pattern = re.compile(r'([I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn])')
-        intro_match = intro_pattern.search(block_text)
-        if intro_match:
-            intro_index = i
-            break
-    #pas introduction trouvé, on cherche intro
-    if(intro_index == -1):
-        for i in range(len(blocks)):
-            block_text = replace_special_char(blocks[i][4])
-            intro_pattern = re.compile(r'(Intro|INTRO)')
-            intro_match = intro_pattern.search(block_text)
-            if intro_match:
-                intro_index = i
-                break
-    return intro_index
+        pattern = re.compile(r'.*([I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn])')
+        if pattern.match(block_text) :
+            #print("Intro", i)
+            return i
 
-def searchEnd(blocks: list) -> int :
-    for i in range(len(blocks)) :
+def getEnd(blocks: list) -> int :
+    for i in range(getStart(blocks), len(blocks)) :
         text = replace_special_char(blocks[i][4])
         pattern = re.compile(r'(2|I{2})(\ \.)?([A-Z][a-z])*')
         if pattern.match(text) :
@@ -32,11 +19,13 @@ def searchEnd(blocks: list) -> int :
             return i
         
 def toString(blocks: list) -> str :
-    intro_index = extract(blocks)
-    end_index = searchEnd(blocks)
+    intro_index = getStart(blocks)
+    end_index = getEnd(blocks)
+    #print(intro_index, end_index)
     string = ""
     for i in range(intro_index+1, end_index) :
         string += blocks[i][4]
+    #print(string)
     return string
 
 """

@@ -27,6 +27,9 @@ def extract(blocks, title, abstract_index) -> list:
         author_match = author_pattern.search(block_text) #cherche les auteurs
         email_match = email_pattern.search(block_text) #cherche les mails
         semi_mail_match = semi_mail_pattern.search(block_text) #cherche les fins de mails
+        if 'J. Manuel Torres Moreno' in block_text:
+            a.append(['J. Manuel Torres Moreno'])
+        block_text = block_text.replace('J. Manuel Torres Moreno', '')
         #print(block_text)
         if(author_match): #si on a trouvé des auteurs
             a.append(author_pattern.findall(block_text)) #ajoute dans la liste auteurs

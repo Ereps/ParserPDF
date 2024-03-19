@@ -110,6 +110,7 @@ def test_model(text):
         if ent.label_ == "AUTHOR":
             results.append(ent.text)
     print(results)
+    return results
 
 
 
@@ -137,10 +138,11 @@ for pdf in pdf_list:
         for page_num in range(len(doc)):
             page = doc.load_page(page_num)
             blocks += page.get_text("blocks")
-        
+        """
         with open(outputFname,'w', encoding='utf-8') as file:
             for b in blocks:
                 file.write(block_treatement.replace_special_char(b[4]))
+        """
 #__GENERATE NER
 """
 patterns = create_training_data("NER/trainning_data/name/better_name.json","AUTHOR")
@@ -157,9 +159,13 @@ with open(json_name,"w") as file:
 
 #nlp = spacy.load(ner_name)
 
+result = []
 for file_name in txt_list:
     with open(txt_dir+file_name,"r") as file:
+        print()
         txt = file.read()
-        test_model(txt)
+        result += test_model(txt)
+with open("/NER/ubs/result.json","w") as file:
+    file.json.dumps(result)
 
 

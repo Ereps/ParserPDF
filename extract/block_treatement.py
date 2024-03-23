@@ -2,7 +2,7 @@ import re
 
 
 #return the normalize version of the text blocks
-def blocks_normalization(blocks : list[list]) -> list[list] :
+def blocks_normalization(blocks : list) -> list :
     normal_blocks = []
     #tuple to list
     normal_blocks = [list(item) for item in blocks]

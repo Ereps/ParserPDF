@@ -22,7 +22,7 @@ def extract(blocks, title, abstract_index) -> list:
             index = x+1
             break
     #abstract_index[0] == premier abstract block
-    for i in range(index, abstract_index[0], 1):
+    for i in range(index, abstract_index, 1):
         block_text = replace_special_char(blocks[i][4]) #remplace tous les accents
         author_match = author_pattern.search(block_text) #cherche les auteurs
         email_match = email_pattern.search(block_text) #cherche les mails

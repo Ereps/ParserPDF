@@ -49,14 +49,15 @@ def buildAuthors(authors, tabcount) :
     s = '\t' * tabcount + '<auteurs>\n'
     # TODO: extract authors
     for author in authors :
-        s += buildAuthor(author[0], author[1], tabcount+1)
+        s += buildAuthor(author[0], author[1], author[2], tabcount+1)
     s += '\t' * tabcount + '</auteurs>\n'
     return s
 
-def buildAuthor(name, mail, tabcount) :
+def buildAuthor(name, mail, affiliation, tabcount) :
     s = '\t' *tabcount + '<auteur>\n'
     s += '\t' *(tabcount+1) + '<name>' + name + '</name>\n'
     s += '\t' *(tabcount+1) + '<mail>' + mail + '</mail>\n'
+    s += '\t' *(tabcount+1) + '<affiliation>' + affiliation + '</affiliation>\n'
     s += '\t' *tabcount + '</auteur>\n'
     return s
 

@@ -8,6 +8,7 @@ def extract(blocks, title, abstract_index) -> list:
     emails = []
     authors = []
     author_email=[]
+    affiliation = {}
     a = []
     e = []
     no_no_in = False
@@ -33,6 +34,28 @@ def extract(blocks, title, abstract_index) -> list:
         #print(block_text)
         if(author_match): #si on a trouvé des auteurs
             a.append(author_pattern.findall(block_text)) #ajoute dans la liste auteurs
+
+        for w in a:
+            for x in w:
+                author.append(x)
+        a = []
+
+        for y in range(len(author)): #boucle sur la liste auteur
+            for z in no_no_words: #boucle sur la liste des mots non voulu
+                if z in author[y]: #si un mot non voulu est trouvé dans la string
+                    no_no_in = True #on passe no_no_in a true
+            if no_no_in == False: #si no_no_in est false
+                authors.append(author[y]) #on l'ajoute à la liste définitive des auteurs
+            no_no_in = False #on remet no_no_in a false
+        author = []
+        print(authors)
+        
+        print(block_text)
+        for t in authors:
+            print(t)
+            block_text = block_text.replace(t, '') #supprime les auteurs du texte
+            print(block_text)
+
         if(email_match): #si on a trouvé des mails
             email.append(email_pattern.findall(block_text)) #ajoute dans la liste de mails
             emails = [element for sous_liste in email for element in sous_liste]
@@ -79,19 +102,13 @@ def extract(blocks, title, abstract_index) -> list:
                 mail_sep = mails.split(',') #on sépare le texte grâce aux virgules
                 for mail in mail_sep:#boucle sur chaques débuts de mails
                     emails.append(mail+end_email[0])#on ajoute le début de mail et la fin à la liste email
+        for z in emails:
+            block_text = block_text.replace(z, '') #supprime les mails du texte
+        for r in authors:
+            if r not in affiliation:
+                affiliation[r] = block_text
+        
 
-    for w in a:
-        for x in w:
-            author.append(x)
-
-    for y in range(len(author)): #boucle sur la liste auteur
-        for z in no_no_words: #boucle sur la liste des mots non voulu
-            if z in author[y]: #si un mot non voulu est trouvé dans la string
-                no_no_in = True #on passe no_no_in a true
-        if no_no_in == False: #si no_no_in est false
-            authors.append(author[y]) #on l'ajoute à la liste définitive des auteurs
-        no_no_in = False #on remet no_no_in a false
-    
     for em in emails:
         ema = ''
         for c in em:
@@ -119,10 +136,12 @@ def extract(blocks, title, abstract_index) -> list:
             if cpt > cpta:
                 auth = aut
             cpt = 0
-        author_email.append([auth, em])
+        affil = affiliation[auth]
+        author_email.append([auth, em, affil])
 
     if not(emails):
         for d in authors:
-            author_email.append([d, ' '])
+            affil = affiliation[d]
+            author_email.append([d, ' ', affil])
 
     return author_email

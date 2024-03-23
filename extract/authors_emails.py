@@ -24,6 +24,10 @@ def extract(blocks, title, abstract_index) -> list:
             break
     #abstract_index[0] == premier abstract block
     for i in range(index, abstract_index, 1):
+        if 'Abstract' in blocks[i][4] or 'abstract' in blocks[i][4] or 'ABSTRACT' in blocks[i][4]:
+            i += 1
+            if abstract_index <= i:
+                break
         block_text = replace_special_char(blocks[i][4]) #remplace tous les accents
         author_match = author_pattern.search(block_text) #cherche les auteurs
         email_match = email_pattern.search(block_text) #cherche les mails
@@ -48,13 +52,13 @@ def extract(blocks, title, abstract_index) -> list:
                 authors.append(author[y]) #on l'ajoute à la liste définitive des auteurs
             no_no_in = False #on remet no_no_in a false
         author = []
-        print(authors)
+        #print(authors)
         
-        print(block_text)
+        #print(block_text)
         for t in authors:
-            print(t)
+            #print(t)
             block_text = block_text.replace(t, '') #supprime les auteurs du texte
-            print(block_text)
+            #print(block_text)
 
         if(email_match): #si on a trouvé des mails
             email.append(email_pattern.findall(block_text)) #ajoute dans la liste de mails
@@ -104,9 +108,16 @@ def extract(blocks, title, abstract_index) -> list:
                     emails.append(mail+end_email[0])#on ajoute le début de mail et la fin à la liste email
         for z in emails:
             block_text = block_text.replace(z, '') #supprime les mails du texte
-        for r in authors:
-            if r not in affiliation:
-                affiliation[r] = block_text
+        notWanted = re.compile(r' *[&♮♭*∗]+ *| *[0-9,sthrnd]{3}(?:[()A-Za-z]{3})?(?: +|$)')
+        nw = notWanted.findall(block_text)
+        for n in nw:
+            block_text = block_text.replace(n, '')
+        notAffiliation = re.compile(r' *[and,*∗ .]+ *')
+        isAffiliation = notAffiliation.fullmatch(block_text)
+        if isAffiliation == None:
+            for r in authors:
+                if r not in affiliation:
+                    affiliation[r] = block_text
         
 
     for em in emails:
@@ -138,7 +149,8 @@ def extract(blocks, title, abstract_index) -> list:
             cpt = 0
         affil = affiliation[auth]
         author_email.append([auth, em, affil])
-
+    
+    
     if not(emails):
         for d in authors:
             affil = affiliation[d]

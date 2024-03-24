@@ -1,2 +1,3 @@
 # ParserPDF
-# Ce rendu de Sprint 2 contient Le corpus de test, le fichier python contenant notre programme, ainsi que deux artéfacts : un schéma de notre réunion de revue de sprint 1 et de plannification de sprint 2, et un exemple de daily scrum.
+# Ce rendu de Sprint 4 fonctionne de la manière suivante : il faut utiliser le fichier withArgs.py afin d'utiliser le parser. On peut pour commencer faire "python3 withArgs.py -h", qui va afficher les différentes options d'utilisation. Si on souhaite obtenir les .txt et .xml, on peut faire "python3 withArgs.py -d Corpus_test -x -t" ce qui va analyser tout le contenu du répertoire Corpus_test. Une interface permet ensuite de choisir quels fichiers seront analysés, "*" permet de sélectionner tous les fichiers du répertoire.
+# Ce rendu comporte également les artéfacts, dans le répertoire Artefacts/Sprint4

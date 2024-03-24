@@ -14,7 +14,7 @@ def toXml(files : list) :
     Xml.buildDir()
     for f in files :
         Xml.buildXML(f)
-    print('--- XML in %s seconds ---' % (time.time() - startTime))
+    print('--- XML in %.3f seconds ---' % (time.time() - startTime))
     
 def toText(files : list) :
     startTime = time.time()
@@ -22,7 +22,7 @@ def toText(files : list) :
     Text.buildDir()
     for f in files :
         Text.buildTEXT(f)
-    print('--- Text in %s seconds ---' % (time.time() - startTime))
+    print('--- Text in %.3f seconds ---' % (time.time() - startTime))
 
 # main function with args
 def main() :

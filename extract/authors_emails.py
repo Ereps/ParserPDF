@@ -12,6 +12,9 @@ def extract(blocks, title, abstract_index) -> list:
     a = []
     e = []
     no_no_in = False
+    affil_in = False
+    affil = ''
+    cpt = 1
     author_pattern = re.compile(r'[A-Z][a-zàáâäçèéêëìíîïñòóôöùúûüýÿ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ]*)?(?: +[A-Zdlaeiouàáâäçèéêëìíîïñòóôöùúûüýÿ.]{0,3})?(?:[.]*)? [A-Z][A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ-]*)?')
     email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
     semi_mail_pattern = re.compile(r'[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}')
@@ -54,7 +57,7 @@ def extract(blocks, title, abstract_index) -> list:
         author = []
         #print(authors)
         
-        #print(block_text)
+        print(block_text)
         for t in authors:
             #print(t)
             block_text = block_text.replace(t, '') #supprime les auteurs du texte
@@ -77,47 +80,81 @@ def extract(blocks, title, abstract_index) -> list:
                         if m != email[0][0]: #si l'élément est différent du mail
                             emails.append(m+end_email[0]) #on l'ajoute à la liste des mails
         elif(semi_mail_match): # sinon si on a trouvé une fin de mail
-            block_text = block_text.replace(' ', '') #on enlève tous les espaces
-            semi_mail_match = semi_mail_pattern.search(block_text)
+            block_text_no_space = block_text.replace(' ', '') #on enlève tous les espaces
+            semi_mail_match = semi_mail_pattern.search(block_text_no_space)
             semi_mail_index = semi_mail_match.start() #on cherche où la fin du mail commence
-            end_email = semi_mail_pattern.findall(block_text) #on récupère la fin du mail
+            end_email = semi_mail_pattern.findall(block_text_no_space) #on récupère la fin du mail
             mails = ""
-            if block_text[(semi_mail_index-1)] == ')':#si l'ensemble des débuts de mails est contenu entre parenthèse
+            mails_space = ''
+            if block_text_no_space[(semi_mail_index-1)] == ')':#si l'ensemble des débuts de mails est contenu entre parenthèse
                 y = semi_mail_index-2
-                while block_text[y] != '(':#on boucle jusqu'à ce qu'on trouve la parenthèse fermante
-                    mails = block_text[y] + mails #on récupère le texte dans entre parenthèse
+                y_space = y
+                while block_text_no_space[y] != '(':#on boucle jusqu'à ce qu'on trouve la parenthèse fermante
+                    mails = block_text_no_space[y] + mails #on récupère le texte dans entre parenthèse
                     y -= 1
                 mail_sep = mails.split(',')
+                mails_space = '('
                 for mail in mail_sep:
                     emails.append(mail+end_email[0])
-            elif block_text[(semi_mail_index-1)] == '}':#sinon si l'ensemble des débuts de mails est contenu entre chevrons
+                    mails_space += mail + ', '
+                mails_space = mails_space[:-2] + ')'
+                block_text = block_text.replace(mails_space, '')
+            elif block_text_no_space[(semi_mail_index-1)] == '}':#sinon si l'ensemble des débuts de mails est contenu entre chevrons
                 y = semi_mail_index-2
-                while block_text[y] != '{': #on boucle jusqu'à ce qu'on trouve le chevron fermant
-                    mails = block_text[y] + mails #on récupère le texte entre chevrons
+                y_space = y
+                while block_text_no_space[y] != '{': #on boucle jusqu'à ce qu'on trouve le chevron fermant
+                    mails = block_text_no_space[y] + mails #on récupère le texte entre chevrons
                     y -= 1
                 mail_sep = mails.split(',')
+                mails_space = '{'
                 for mail in mail_sep:
                     emails.append(mail+end_email[0])
-            elif block_text[(semi_mail_index-1)] == ']':#sinon si l'ensemble des débuts de mails est contenu entre crochets
+                    mails_space += mail + ', '
+                mails_space = mails_space[:-2] + '}'
+                block_text = block_text.replace(mails_space, '')
+            elif block_text_no_space[(semi_mail_index-1)] == ']':#sinon si l'ensemble des débuts de mails est contenu entre crochets
                 y = semi_mail_index-2
-                while block_text[y] != '[':#on boucle jusqu'à ce qu'on trouve le crochet fermant
-                    mails = block_text[y] + mails #on récupère le texte entre crochets
+                y_space = y
+                while block_text_no_space[y] != '[':#on boucle jusqu'à ce qu'on trouve le crochet fermant
+                    mails = block_text_no_space[y] + mails #on récupère le texte entre crochets
                     y -= 1
                 mail_sep = mails.split(',') #on sépare le texte grâce aux virgules
+                mails_space = '['
                 for mail in mail_sep:#boucle sur chaques débuts de mails
                     emails.append(mail+end_email[0])#on ajoute le début de mail et la fin à la liste email
+                    mails_space += mail + ', '
+                mails_space = mails_space[:-2] + ']'
+                block_text = block_text.replace(mails_space, '')
+            block_text = block_text.replace(end_email[0], '')
         for z in emails:
             block_text = block_text.replace(z, '') #supprime les mails du texte
-        notWanted = re.compile(r' *[&♮♭*∗]+ *| *[0-9,sthrnd]{3}(?:[()A-Za-z]{3})?(?: +|$)')
+        notWanted = re.compile(r' *[&♮♭*∗]+ *| *[0-9,sthrnd]{3}(?:[()A-Za-z]{3})?(?: +|$)|(?:[(][a-z-,.]*[)])')
         nw = notWanted.findall(block_text)
         for n in nw:
             block_text = block_text.replace(n, '')
         notAffiliation = re.compile(r' *[and,*∗ .]+ *')
         isAffiliation = notAffiliation.fullmatch(block_text)
         if isAffiliation == None:
+            ajout = False
+            same = True
             for r in authors:
                 if r not in affiliation:
                     affiliation[r] = block_text
+                    affil_in = True
+                    ajout = True
+            if ajout == False and cpt < 3:
+                affiliations = {}
+                v = affiliation[authors[0]]
+                for key, value in affiliation.items():
+                    if value != v:
+                        same = False
+                if same:
+                    for key, value in affiliation.items():
+                        affiliations[key] = value + ' ' + block_text
+                    affiliation = affiliations
+                    cpt += 1
+
+
         
 
     for em in emails:
@@ -147,13 +184,15 @@ def extract(blocks, title, abstract_index) -> list:
             if cpt > cpta:
                 auth = aut
             cpt = 0
-        affil = affiliation[auth]
+        if affil_in == True:
+            affil = affiliation[auth]
         author_email.append([auth, em, affil])
     
     
     if not(emails):
         for d in authors:
-            affil = affiliation[d]
+            if affil_in == True:
+                affil = affiliation[d]
             author_email.append([d, ' ', affil])
 
     return author_email

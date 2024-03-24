@@ -9,7 +9,7 @@ def getAbstract(blocks : list) :
     for i in range(0, intro) :
         block_text = replace_special_char(blocks[i][4])
         if pattern.match(block_text) :
-            print(i)
+            #print(i)
             if len(block_text) > 8 :
                 block_text = replace_special_char(re.sub(remove_pattern, "", block_text, 1))
                 return i+1, block_text

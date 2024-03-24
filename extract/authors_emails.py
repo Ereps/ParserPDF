@@ -57,7 +57,7 @@ def extract(blocks, title, abstract_index) -> list:
         author = []
         #print(authors)
         
-        print(block_text)
+        #print(block_text)
         for t in authors:
             #print(t)
             block_text = block_text.replace(t, '') #supprime les auteurs du texte

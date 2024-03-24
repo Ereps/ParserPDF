@@ -15,7 +15,7 @@ from nameparser import HumanName
 PATH_TO_JAR='../NER/stanford-corenlp-french.jar'
 PATH_TO_MODEL = '../NER/classifiers/english.all.3class.distsim.crf.ser.gz'
 def get_human_names(text):
-    print(text)
+    #print(text)
     for sent in nltk.sent_tokenize(text):
         for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
             if hasattr(chunk, 'label'):
@@ -23,7 +23,7 @@ def get_human_names(text):
     tagger = StanfordNERTagger(model_filename=PATH_TO_MODEL,path_to_jar=PATH_TO_JAR, encoding='utf-8')
     words = nltk.word_tokenize(text) 
     tagged = tagger.tag(words)
-    print(tagged)
+    #print(tagged)
 
 
 def extract(blocks,title,abstract_index):
@@ -148,7 +148,7 @@ def extract2(blocks, title, abstract_index):
                 break
             else:
                 ema += c
-        print(ema)
+        #print(ema)
         cpta = 0
         cpt = 0
         auth=''
@@ -156,15 +156,15 @@ def extract2(blocks, title, abstract_index):
             for au in aut:
                 if suppr_special_char(au).lower() in ema:
                     cpt += 1
-                    print(suppr_special_char(au).lower())
+                    #print(suppr_special_char(au).lower())
             if cpt > cpta:
                 auth = aut
-                print(auth)
-                print(cpt)
+               # print(auth)
+                #print(cpt)
             cpt = 0
         author_email.append([auth, em])
 
-    print(author_email)
+    #print(author_email)
 
     #print(authors)
     #print(emails)

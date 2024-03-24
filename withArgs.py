@@ -8,7 +8,6 @@ def helpUsage() :
     print('-t | --text  : exports the PDF file to Text')
     print('-a | --all   : exports the PDF file to XML and Text')
 
-# TODO: to XML
 def toXml(files : list) :
     startTime = time.time()
     print('--- exporting to xml ---')
@@ -17,7 +16,6 @@ def toXml(files : list) :
         Xml.buildXML(f)
     print('--- XML in %s seconds ---' % (time.time() - startTime))
     
-# TODO: to Text
 def toText(files : list) :
     startTime = time.time()
     print('--- exporting to text ---')
@@ -34,7 +32,6 @@ def main() :
     parser.add_argument('-d', '--dir', help='directory with PDF files', action='store', type=str, nargs=1, metavar=('folder'))
     parser.add_argument('-f', '--file', help='PDF file(s) as input', action='store', type=str, nargs='+', metavar=('file'))
     args = vars(parser.parse_args())
-    #print(args) # https://stackoverflow.com/questions/51495070/python-argparse-subparsers
     '''
     nargs stands for Number Of Arguments
 
@@ -81,6 +78,7 @@ def main() :
         final_selection = args['file']
     #print(final_selection)
     if not len(final_selection) :
+        print('Nothing was selected, exiting...')
         exit(1)
     if args['xml'] : 
         toXml(final_selection)

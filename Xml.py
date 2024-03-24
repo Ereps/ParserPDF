@@ -1,5 +1,5 @@
 import os, fitz
-from extract import block_treatement, title, abstract, biblio, authors_emails, conclusion, discu
+from extract import block_treatement, title, abstract, biblio, authors_emails, conclusion, discu, introduction, corpus
 
 output_directory_xml = "xml_output"
 
@@ -29,6 +29,8 @@ def buildArticle(pdf, doc, tabcount, blocks) :
     abstract_i, abstract_text = abstract.getAbstract(blocks)
     #print(title)
     authors_emails_list = authors_emails.extract(blocks, title_text, abstract_i)
+    intro_text = introduction.toString(blocks)
+    corps_text = corpus.toString(blocks)
     conclu_text, conclu_i = conclusion.extract(blocks, doc)
     discu_text, discu_i = discu.extract(blocks)
     refs, refs_i = biblio.extract(blocks, doc)
@@ -36,6 +38,8 @@ def buildArticle(pdf, doc, tabcount, blocks) :
     s += buildTitle(pdf, title_text, tabcount+1)
     s += buildAuthors(authors_emails_list, tabcount+1)
     s += buildAbstract(abstract_text, tabcount+1)
+    s += buildIntro(intro_text, tabcount+1)
+    s += buildCorps(corps_text, tabcount+1)
     s += buildConclu(conclu_text, tabcount+1)
     s += buildDiscu(discu_text, tabcount+1)
     s += buildRefs(refs, tabcount+1)
@@ -66,6 +70,14 @@ def buildAuthor(name, mail, affiliation, tabcount) :
 def buildAbstract(abstract_string, tabcount) :
     # TODO: extract abstract
     s = '\t' *tabcount + '<abstract>' + abstract_string + '</abstract>\n'
+    return s
+
+def buildIntro(intro_string, tabcount) :
+    s = '\t' *tabcount + '<introduction>' + intro_string + '</introduction>\n'
+    return s
+
+def buildCorps(corps_string, tabcount) :
+    s = '\t' *tabcount + '<corps>' + corps_string + '</corps>\n'
     return s
 
 def buildConclu(conclu_string, tabcount) :

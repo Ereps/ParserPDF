@@ -40,15 +40,15 @@ def buildArticle(pdf, doc, tabcount, blocks) :
     s += buildAbstract(abstract_text, tabcount+1)
     s += buildIntro(intro_text, tabcount+1)
     s += buildCorps(corps_text, tabcount+1)
-    s += buildConclu(conclu_text, tabcount+1)
     s += buildDiscu(discu_text, tabcount+1)
+    s += buildConclu(conclu_text, tabcount+1)
     s += buildRefs(refs, tabcount+1)
     s += '\t' * tabcount + '</article>\n'
     return s 
 
 def buildTitle(pdf, extract_title, tabcount) :
-    s = '\t' * tabcount + '<preambule>' + pdf + '</preambule>\n'
-    s += '\t' * tabcount + '<title>' + extract_title + '</title>\n'
+    s = '\t' * tabcount + '<preamble>' + pdf + '</preamble>\n'
+    s += '\t' * tabcount + '<titre>' + extract_title + '</titre>\n'
     return s
 
 def buildAuthors(authors, tabcount) :
@@ -61,7 +61,7 @@ def buildAuthors(authors, tabcount) :
 
 def buildAuthor(name, mail, affiliation, tabcount) :
     s = '\t' *tabcount + '<auteur>\n'
-    s += '\t' *(tabcount+1) + '<name>' + name + '</name>\n'
+    s += '\t' *(tabcount+1) + '<nom>' + name + '</nom>\n'
     s += '\t' *(tabcount+1) + '<mail>' + mail + '</mail>\n'
     s += '\t' *(tabcount+1) + '<affiliation>' + affiliation + '</affiliation>\n'
     s += '\t' *tabcount + '</auteur>\n'
@@ -69,29 +69,33 @@ def buildAuthor(name, mail, affiliation, tabcount) :
 
 def buildAbstract(abstract_string, tabcount) :
     # TODO: extract abstract
-    s = '\t' *tabcount + '<abstract>' + abstract_string + '</abstract>\n'
+    s = '\t' *tabcount + '<abstract>\n' + '\t' '\t' *tabcount + abstract_string + '\n\t' *tabcount + '</abstract>\n'
     return s
 
 def buildIntro(intro_string, tabcount) :
-    s = '\t' *tabcount + '<introduction>' + intro_string + '</introduction>\n'
+    s = '\t' *tabcount + '<introduction>\n' + '\t' '\t' *tabcount + intro_string + '\n\t' *tabcount + '</introduction>\n'
     return s
 
 def buildCorps(corps_string, tabcount) :
-    s = '\t' *tabcount + '<corps>' + corps_string + '</corps>\n'
+    s = '\t' *tabcount + '<corps>\n' + '\t' '\t' *tabcount + corps_string + '\n\t' *tabcount + '</corps>\n'
     return s
 
 def buildConclu(conclu_string, tabcount) :
     s = ""
     if len(conclu_string) :
-        s = '\t' *tabcount + '<conclusion>' + conclu_string + '<conclusion>\n'
+        s = '\t' *tabcount + '<conclusion>\n' + '\t' '\t' *tabcount + conclu_string + '\n\t' *tabcount + '</conclusion>\n'
+    else :
+        s = '\t' *tabcount + '<conclusion>' + 'N/A' + '\t' *tabcount + '</conclusion>\n'
     return s
 
 def buildDiscu(discu_string, tabcount) :
     s = ""
     if len(discu_string) :
-        s = '\t' *tabcount + '<discussion>' + discu_string + '<discussion>\n'
+        s = '\t' *tabcount + '<discussion>\n' + '\t' '\t' *tabcount + discu_string + '\n\t' *tabcount + '</discussion>\n'
+    else :
+        s = '\t' *tabcount + '<discussion>' + 'N/A' + '\t' *tabcount + '</discussion>\n'
     return s
 
 def buildRefs(refs, tabcount) :
-    s = '\t' *tabcount + '<biblio>' + refs + '</biblio>\n'
+    s = '\t' *tabcount + '<biblio>\n' + '\t' '\t' *tabcount + refs + '\n\t' *tabcount + '</biblio>\n'
     return s

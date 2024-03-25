@@ -1,3 +1,4 @@
 # ParserPDF
-# Ce rendu de Sprint 4 fonctionne de la manière suivante : il faut utiliser le fichier withArgs.py afin d'utiliser le parser. On peut pour commencer faire "python3 withArgs.py -h", qui va afficher les différentes options d'utilisation. Si on souhaite obtenir les .txt et .xml, on peut faire "python3 withArgs.py -d Corpus_test -x -t" ce qui va analyser tout le contenu du répertoire Corpus_test. Une interface permet ensuite de choisir quels fichiers seront analysés, "*" permet de sélectionner tous les fichiers du répertoire.
-# Ce rendu comporte également les artéfacts, dans le répertoire Artefacts/Sprint4
+# Branche 5 WIP
+# Le but premier est d'avoir des fichiers .xml compatibles avec http://inf1603.alwaysdata.net/ParserResultComparator.php
+# La précision est secondaire sur ce sprint, elle deviendra pertinente dans le sprint 6

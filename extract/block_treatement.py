@@ -20,6 +20,7 @@ def replace_special_char(text : str) -> str :
     text = text.replace('`A', 'À')
     text = text.replace('^A', 'Â')
     text = text.replace('"A', 'Ä')
+    text = text.replace('´E', 'É')
     text = text.replace('`E', 'È')
     text = text.replace('¨E', 'Ë')
     text = text.replace('^E', 'Ê')

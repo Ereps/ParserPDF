@@ -95,6 +95,27 @@ def replace_special_char(text : str) -> str :
     text = text.replace('′', '\'')
     text = text.replace('', 'BRGH')
     text = text.replace('f', 'BRGH')
+    #traitement xml
+    text = text.replace('', 'BRGH')
+    text = text.replace('<', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('&', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('', 'BRGH')
+    text = text.replace('', 'BRGH')
+
 
     return text
 
@@ -145,18 +166,20 @@ def suppr_special_char(text : str) -> str :
 
 """
 boudin-torres-2006
-c⃝
+c⃝ -> en fait même avec ça, ça passe
 
 
 
 das_martins
 
-θ
-P
-⟨
-⟩
-∥
-⌈
-⌉
+<
 
+gonzalez
+
+
+
+&
+
+torres-moreno
+                                    
 """

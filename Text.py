@@ -22,7 +22,7 @@ def buildTEXT(pdf) :
     with open(output_filename, 'w', encoding='utf-8') as output :
         output.write("PDF File:\n" + pdf_basename + "\n"*2)
         # Extract and write title
-        title_text, title_index = title.extract(normal_blocks, doc)
+        title_text = title.extract(normal_blocks, doc)
         output.write("Title:\n" + title_text + "\n"*2)
         # Extract and write authors
         abstract_index, abstract_text = abstract.getAbstract(normal_blocks)

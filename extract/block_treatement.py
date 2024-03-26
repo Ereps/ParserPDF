@@ -98,6 +98,7 @@ def replace_special_char(text : str) -> str :
     #traitement xml
     text = text.replace('', 'BRGH')
     text = text.replace('<', 'BRGH')
+    text = text.replace('>', 'BRGH')
     text = text.replace('', 'BRGH')
     text = text.replace('', 'BRGH')
     text = text.replace('', 'BRGH')

@@ -85,7 +85,7 @@ def buildConclu(conclu_string, tabcount) :
     if len(conclu_string) :
         s = '\t' *tabcount + '<conclusion>\n' + '\t' '\t' *tabcount + conclu_string + '\n\t' *tabcount + '</conclusion>\n'
     else :
-        s = '\t' *tabcount + '<conclusion>' + 'N/A' + '\t' *tabcount + '</conclusion>\n'
+        s = '\t' *tabcount + '<conclusion>' + 'N/A' + '</conclusion>\n'
     return s
 
 def buildDiscu(discu_string, tabcount) :
@@ -93,7 +93,7 @@ def buildDiscu(discu_string, tabcount) :
     if len(discu_string) :
         s = '\t' *tabcount + '<discussion>\n' + '\t' '\t' *tabcount + discu_string + '\n\t' *tabcount + '</discussion>\n'
     else :
-        s = '\t' *tabcount + '<discussion>' + 'N/A' + '\t' *tabcount + '</discussion>\n'
+        s = '\t' *tabcount + '<discussion>' + 'N/A' + '</discussion>\n'
     return s
 
 def buildRefs(refs, tabcount) :

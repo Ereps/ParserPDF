@@ -2,13 +2,12 @@ from extract.block_treatement import *
 
 """récupération du titre du pdf"""
 #TODO extraction du titre avec la taille de police plutot qu'a la louche
-def extract(blocks, doc):
+def extract(blocks: list, doc: open) -> str :
     title = ""
     i = 0
     title_block = 0
     if doc.metadata.get("title") != "": #si le titre apparaît dans la metadata
         txt = ""
-        line = " "
         block_text = replace_special_char(blocks[i][4])
         if "<" in block_text: #si le premier paragraphe commence par un "<"
             i += 1
@@ -29,4 +28,4 @@ def extract(blocks, doc):
 
     title = title.replace('\n', '')
     title = title.strip()
-    return title,title_block
+    return title

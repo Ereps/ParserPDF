@@ -1,5 +1,7 @@
 import re
 
+def make_uchr(code: str):
+    return chr(int(code.lstrip("U+").zfill(8), 16))
 
 #return the normalize version of the text blocks
 def blocks_normalization(blocks : list) -> list :
@@ -86,6 +88,13 @@ def replace_special_char(text : str) -> str :
     text = text.replace('"t', 'ẗ')
     text = text.replace('"x', 'ẍ')
     text = text.replace('`n', 'ǹ')
+    # XML BRGH TIME
+    text = text.replace(' ⃗', '~')
+    text = text.replace('(⃗', '(~')
+    text = text.replace('’', '\'')
+    text = text.replace('′', '\'')
+    text = text.replace('', 'BRGH')
+    text = text.replace('f', 'BRGH')
 
     return text
 

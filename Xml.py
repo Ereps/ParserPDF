@@ -25,7 +25,7 @@ def buildXML(pdf) :
         
         
 def buildArticle(pdf, doc, tabcount, blocks) :
-    title_text, title_index = title.extract(blocks, doc)
+    title_text = title.extract(blocks, doc)
     abstract_i, abstract_text = abstract.getAbstract(blocks)
     #print(title)
     authors_emails_list = authors_emails.extract(blocks, title_text, abstract_i)

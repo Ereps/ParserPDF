@@ -1,2 +1,4 @@
 __pycache__/**
 Corpus_test/**
+NER/trainning_data/xml/**
+NER/trainning_data/name/dblp_author.json

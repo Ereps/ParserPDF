@@ -23,6 +23,6 @@ def toString(blocks: list) -> str :
     end_i = getEnd(blocks)
     #print(start_i, end_i)
     string = ""
-    for i in range(start_i+1, end_i) :
-        string += blocks[i][4]
+    for i in range(start_i, end_i) :
+        string += blocks[i][4] + " "
     return string if len(string) else None

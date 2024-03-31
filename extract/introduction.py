@@ -1,7 +1,6 @@
 import re
 from extract.block_treatement import *
 
-#TODO mettre le txt en retour aussi ?
 def getStart(blocks: list) -> int :
     for i in range(len(blocks)):
         block_text = replace_special_char(blocks[i][4])
@@ -23,8 +22,8 @@ def toString(blocks: list) -> str :
     end_index = getEnd(blocks)
     #print(intro_index, end_index)
     string = ""
-    for i in range(intro_index+1, end_index) :
-        string += blocks[i][4]
+    for i in range(intro_index, end_index) :
+        string += blocks[i][4] + " "
     #print(string)
     return string
 

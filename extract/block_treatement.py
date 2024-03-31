@@ -88,34 +88,34 @@ def replace_special_char(text : str) -> str :
     text = text.replace('"t', 'ẗ')
     text = text.replace('"x', 'ẍ')
     text = text.replace('`n', 'ǹ')
-    # XML BRGH TIME
+    # XML cid(?) TIME
     text = text.replace(' ⃗', '~')
     text = text.replace('(⃗', '(~')
     text = text.replace('’', '\'')
     text = text.replace('′', '\'')
-    text = text.replace('', 'BRGH')
-    text = text.replace('f', 'BRGH')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('f', 'cid(?)')
     #traitement xml
-    text = text.replace('', 'BRGH')
-    text = text.replace('<', 'BRGH')
-    text = text.replace('>', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('&', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('<', 'cid(?)')
+    text = text.replace('>', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('&', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
 
 
     return text

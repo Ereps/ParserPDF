@@ -115,10 +115,32 @@ def create_training_data(file,type):
         }
         patterns.append(pattern)
     return patterns
+#DBLP ONLY AUTHOR
+"""________________________________________________________________________"""
+class DBLPHandler(xml.sax.ContentHandler):
+    def __init__(self, save_path):
+        self.current_tag = ""
+        self.author = ""
+        self.save_path = save_path
 
+    def startElement(self, tag, attributes):
+        self.current_tag = tag
 
+    def endElement(self, tag):
+        if self.current_tag == "author":
+            with open(self.save_path, 'a') as f:
+                f.write(f'{json.dumps(self.author)}\n')
+        self.current_tag = ""
 
+    def characters(self, content):
+        if self.current_tag == "author":
+            self.author = content
 
+def parse_author_from_dblp(dblp_path, save_path):
+    parser = xml.sax.make_parser()
+    parser.setContentHandler(DBLPHandler(save_path))
+    parser.parse(dblp_path)
+"""________________________________________________________________________"""
 pdf_dir = "NER/trainning_data/pdf/"
 txt_dir = "NER/trainning_data/text/"
 json_name = "NER/trainning_data/name/name.json"
@@ -149,34 +171,12 @@ for pdf in pdf_list:
         with open(outputFname,'w', encoding='utf-8') as file:
             #file.write(block_treatement.replace_special_char(text))
             for b in blocks:
-                file.write(block_treatement.replace_special_char(b[4]))
+                text = block_treatement.replace_special_char(b[4])
+                text+=" "
+                file.write(text)
 
-#DBLP ONLY AUTHOR
 
-class DBLPHandler(xml.sax.ContentHandler):
-    def __init__(self, save_path):
-        self.current_tag = ""
-        self.author = ""
-        self.save_path = save_path
-
-    def startElement(self, tag, attributes):
-        self.current_tag = tag
-
-    def endElement(self, tag):
-        if self.current_tag == "author":
-            with open(self.save_path, 'a') as f:
-                f.write(f'{json.dumps(self.author)}\n')
-        self.current_tag = ""
-
-    def characters(self, content):
-        if self.current_tag == "author":
-            self.author = content
-
-def parse_author_from_dblp(dblp_path, save_path):
-    parser = xml.sax.make_parser()
-    parser.setContentHandler(DBLPHandler(save_path))
-    parser.parse(dblp_path)
-parse_author_from_dblp("NER/trainning_data/xml/dblp.xml","NER/trainning_data/dblp_author.json")
+#parse_author_from_dblp("NER/trainning_data/xml/dblp.xml","NER/trainning_data/dblp_author.json")
 
 #__GENERATE autor_list json
 """

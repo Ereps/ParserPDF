@@ -1,6 +1,7 @@
-extract/__pycache__/**
 __pycache__/**
 extract/__init__.py
 Corpus_test/**
+NER/trainning_data/xml/**
+NER/trainning_data/name/dblp_author.json
 xml_output/**
 txt_output/**

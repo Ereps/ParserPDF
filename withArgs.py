@@ -1,5 +1,4 @@
-import time, os, argparse
-import Xml, Text
+import sys, getopt, time, os, argparse, glob
 
 def helpUsage() :
     print(os.path.basename(__file__), '[options]')
@@ -27,10 +26,10 @@ def toText(files : list) :
 # main function with args
 def main() :
     parser = argparse.ArgumentParser(prog=os.path.basename(__file__), usage='%(prog)s [options]')
-    parser.add_argument('-x', '--xml', help='exports to XML', action='store_true')
-    parser.add_argument('-t', '--text', help='exports to text', action='store_true')
-    parser.add_argument('-d', '--dir', help='directory with PDF files', action='store', type=str, nargs=1, metavar=('folder'))
-    parser.add_argument('-f', '--file', help='PDF file(s) as input', action='store', type=str, nargs='+', metavar=('file'))
+    parser.add_argument('-x', '--xml', help='export the PDF file to XML', action='store_true')
+    parser.add_argument('-t', '--text', help='export the PDF file to text', action='store_true')
+    parser.add_argument('-d', '--dir', help='directory with PDF files to convert', action='store', type=str, nargs=1, metavar=('folder'))
+    #TODO: parser.add_argument('-f', '--file', help='PDF file(s) to convert', action='append', type=str, nargs='+', metavar=('file'))
     args = vars(parser.parse_args())
     '''
     nargs stands for Number Of Arguments
@@ -44,11 +43,7 @@ def main() :
     if not args['xml'] and not args['text'] :
         print('Need at least one export to select : --help to see what you can do')
         exit(1)
-    if not args['dir'] and not args['file'] :
-        print('Need at least one input to select : --help to see what you can do')
-        exit(1)
-    final_selection = []
-    if args['dir'] and os.path.isdir(args['dir'][0]) :
+    if os.path.isdir(args['dir'][0]) :
         files = [os.path.join(args['dir'][0], f) for f in os.listdir(args['dir'][0]) if os.path.isfile(os.path.join(args['dir'][0], f)) and f.endswith('.pdf')]
         if not files :
             print('No PDF file in this directory')
@@ -64,6 +59,7 @@ def main() :
                 print('%2s' % i, '->', hashmap.get(i))
             selection = input('Entry (separator is the space): ')
             selection = list(selection.split(' '))
+            final_selection = []
             if '*' in selection :
                 final_selection = files
             else :
@@ -87,3 +83,5 @@ def main() :
 
 if __name__ == '__main__' :
     main()
+    
+    

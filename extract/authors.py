@@ -28,7 +28,6 @@ def get_human_names(text):
 
 def extract(blocks,title,abstract_index):
     index = 0
-    name_list = []
     text = ""
     for x in range(len(blocks)):
         if title in blocks[x][4]:
@@ -36,10 +35,11 @@ def extract(blocks,title,abstract_index):
             break
     for i in range(index, abstract_index[0], 1):
         text += blocks[i][4]
-    name_list.append(get_human_names(text))
+    return text
+
 
 #TODO toress moreno faux positif avec matière condensée
-def extract2(blocks, title, abstract_index):
+def extract(blocks, title, abstract_index):
     email = []
     author = []
     emails = []

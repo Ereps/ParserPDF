@@ -1,5 +1,6 @@
 extract/__pycache__/**
 __pycache__/**
 extract/__init__.py
+Corpus_test/**
 xml_output/**
 txt_output/**

@@ -10,10 +10,12 @@ def test_model(text):
     print(results)
     return results
 
-def generate_rules(patterns):
+def generate_rules(file):
     nlp = en_core_web_sm.load()
     ruler = nlp.add_pipe("entity_ruler") #test
-    ruler.add_patterns(patterns)
+    with open(file,"r") as file:
+        for line in file:    
+            ruler.add_patterns(line)
     nlp.to_disk(ner_name)
 
 
@@ -22,15 +24,16 @@ result = []
 ner_name = "NER/ubs/NER_NAME_V1"
 txt_dir = "NER/trainning_data/text/"
 txt_list = making_dataset.read_files(txt_dir,"txt")
+json_trainning_dataset = "NER/trainning_data/trainning_dataset.jsonclean.json"
 
 
 
 
 #__GENERATE NER
-"""
-patterns = making_dataset.create_training_data("NER/trainning_data/name/better_name.json","AUTHOR")
-generate_rules(patterns)
-"""
+
+#patterns = making_dataset.create_training_data("NER/trainning_data/name/better_name.json","AUTHOR")
+generate_rules(json_trainning_dataset)
+
 
 
 from bs4 import BeautifulSoup

@@ -17,8 +17,8 @@ def read_files(path,extension):
 
 
 def load_data(file):
-    with open(file,"r") as f:
-        data = json.load(f)
+    with open(file, 'r') as f:
+        data = [json.loads(line) for line in f]
     return data
 
 def generate_better_dataset(file):
@@ -106,15 +106,17 @@ def get_authors(doc):
 
 
 def create_training_data(file,type):
-    data = generate_better_dataset(file)
-    patterns = []
-    for item in data:
-        pattern = {
-            "label": type,
-            "pattern": item
-        }
-        patterns.append(pattern)
-    return patterns
+    with open(file, 'r') as file:
+        for line in file:
+            data = [json.loads(line)]
+            for item in data:
+                pattern = {
+                    "label": type,
+                    "pattern": item
+                }
+            with open(json_trainning_dataset, 'a') as f:
+                f.write(f'{json.dumps(pattern)}\n')
+    
 #DBLP ONLY AUTHOR
 """________________________________________________________________________"""
 class DBLPHandler(xml.sax.ContentHandler):
@@ -141,10 +143,45 @@ def parse_author_from_dblp(dblp_path, save_path):
     parser.setContentHandler(DBLPHandler(save_path))
     parser.parse(dblp_path)
 """________________________________________________________________________"""
+
+def clean_trainning_dataset(filename):
+    with open(filename, 'r') as file:
+        i=0
+        for line in file:
+            i+=1
+            data = json.loads(line)
+            #un nom plus grand que 2 caractères
+            if isinstance(data['pattern'], str) and len(data['pattern']) > 2 and data['pattern'] != None :
+                data['pattern'] = re.sub(r"[0-9]*", "", data['pattern'])
+                print(data['pattern'])
+                filename = filename[:-5]  # remove .json
+                with open(filename+"_V2.json", 'a') as f:
+                    f.write(f'{json.dumps(data)}\n')
+            print(data)
+
+def remove_duplicates(filename):
+    with open(filename, 'r') as file:
+        patterns = set()
+        for line in file:
+            data = json.loads(line)
+            pattern = data['pattern']
+            patterns.add(pattern)
+    filename = filename[:-5]  # remove .json
+    with open(filename+"_V3.json", 'w') as file:
+        for pattern in patterns:
+            data = {
+                "label": data['label'],
+                "pattern": pattern
+            }
+            file.write(f'{json.dumps(data)}\n')
+
+
 pdf_dir = "NER/trainning_data/pdf/"
 txt_dir = "NER/trainning_data/text/"
 json_name = "NER/trainning_data/name/name.json"
 json_better_name = "NER/trainning_data/name/better_name.json"
+json_dblp_author = "NER/trainning_data/name/dblp_author.json"
+json_trainning_dataset = "NER/trainning_data/name/trainning_dataset.json"
 
 
 pdf_list = read_files(pdf_dir,"pdf")
@@ -152,6 +189,7 @@ txt_list = read_files(txt_dir,"txt")
 authors_list = []
 
 #__AUTHORS LIST / PDF TO TEXT
+"""
 for pdf in pdf_list:
     fname = pdf_dir+pdf
     with fitz.open(fname) as doc:
@@ -159,10 +197,10 @@ for pdf in pdf_list:
         outputFname = txt_dir +pdf + ".txt"
         blocks = []
         text = ""
-        """
+        
         with open(outputFname,"w") as file:
             file.write(''.join(authors_list))
-        """
+        
         for page_num in range(len(doc)):
             page = doc.load_page(page_num)
             blocks += page.get_text("blocks")
@@ -174,6 +212,7 @@ for pdf in pdf_list:
                 text = block_treatement.replace_special_char(b[4])
                 text+=" "
                 file.write(text)
+"""
 
 
 #parse_author_from_dblp("NER/trainning_data/xml/dblp.xml","NER/trainning_data/dblp_author.json")
@@ -188,5 +227,12 @@ with open(json_better_name,"w") as file:
 """
 
 
+#__GENERATE NER trainning dataset
 
+#create_training_data(json_dblp_author,"AUTHOR")
+#remove_non_integer_indices(json_dblp_author)
+#clean_trainning_dataset(json_trainning_dataset)
+
+
+remove_duplicates(json_trainning_dataset+"clean.json")
 

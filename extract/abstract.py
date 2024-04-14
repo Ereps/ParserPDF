@@ -28,8 +28,8 @@ def getAbstract(blocks : list) :
     #intro = introduction.getStart(blocks)
     abs_i = getStartAbs(blocks)
     intro_i = getStartIntro(blocks)
-    print("Abstract start : ", abs_i, blocks[abs_i][4])
-    print("Intro : ", intro_i, blocks[intro_i][4])
+    #print("Abstract start : ", abs_i, blocks[abs_i][4])
+    #print("Intro : ", intro_i, blocks[intro_i][4])
     block_text = replace_special_char(blocks[abs_i][4])
     if len(block_text) > 16 :
         #print(i)

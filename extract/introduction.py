@@ -29,7 +29,7 @@ def toString(blocks: list) -> str :
     intro_index = getStart(blocks)
     end_index = getEnd(blocks)
     #print(intro_index, end_index)
-    print("end intro : ", end_index, blocks[end_index][4])
+    #print("end intro : ", end_index, blocks[end_index][4])
     string = ""
     for i in range(intro_index, end_index) :
         string += blocks[i][4] + " "

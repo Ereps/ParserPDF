@@ -4,7 +4,7 @@ from extract.block_treatement import *
 def getStart(blocks: list) -> int :
     for i in range(len(blocks)) :
         block_text = replace_special_char(blocks[i][4])
-        pattern = re.compile(r'(2|I{2})(\ \.)?([A-Z][a-z])*')
+        pattern = re.compile(r'(2|I{2})(\.|\ )+.*')
         if pattern.match(block_text) :
             return i
     return -1

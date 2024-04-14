@@ -15,16 +15,18 @@ def extract(blocks, title, abstract_index) -> list:
     affil_in = False
     affil = ''
     cpt = 1
-    author_pattern = re.compile(r'[A-Z][a-zàáâäçèéêëìíîïñòóôöùúûüýÿ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ]*)?(?: +[A-Zdlaeiouàáâäçèéêëìíîïñòóôöùúûüýÿ.]{0,3})?(?:[.]*)? [A-Z][A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ-]*)?')
+    author_pattern = re.compile(r'[A-Z][a-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]*)?(?: +[A-Zdlaeiouàáâäçèéêëìíîïñòóôöùúûüýÿﬁ.]{0,3})?(?:[.]*)? [A-Z][A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ-]*)?')
     email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
     semi_mail_pattern = re.compile(r'[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}')
-    no_no_words = ['Université', 'Bretagne', 'Nord', 'Sud', 'Est', 'Ouest', 'University', 'North', 'South', 'West', 'Laboratoire', 'Laboratory', 'Rennes', 'Informatique', 'Google', 'Inc', 'Fondamentale', 'Marseille', 'France', 'Aix-Marseille', 'Vannes', 'Canada', 'Montréal', 'Polytechnique', 'Mexico', 'Avignon', 'Instituto', 'Ingeniería', 'Institute', 'Institue', 'Linguistics', 'Spain', 'Mexique', 'Espagne', 'Québec', 'Pays', 'Vaucluse', 'Meinajaries', 'Département', 'Centre-ville', 'New York', 'Department', 'Computer', 'Science', 'Columbia', 'Technologies', 'Carnegie', 'Mountain', 'View', 'Ecole', 'Centre', 'Ville', 'Cedex', 'Scalable', 'Approach', 'Sentence', 'Scoring', 'Multi', 'Document', 'Multi-Document', 'Update', 'Word', 'Representations', 'Vector', 'Space', 'System', 'Demonstrations', 'Processing', 'Tool', 'Matière', 'Condensée']
+    no_no_words = ['Université', 'Bretagne', 'Nord', 'Sud', 'Est', 'Ouest', 'University', 'North', 'South', 'West', 'Laboratoire', 'Laboratory', 'Rennes', 'Informatique', 'Google', 'Inc', 'Fondamentale', 'Marseille', 'France', 'Aix-Marseille', 'Vannes', 'Canada', 'Montréal', 'Polytechnique', 'Mexico', 'Avignon', 'Instituto', 'Ingeniería', 'Institute', 'Institue', 'Linguistics', 'Spain', 'Mexique', 'Espagne', 'Québec', 'Pays', 'Vaucluse', 'Meinajaries', 'Département', 'Centre-ville', 'New York', 'Department', 'Computer', 'Science', 'Columbia', 'Technologies', 'Carnegie', 'Mountain', 'View', 'Ecole', 'Centre', 'Ville', 'Cedex', 'Scalable', 'Approach', 'Sentence', 'Scoring', 'Multi', 'Document', 'Multi-Document', 'Update', 'Word', 'Representations', 'Vector', 'Space', 'System', 'Demonstrations', 'Processing', 'Tool', 'Matière', 'Condensée', 'Compiled', 'April', 'November', 'January', 'February', 'March', 'May', 'June', 'July', 'August', 'September', 'December']
     index = 0
     # Trouver l'indice du bloc contenant le titre
     for x in range(len(blocks)):
         if title in blocks[x][4]:
             index = x+1
             break
+    print(index)
+    print(abstract_index)
     #abstract_index[0] == premier abstract block
     for i in range(index, abstract_index, 1):
         if 'Abstract' in blocks[i][4] or 'abstract' in blocks[i][4] or 'ABSTRACT' in blocks[i][4]:
@@ -75,7 +77,7 @@ def extract(blocks, title, abstract_index) -> list:
                     email_index = email_match.start()
                     semi_mail_match = semi_mail_pattern.search(block_text)
                     end_email = semi_mail_pattern.findall(block_text)
-                    e = block_text.split(',') #on sépare le texte grâce qux virgules
+                    e = block_text.split(',') #on sépare le texte grâce aux virgules
                     for m in e: #on boucle sur les éléments du texte séparé
                         if m != email[0][0]: #si l'élément est différent du mail
                             emails.append(m+end_email[0]) #on l'ajoute à la liste des mails
@@ -154,7 +156,9 @@ def extract(blocks, title, abstract_index) -> list:
                     affiliation = affiliations
                     cpt += 1
 
-
+    print(author)
+    print(emails)
+    print(affiliation)
         
 
     for em in emails:
@@ -193,6 +197,6 @@ def extract(blocks, title, abstract_index) -> list:
         for d in authors:
             if affil_in == True:
                 affil = affiliation[d]
-            author_email.append([d, ' ', affil])
+            author_email.append([d, 'N/A', affil])
 
     return author_email

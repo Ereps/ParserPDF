@@ -4,7 +4,7 @@ from extract.block_treatement import *
 def getStart(blocks: list) -> int :
     for i in range(len(blocks)):
         block_text = replace_special_char(blocks[i][4])
-        pattern = re.compile(r'(.*([I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn]))|(1|I).*')
+        pattern = re.compile(r'(.*([I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn]))') #|(1|I).*
         if pattern.match(block_text) :
             #print("Intro", i)
             return i

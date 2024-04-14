@@ -43,7 +43,7 @@ def extract(blocks, title, abstract_index) -> list:
         #print(block_text)
         if(author_match): #si on a trouvé des auteurs
             a.append(author_pattern.findall(block_text)) #ajoute dans la liste auteurs
-
+        print(block_text)
         for w in a:
             for x in w:
                 author.append(x)
@@ -72,14 +72,14 @@ def extract(blocks, title, abstract_index) -> list:
                 email_match = email_pattern.search(block_text)
                 email_index = email_match.start()
                 if block_text[email_index-1] == ',' or block_text[email_index-2] == ',': #si jamais on trouve une virgule avant le mail
-                    block_text = block_text.replace(' ', '')
+                    #block_text = block_text.replace(' ', '')
                     email_match = email_pattern.search(block_text)
                     email_index = email_match.start()
                     semi_mail_match = semi_mail_pattern.search(block_text)
                     end_email = semi_mail_pattern.findall(block_text)
                     e = block_text.split(',') #on sépare le texte grâce aux virgules
                     for m in e: #on boucle sur les éléments du texte séparé
-                        if m != email[0][0]: #si l'élément est différent du mail
+                        if m != email[0][0] and ' ' not in m and m != '': #si l'élément est différent du mail
                             emails.append(m+end_email[0]) #on l'ajoute à la liste des mails
         elif(semi_mail_match): # sinon si on a trouvé une fin de mail
             block_text_no_space = block_text.replace(' ', '') #on enlève tous les espaces

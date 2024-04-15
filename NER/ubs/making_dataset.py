@@ -114,7 +114,7 @@ def create_training_data(file,type):
                     "label": type,
                     "pattern": item
                 }
-            with open(json_trainning_dataset, 'a') as f:
+            with open(json_trainning_dataset_V1, 'a') as f:
                 f.write(f'{json.dumps(pattern)}\n')
     
 #DBLP ONLY AUTHOR
@@ -146,42 +146,44 @@ def parse_author_from_dblp(dblp_path, save_path):
 
 def clean_trainning_dataset(filename):
     with open(filename, 'r') as file:
-        i=0
         for line in file:
-            i+=1
             data = json.loads(line)
             #un nom plus grand que 2 caractères
             if isinstance(data['pattern'], str) and len(data['pattern']) > 2 and data['pattern'] != None :
                 data['pattern'] = re.sub(r"[0-9]*", "", data['pattern'])
-                print(data['pattern'])
-                filename = filename[:-5]  # remove .json
-                with open(filename+"_V2.json", 'a') as f:
+                data['pattern'] = data['pattern'].strip()
+                with open(filename[:-8]+"_V2.json", 'a') as f:
                     f.write(f'{json.dumps(data)}\n')
-            print(data)
+            else:
+                print(f"Removed: {data['pattern']}")
 
+"""
 def remove_duplicates(filename):
     with open(filename, 'r') as file:
+          # remove Vx.json
         patterns = set()
         for line in file:
             data = json.loads(line)
             pattern = data['pattern']
             patterns.add(pattern)
-    filename = filename[:-5]  # remove .json
-    with open(filename+"_V3.json", 'w') as file:
+    with open(json_trainning_dataset_V3, 'w') as file:
         for pattern in patterns:
             data = {
                 "label": data['label'],
                 "pattern": pattern
             }
             file.write(f'{json.dumps(data)}\n')
-
+"""
 
 pdf_dir = "NER/trainning_data/pdf/"
 txt_dir = "NER/trainning_data/text/"
 json_name = "NER/trainning_data/name/name.json"
 json_better_name = "NER/trainning_data/name/better_name.json"
 json_dblp_author = "NER/trainning_data/name/dblp_author.json"
-json_trainning_dataset = "NER/trainning_data/name/trainning_dataset.json"
+json_trainning_dataset_V1 = "NER/trainning_data/name/trainning_dataset_V1.json"
+json_trainning_dataset_V2= "NER/trainning_data/name/trainning_dataset_V2.json"
+json_trainning_dataset_V3 = "NER/trainning_data/name/trainning_dataset_V3.json"
+
 
 
 pdf_list = read_files(pdf_dir,"pdf")
@@ -215,7 +217,6 @@ for pdf in pdf_list:
 """
 
 
-#parse_author_from_dblp("NER/trainning_data/xml/dblp.xml","NER/trainning_data/dblp_author.json")
 
 #__GENERATE autor_list json
 """
@@ -233,6 +234,9 @@ with open(json_better_name,"w") as file:
 #remove_non_integer_indices(json_dblp_author)
 #clean_trainning_dataset(json_trainning_dataset)
 
+if __name__ == "__main__":
+    #parse_author_from_dblp("NER/trainning_data/xml/dblp.xml","NER/trainning_data/dblp_author.json")
+    clean_trainning_dataset(json_trainning_dataset_V1)
+    #remove_duplicates(json_trainning_dataset_V2)
 
-remove_duplicates(json_trainning_dataset+"clean.json")
-
+ 

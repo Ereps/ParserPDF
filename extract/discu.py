@@ -3,7 +3,7 @@ from extract.block_treatement import *
 
 #TODO modifier la logique pour ne pas avoir à utiliser du regex pour trouver la finn, utiliser les blocks
 
-def extract(blocks):
+def extract(blocks: list) -> tuple[str, int] :
     """Extracts discussion from a list of text blocks."""
     discu_string = ""
     discu_index = 0

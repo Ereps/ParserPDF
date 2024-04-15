@@ -28,7 +28,7 @@ def buildArticle(pdf, doc, tabcount, blocks) :
     title_text = title.extract(blocks, doc)
     abstract_i, abstract_text = abstract.getAbstract(blocks)
     #print(title)
-    authors_emails_list = authors_emails.extract(blocks, title_text, abstract_i)
+    #authors_emails_list = authors_emails.extract(blocks, title_text, abstract_i)
     intro_text = introduction.toString(blocks)
     corps_text = corpus.toString(blocks)
     conclu_text, conclu_i = conclusion.extract(blocks, doc)
@@ -36,7 +36,7 @@ def buildArticle(pdf, doc, tabcount, blocks) :
     refs, refs_i = biblio.extract(blocks, doc)
     s = '\t' * tabcount + '<article>\n'
     s += buildTitle(pdf, title_text, tabcount+1)
-    s += buildAuthors(authors_emails_list, tabcount+1)
+    #s += buildAuthors(authors_emails_list, tabcount+1)
     s += buildAbstract(abstract_text, tabcount+1)
     s += buildIntro(intro_text, tabcount+1)
     s += buildCorps(corps_text, tabcount+1)

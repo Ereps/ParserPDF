@@ -1,6 +1,6 @@
 import re
 
-def make_uchr(code: str):
+def make_uchr(code: str) -> str :
     return chr(int(code.lstrip("U+").zfill(8), 16))
 
 #return the normalize version of the text blocks

@@ -9,7 +9,7 @@ def getStart(blocks: list) -> int :
         if pattern.match(block_text) :
             #print("Intro", i)
             return i
-    pattern = re.compile(r'(.*(1|I).*') #|(1|I).*
+    pattern = re.compile(r'(1|I).*') #|(1|I).*
     for i in range(getStartAbs(blocks), len(blocks)):
         block_text = replace_special_char(blocks[i][4])
         if pattern.match(block_text) :

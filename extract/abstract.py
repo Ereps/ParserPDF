@@ -8,6 +8,7 @@ def getStartAbs(blocks : list) -> int :
         blocks_text = replace_special_char(blocks[i][4])
         if pattern.match(blocks_text) :
             return i
+    return -1
 
 def getStartIntro(blocks : list) -> int : 
     pattern = re.compile(r'(.*([I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn]))') #|(1|I).*
@@ -16,14 +17,14 @@ def getStartIntro(blocks : list) -> int :
         if pattern.match(block_text) :
             #print("Intro", i)
             return i
-    pattern = re.compile(r'(.*(1|I).*') #|(1|I).*
+    pattern = re.compile(r'(1|I).*') #|(1|I).*
     for i in range(getStartAbs(blocks), len(blocks)):
         block_text = replace_special_char(blocks[i][4])
         if pattern.match(block_text) :
             #print("Intro", i)
             return i
 
-def getAbstract(blocks : list) : 
+def getAbstract(blocks : list) -> tuple[int, str] : 
     remove_pattern = re.compile(r'(Abstract|ABSTRACT)(\.| |_|\\|-|—)*')
     #intro = introduction.getStart(blocks)
     abs_i = getStartAbs(blocks)
@@ -31,7 +32,10 @@ def getAbstract(blocks : list) :
     #print("Abstract start : ", abs_i, blocks[abs_i][4])
     #print("Intro : ", intro_i, blocks[intro_i][4])
     block_text = replace_special_char(blocks[abs_i][4])
-    if len(block_text) > 16 :
+    if abs_i == -1 :
+        #print("testo")
+        return intro_i-1, replace_special_char(blocks[intro_i-1][4])
+    elif len(block_text) > 16 :
         #print(i)
         block_text = replace_special_char(re.sub(remove_pattern, "", block_text, 1))
         return abs_i+1, block_text

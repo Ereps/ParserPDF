@@ -1,4 +1,4 @@
 # ParserPDF
-# Branche 5 résumé :
-# Le but premier est d'avoir des fichiers .xml compatibles avec http://inf1603.alwaysdata.net/ParserResultComparator.php
-# La précision est secondaire sur ce sprint, elle deviendra pertinente dans le sprint 6
+# Branche 6 :
+# Le but premier est de pouvoir passer tous les documents sur le site : http://inf1603.alwaysdata.net/ParserResultComparatorTest.php
+# Ensuite on va viser la précision 

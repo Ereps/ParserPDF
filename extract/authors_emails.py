@@ -11,6 +11,7 @@ def extract(blocks, title, abstract_index) -> list:
     affiliation = {}
     a = []
     e = []
+    date = []
     no_no_in = False
     affil_in = False
     affil = ''
@@ -18,7 +19,8 @@ def extract(blocks, title, abstract_index) -> list:
     author_pattern = re.compile(r'[A-Z][a-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]*)?(?: +[A-Zdlaeiouàáâäçèéêëìíîïñòóôöùúûüýÿﬁ.]{0,3})?(?:[.]*)? [A-Z][A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ-]*)?')
     email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
     semi_mail_pattern = re.compile(r'[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}')
-    no_no_words = ['Université', 'Bretagne', 'Nord', 'Sud', 'Est', 'Ouest', 'University', 'North', 'South', 'West', 'Laboratoire', 'Laboratory', 'Rennes', 'Informatique', 'Google', 'Inc', 'Fondamentale', 'Marseille', 'France', 'Aix-Marseille', 'Vannes', 'Canada', 'Montréal', 'Polytechnique', 'Mexico', 'Avignon', 'Instituto', 'Ingeniería', 'Institute', 'Institue', 'Linguistics', 'Spain', 'Mexique', 'Espagne', 'Québec', 'Pays', 'Vaucluse', 'Meinajaries', 'Département', 'Centre-ville', 'New York', 'Department', 'Computer', 'Science', 'Columbia', 'Technologies', 'Carnegie', 'Mountain', 'View', 'Ecole', 'Centre', 'Ville', 'Cedex', 'Scalable', 'Approach', 'Sentence', 'Scoring', 'Multi', 'Document', 'Multi-Document', 'Update', 'Word', 'Representations', 'Vector', 'Space', 'System', 'Demonstrations', 'Processing', 'Tool', 'Matière', 'Condensée', 'Compiled', 'April', 'November', 'January', 'February', 'March', 'May', 'June', 'July', 'August', 'September', 'December']
+    date_pattern = re.compile(r'(?:(?:[January]{7})|(?:[February]{8})|(?:[March]{5})|(?:[April]{5})|(?:[May]{3})|(?:[June]{4})|(?:[July]{4})|(?:[August]{6})|(?:[September]{9})|(?:[October]{7})|(?:[November]{8})|(?:[December]{8}))[ ]*[0-9]{1,4}[, ]*[0-9]{1,4}')
+    no_no_words = ['Université', 'Bretagne', 'Nord', 'Sud', 'Est', 'Ouest', 'University', 'Universitat', 'North', 'South', 'West', 'Laboratoire', 'Laboratory', 'Rennes', 'Informatique', 'Centre', 'Center', 'Europe', 'Google', 'Inc', 'Fondamentale', 'Marseille', 'France', 'Aix-Marseille', 'Vannes', 'Canada', 'Montréal', 'Polytechnique', 'Mexico', 'Avignon', 'Instituto', 'Ingeniería', 'Institute', 'Institue', 'Linguistics', 'Spain', 'Mexique', 'Espagne', 'Québec', 'Pays', 'Vaucluse', 'Meinajaries', 'Département', 'Centre-ville', 'New York', 'Department', 'Computer', 'Science', 'Columbia', 'Technologies', 'Carnegie', 'Mountain', 'View', 'Ecole', 'Centre', 'Ville', 'Cedex', 'Scalable', 'Approach', 'Sentence', 'Scoring', 'Multi', 'Document', 'Multi-Document', 'Update', 'Word', 'Representations', 'Vector', 'Space', 'System', 'Demonstrations', 'Processing', 'Tool', 'Matière', 'Condensée', 'Compiled', 'April', 'November', 'January', 'February', 'March', 'May', 'June', 'July', 'August', 'September', 'December', 'Institut', 'Universitari', 'Lingüística', 'Aplicada', 'Barcelona', 'La', 'Rambla', 'Xerox', 'Research']
     index = 0
     # Trouver l'indice du bloc contenant le titre
     for x in range(len(blocks)):
@@ -37,6 +39,12 @@ def extract(blocks, title, abstract_index) -> list:
         author_match = author_pattern.search(block_text) #cherche les auteurs
         email_match = email_pattern.search(block_text) #cherche les mails
         semi_mail_match = semi_mail_pattern.search(block_text) #cherche les fins de mails
+        date_match = date_pattern.search(block_text)#cherche des dates
+        if(date_match):
+            date.append(date_pattern.findall(block_text))
+            for d in date[0]:
+                block_text = block_text.replace(d, '')#supprime les dates
+
         if 'J. Manuel Torres Moreno' in block_text:
             a.append(['J. Manuel Torres Moreno'])
         block_text = block_text.replace('J. Manuel Torres Moreno', '')
@@ -130,13 +138,17 @@ def extract(blocks, title, abstract_index) -> list:
             block_text = block_text.replace(end_email[0], '')
         for z in emails:
             block_text = block_text.replace(z, '') #supprime les mails du texte
-        notWanted = re.compile(r' *[&♮♭*∗]+ *| *[0-9,sthrnd]{3}(?:[()A-Za-z]{3})?(?: +|$)|(?:[(][a-z-,.]*[)])')
+        notWanted = re.compile(r' *[&♮♭*∗†]+ *|[, ]+$|^[ ]+| *[0-9,sthrnd]{3}(?:[()A-Za-z]{3})?(?: +|$)|(?:[(][a-z-,.]*[)])')
         nw = notWanted.findall(block_text)
         for n in nw:
-            block_text = block_text.replace(n, '')
-        notAffiliation = re.compile(r' *[and,*∗ .]+ *')
+            block_text = block_text.replace(n, ' ')
+        notAffiliation = re.compile(r' *[and,*∗† .]+ *')
         isAffiliation = notAffiliation.fullmatch(block_text)
         if isAffiliation == None:
+            if block_text.endswith(' '):
+                block_text = block_text.removesuffix(' ')
+            if block_text.startswith(' '):
+                block_text = block_text.removeprefix(' ')
             ajout = False
             same = True
             for r in authors:

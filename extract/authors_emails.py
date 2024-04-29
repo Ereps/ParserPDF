@@ -20,8 +20,9 @@ def extract(blocks, index, abstract_index) -> list:
     email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
     semi_mail_pattern = re.compile(r'[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}')
     date_pattern = re.compile(r'(?:(?:[January]{7})|(?:[February]{8})|(?:[March]{5})|(?:[April]{5})|(?:[May]{3})|(?:[June]{4})|(?:[July]{4})|(?:[August]{6})|(?:[September]{9})|(?:[October]{7})|(?:[November]{8})|(?:[December]{8}))[ ]*[0-9]{1,4}[, ]*[0-9]{1,4}')
-    no_no_words = ['Université', 'Bretagne', 'Nord', 'Sud', 'Est', 'Ouest', 'University', 'Universitat', 'North', 'South', 'West', 'Laboratoire', 'Laboratory', 'Rennes', 'Informatique', 'Centre', 'Center', 'Europe', 'Google', 'Inc', 'Fondamentale', 'Marseille', 'France', 'Aix-Marseille', 'Vannes', 'Canada', 'Montréal', 'Polytechnique', 'Mexico', 'Avignon', 'Instituto', 'Ingeniería', 'Institute', 'Institue', 'Linguistics', 'Spain', 'Mexique', 'Espagne', 'Québec', 'Pays', 'Vaucluse', 'Meinajaries', 'Département', 'Centre-ville', 'New York', 'Department', 'Computer', 'Science', 'Columbia', 'Technologies', 'Carnegie', 'Mountain', 'View', 'Ecole', 'Centre', 'Ville', 'Cedex', 'Scalable', 'Approach', 'Sentence', 'Scoring', 'Multi', 'Document', 'Multi-Document', 'Update', 'Word', 'Representations', 'Vector', 'Space', 'System', 'Demonstrations', 'Processing', 'Tool', 'Matière', 'Condensée', 'Compiled', 'April', 'November', 'January', 'February', 'March', 'May', 'June', 'July', 'August', 'September', 'December', 'Institut', 'Universitari', 'Lingüística', 'Aplicada', 'Barcelona', 'La', 'Rambla', 'Xerox', 'Research']
-    #index = 0
+    no_no_words = ['Université', 'Bretagne', 'Nord', 'Sud', 'Est', 'Ouest', 'University', 'Universitat', 'North', 'South', 'West', 'Laboratoire', 'Laboratory', 'Rennes', 'Informatique', 'Centre', 'Center', 'Europe', 'Google', 'Inc', 'Fondamentale', 'Marseille', 'France', 'Aix-Marseille', 'Vannes', 'Canada', 'Montréal', 'Polytechnique', 'Mexico', 'Avignon', 'Instituto', 'Ingeniería', 'Institute', 'Institue', 'Linguistics', 'Spain', 'Mexique', 'Espagne', 'Québec', 'Pays', 'Vaucluse', 'Meinajaries', 'Département', 'Centre-ville', 'New York', 'Department', 'Computer', 'Science', 'Columbia', 'Technologies', 'Carnegie', 'Mountain', 'View', 'Ecole', 'Centre', 'Ville', 'Cedex', 'Scalable', 'Approach', 'Sentence', 'Scoring', 'Multi', 'Document', 'Multi-Document', 'Update', 'Word', 'Representations', 'Vector', 'Space', 'System', 'Demonstrations', 'Processing', 'Tool', 'Matière', 'Condensée', 'Compiled', 'April', 'November', 'January', 'February', 'March', 'May', 'June', 'July', 'August', 'September', 'December', 'Institut', 'Universitari', 'Lingüística', 'Aplicada', 'Barcelona', 'La', 'Rambla', 'Xerox', 'Research', 'Artiﬁcial', 'Arificial', 'Intelligence']
+    if index == 0:
+        index += 1
     # Trouver l'indice du bloc contenant le titre
     print(index)
     print(abstract_index)
@@ -138,7 +139,7 @@ def extract(blocks, index, abstract_index) -> list:
         nw = notWanted.findall(block_text)
         for n in nw:
             block_text = block_text.replace(n, ' ')
-        notAffiliation = re.compile(r' *[and,*∗† .]+ *')
+        notAffiliation = re.compile(r' *[,*.]+ *[,*. ]*| *[and]{3} *')
         isAffiliation = notAffiliation.fullmatch(block_text)
         if isAffiliation == None:
             if block_text.endswith(' '):
@@ -163,6 +164,7 @@ def extract(blocks, index, abstract_index) -> list:
                         affiliations[key] = value + ' ' + block_text
                     affiliation = affiliations
                     cpt += 1
+
 
     print(author)
     print(emails)

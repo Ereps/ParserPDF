@@ -48,16 +48,18 @@ result = []
 ner_name = "NER/ubs/NER_NAME_V2"
 txt_dir = "NER/trainning_data/text/"
 txt_list = making_dataset.read_files(txt_dir, "txt")
+json_trainning_dataset_V2 = "NER/trainning_data/name/trainning_dataset_V2.json"
 json_trainning_dataset_V3 = "NER/trainning_data/name/trainning_dataset_V3.json"
 
 if __name__ == "__main__":
     #__GENERATE NER
 
     #patterns = making_dataset.create_training_data("NER/trainning_data/name/better_name.json","AUTHOR")
-    generate_rules(json_trainning_dataset_V3)
+    generate_rules(json_trainning_dataset_V2)
 
     #__TEST NER
-    nlp = en_core_web_sm.load()
+    #nlp = en_core_web_sm.load()
+    nlp = spacy.load(ner_name)
 
     for file_name in txt_list:
         with open(txt_dir + file_name, "r") as file:

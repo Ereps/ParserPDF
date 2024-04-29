@@ -25,10 +25,11 @@ def buildXML(pdf) :
         
         
 def buildArticle(pdf, doc, tabcount, blocks) :
-    title_text = title.extract(blocks, doc)
+    title_text, title_i = title.extract(blocks, doc)
+    #print("Title I : ", title_i)
     abstract_i, abstract_text = abstract.getAbstract(blocks)
     #print(title)
-    authors_emails_list = authors_emails.extract(blocks, title_text, abstract_i)
+    authors_emails_list = authors_emails.extract(blocks, title_i, abstract_i)
     intro_text = introduction.toString(blocks)
     corps_text = corpus.toString(blocks)
     conclu_text, conclu_i = conclusion.extract(blocks, doc)

@@ -18,6 +18,7 @@ def replace_special_char(text : str) -> str :
     continus_word = re.compile(r'-( )*\n')
     text = re.sub(continus_word,"",text)
     text = text.replace('\n', ' ')
+    text = text.replace('  ', ' ')
     text = text.replace('- ', '')
     text = text.replace('`A', 'À')
     text = text.replace('^A', 'Â')

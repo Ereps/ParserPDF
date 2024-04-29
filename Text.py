@@ -22,11 +22,11 @@ def buildTEXT(pdf) :
     with open(output_filename, 'w', encoding='utf-8') as output :
         output.write("PDF File:\n" + pdf_basename + "\n"*2)
         # Extract and write title
-        title_text = title.extract(normal_blocks, doc)
+        title_text, title_i = title.extract(normal_blocks, doc)
         output.write("Title:\n" + title_text + "\n"*2)
         # Extract and write authors
         abstract_index, abstract_text = abstract.getAbstract(normal_blocks)
-        author_email_list = authors_emails.extract(normal_blocks, title_text, abstract_index)
+        author_email_list = authors_emails.extract(normal_blocks, title_i, abstract_index)
         authors_text = ""
         for author in author_email_list:
             authors_text += author[0] + ", "

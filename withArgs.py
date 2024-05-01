@@ -1,5 +1,6 @@
 import time, os, argparse
 import Xml, Text
+from extract import pre_processing
 
 def helpUsage() :
     print(os.path.basename(__file__), '[options]')
@@ -13,6 +14,7 @@ def toXml(files : list) :
     print('--- exporting to xml ---')
     Xml.buildDir()
     for f in files :
+        pre_processing.ADcheck(f)
         Xml.buildXML(f)
     print('--- XML in %.3f seconds ---' % (time.time() - startTime))
     
@@ -21,6 +23,7 @@ def toText(files : list) :
     print('--- exporting to text ---')
     Text.buildDir()
     for f in files :
+        pre_processing.ADcheck(f)
         Text.buildTEXT(f)
     print('--- Text in %.3f seconds ---' % (time.time() - startTime))
 

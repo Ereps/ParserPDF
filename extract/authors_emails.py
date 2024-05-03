@@ -20,7 +20,7 @@ def extract(blocks, index, abstract_index) -> list:
     email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
     semi_mail_pattern = re.compile(r'[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}')
     date_pattern = re.compile(r'(?:(?:[January]{7})|(?:[February]{8})|(?:[March]{5})|(?:[April]{5})|(?:[May]{3})|(?:[June]{4})|(?:[July]{4})|(?:[August]{6})|(?:[September]{9})|(?:[October]{7})|(?:[November]{8})|(?:[December]{8}))[ ]*[0-9]{1,4}[, ]*[0-9]{1,4}')
-    no_no_words = ['Université', 'Bretagne', 'Nord', 'Sud', 'Est', 'Ouest', 'University', 'Universitat', 'North', 'South', 'West', 'Laboratoire', 'Laboratory', 'LIMSI-CNRS', 'Univ', 'Rennes', 'Informatique', 'Centre', 'Center', 'Europe', 'Google', 'Inc', 'Fondamentale', 'Marseille', 'France', 'Aix-Marseille', 'Vannes', 'Canada', 'Montréal', 'Polytechnique', 'Mexico', 'Avignon', 'Instituto', 'Ingeniería', 'Institute', 'Institue', 'Linguistics', 'Spain', 'Mexique', 'Espagne', 'Québec', 'Pays', 'Vaucluse', 'Meinajaries', 'Département', 'Centre-ville', 'New York', 'Department', 'Computer', 'Science', 'Columbia', 'Technologies', 'Carnegie', 'Mountain', 'View', 'Ecole', 'Centre', 'Ville', 'Cedex', 'Scalable', 'Approach', 'Sentence', 'Scoring', 'Multi', 'Document', 'Multi-Document', 'Update', 'Word', 'Representations', 'Vector', 'Space', 'System', 'Demonstrations', 'Processing', 'Tool', 'Matière', 'Condensée', 'Compiled', 'April', 'November', 'January', 'February', 'March', 'May', 'June', 'July', 'August', 'September', 'December', 'Institut', 'Universitari', 'Lingüística', 'Aplicada', 'Barcelona', 'La', 'Rambla', 'Xerox', 'Research', 'Artiﬁcial', 'Arificial', 'Intelligence']
+    no_no_words = ['Université', 'Bretagne', 'Nord', 'Sud', 'Est ', 'Ouest', 'University', 'Universitat', 'North', 'South', 'West', 'Laboratoire', 'Laboratory', 'LIMSI-CNRS', 'Univ', 'Rennes', 'Informatique', 'Centre', 'Center', 'Europe', 'Google', 'Inc', 'Fondamentale', 'Marseille', 'France', 'Aix-Marseille', 'Vannes', 'Canada', 'Montréal', 'Polytechnique', 'Mexico', 'Avignon', 'Instituto', 'Ingeniería', 'Institute', 'Institue', 'Linguistics', 'Spain', 'Mexique', 'Espagne', 'Québec', 'Pays', 'Vaucluse', 'Meinajaries', 'Département', 'Centre-ville', 'New York', 'Department', 'Computer', 'Science', 'Columbia', 'Technologies', 'Carnegie', 'Mountain', 'View', 'Ecole', 'Centre', 'Ville', 'Cedex', 'Scalable', 'Approach', 'Sentence', 'Scoring', 'Multi', 'Document', 'Multi-Document', 'Update', 'Word', 'Representations', 'Vector', 'Space', 'System', 'Demonstrations', 'Processing', 'Tool', 'Matière', 'Condensée', 'Compiled', 'April', 'November', 'January', 'February', 'March', 'May', 'June', 'July', 'August', 'September', 'December', 'Institut', 'Universitari', 'Lingüística', 'Aplicada', 'Barcelona', 'La', 'Rambla', 'Xerox', 'Research', 'Artiﬁcial', 'Arificial', 'Intelligence']
     if index == 0:
         index += 1
     # Trouver l'indice du bloc contenant le titre
@@ -49,6 +49,7 @@ def extract(blocks, index, abstract_index) -> list:
             a.append(['M. Teresa Cabré Castellví'])
         block_text = block_text.replace('M. Teresa Cabré Castellví', '')
         if 'Rosa Estopà Bagot' in block_text:
+            print('in')
             a.append(['Rosa Estopà Bagot'])
         block_text = block_text.replace('Rosa Estopà Bagot', '')
         if 'Jordi Vivaldi Palatresi' in block_text:
@@ -63,6 +64,7 @@ def extract(blocks, index, abstract_index) -> list:
                 author.append(x)
         a = []
 
+        #print(author)
         for y in range(len(author)): #boucle sur la liste auteur
             for z in no_no_words: #boucle sur la liste des mots non voulu
                 if z in author[y]: #si un mot non voulu est trouvé dans la string
@@ -71,6 +73,7 @@ def extract(blocks, index, abstract_index) -> list:
                 authors.append(author[y]) #on l'ajoute à la liste définitive des auteurs
             no_no_in = False #on remet no_no_in a false
         author = []
+        #print('après no_no_word')
         #print(authors)
         
         #print(block_text)
@@ -78,7 +81,8 @@ def extract(blocks, index, abstract_index) -> list:
             #print(t)
             block_text = block_text.replace(t, '') #supprime les auteurs du texte
             #print(block_text)
-
+        
+        print(authors)
         if(email_match): #si on a trouvé des mails
             email.append(email_pattern.findall(block_text)) #ajoute dans la liste de mails
             emails = [element for sous_liste in email for element in sous_liste]
@@ -148,18 +152,20 @@ def extract(blocks, index, abstract_index) -> list:
         nw = notWanted.findall(block_text)
         for n in nw:
             block_text = block_text.replace(n, ' ')
-        notAffiliation = re.compile(r' *[,*.]+ *[,*. ]*| *[and]{3} *')
+        notAffiliation = re.compile(r' *[,*.]+ *[,*. ]*| *[and]{3} *| +$')
         isAffiliation = notAffiliation.fullmatch(block_text)
         if isAffiliation == None:
-            if block_text.endswith(' '):
-                block_text = block_text.removesuffix(' ')
-            if block_text.startswith(' '):
-                block_text = block_text.removeprefix(' ')
+            # if block_text.endswith(' '):
+            #     print('suffix')
+            #     block_text = block_text.removesuffix(' ')
+            # if block_text.startswith(' '):
+            #     print('prefix')
+            #     block_text = block_text.removeprefix(' ')
             ajout = False
             same = True
             for r in authors:
                 if r not in affiliation:
-                    affiliation[r] = block_text
+                    affiliation[r] = block_text.strip()
                     affil_in = True
                     ajout = True
             if ajout == False and cpt < 3:
@@ -170,7 +176,7 @@ def extract(blocks, index, abstract_index) -> list:
                         same = False
                 if same:
                     for key, value in affiliation.items():
-                        affiliations[key] = value + ' ' + block_text
+                        affiliations[key] = value + ' ' + block_text.strip()
                     affiliation = affiliations
                     cpt += 1
 

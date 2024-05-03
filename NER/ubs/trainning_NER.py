@@ -18,10 +18,29 @@ def test_model(text):
     doc = nlp(text)
     results = []
     for ent in doc.ents:
-        if ent.label_ == "AUTHOR":
-            results.append(ent.text)
+        if ent.label_ == "PERSON":
+            author = process_author(ent.text)
+            if(author !=""):
+                results.append(author)
     print(results)
     return results
+
+def process_author(text :str) ->str:
+    noNum = r'[0-9]+'
+    final_text = re.sub(noNum,"",text)
+    accent = "éèêëäâàáåïîìùǜüûòöôỳÿŷýẑŝĝĥḧĵẁŵẅĉçẗẍǹ"
+    #Remove non letter character
+    final_text = re.sub(r'[^a-zA-Z\s' +accent+r']', '', final_text)
+    #Remove space
+    final_text = final_text.strip()
+    #Remove if the text is 2 or less character
+    if(len(final_text) < 3):
+        final_text = ""
+    #Remove if the first character isn't in uppercase
+    elif(final_text[0].islower()):
+        final_text = ""
+    
+    return final_text
 
 def generate_rules(file):
     """
@@ -29,7 +48,6 @@ def generate_rules(file):
 
     Args:
         file (str): The path to the file containing the patterns for generating rules.
-
     Returns:
         None
     """
@@ -54,18 +72,17 @@ json_trainning_dataset_V3 = "NER/trainning_data/name/trainning_dataset_V3.json"
 if __name__ == "__main__":
     #__GENERATE NER
 
-    #patterns = making_dataset.create_training_data("NER/trainning_data/name/better_name.json","AUTHOR")
-    generate_rules(json_trainning_dataset_V2)
+
 
     #__TEST NER
-    #nlp = en_core_web_sm.load()
-    nlp = spacy.load(ner_name)
+    nlp = en_core_web_sm.load()
 
     for file_name in txt_list:
         with open(txt_dir + file_name, "r") as file:
             print(file_name)
             txt = file.read()
             result += test_model(txt)
+
             
     with open("/NER/ubs/result/result.json", "w+") as file:
         file.json.dumps(result)

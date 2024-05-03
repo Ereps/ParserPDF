@@ -2,6 +2,44 @@ import re
 
 from extract.block_treatement import *
 
+
+import spacy
+import en_core_web_sm
+
+def extract_ner(text) ->list:
+    doc = nlp(text)
+    results = []
+    for ent in doc.ents:
+        if ent.label_ == "PERSON":
+            author = process_author(ent.text)
+            if(author !=""):
+                results.append(author)
+    print(results)
+    return results
+
+def process_author(text :str) ->str:
+    noNum = r'[0-9]+'
+    final_text = re.sub(noNum,"",text)
+    accent = "éèêëäâàáåïîìùǜüûòöôỳÿŷýẑŝĝĥḧĵẁŵẅĉçẗẍǹ"
+    #Remove non letter character
+    final_text = re.sub(r'[^a-zA-Z\s' +accent+r']', '', final_text)
+    #Remove space
+    final_text = final_text.strip()
+    #Remove if the text is 2 or less character
+    if(len(final_text) < 3):
+        final_text = ""
+    #Remove if the first character isn't in uppercase
+    elif(final_text[0].islower()):
+        final_text = ""
+    
+    return final_text
+    
+    
+nlp = en_core_web_sm.load()
+
+
+
+
 def extract(blocks, index, abstract_index) -> list:
     email = []
     author = []

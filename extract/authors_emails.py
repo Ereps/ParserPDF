@@ -154,13 +154,15 @@ def extract(blocks, index, abstract_index) -> list:
             block_text = block_text.replace(n, ' ')
         notAffiliation = re.compile(r' *[,*.]+ *[,*. ]*| *[and]{3} *| +$')
         isAffiliation = notAffiliation.fullmatch(block_text)
+        if block_text == '':
+            isAffiliation = ''
         if isAffiliation == None:
-            # if block_text.endswith(' '):
-            #     print('suffix')
-            #     block_text = block_text.removesuffix(' ')
-            # if block_text.startswith(' '):
-            #     print('prefix')
-            #     block_text = block_text.removeprefix(' ')
+            if block_text.endswith(' '):
+                print('suffix')
+                block_text = block_text.removesuffix(' ')
+            if block_text.startswith(' '):
+                print('prefix')
+                block_text = block_text.removeprefix(' ')
             ajout = False
             same = True
             for r in authors:

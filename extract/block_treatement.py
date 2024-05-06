@@ -62,6 +62,7 @@ def replace_special_char(text : str) -> str :
     text = text.replace('´a', 'á')
     text = text.replace('°a', 'å')
     text = text.replace('"ı', 'ï')
+    text = text.replace('ı¨', 'ï')
     text = text.replace('ˆı', 'î')
     text = text.replace('`ı', 'ì')
     text = text.replace('`u', 'ù')
@@ -89,6 +90,7 @@ def replace_special_char(text : str) -> str :
     text = text.replace('"t', 'ẗ')
     text = text.replace('"x', 'ẍ')
     text = text.replace('`n', 'ǹ')
+    text = text.replace('ﬁ', 'fi')
     # XML cid(?) TIME
     text = text.replace(' ⃗', '~')
     text = text.replace('(⃗', '(~')

@@ -1,19 +1,26 @@
 import re
 from extract.block_treatement import *
+from extract.abstract import getStartAbs
 
-#TODO mettre le txt en retour aussi ?
 def getStart(blocks: list) -> int :
-    for i in range(len(blocks)):
+    pattern = re.compile(r'(.*([I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn]))') #|(1|I).*
+    for i in range(getStartAbs(blocks), len(blocks)):
         block_text = replace_special_char(blocks[i][4])
-        pattern = re.compile(r'.*([I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn])')
         if pattern.match(block_text) :
             #print("Intro", i)
             return i
+    pattern = re.compile(r'(1|I).*') #|(1|I).*
+    for i in range(getStartAbs(blocks), len(blocks)):
+        block_text = replace_special_char(blocks[i][4])
+        if pattern.match(block_text) :
+            #print("Intro", i)
+            return i
+        
 
 def getEnd(blocks: list) -> int :
+    pattern = re.compile(r'(2|I{2})(\.|\ )+.*')
     for i in range(getStart(blocks), len(blocks)) :
         text = replace_special_char(blocks[i][4])
-        pattern = re.compile(r'(2|I{2})(\ \.)?([A-Z][a-z])*')
         if pattern.match(text) :
             #print(i)
             return i
@@ -22,9 +29,10 @@ def toString(blocks: list) -> str :
     intro_index = getStart(blocks)
     end_index = getEnd(blocks)
     #print(intro_index, end_index)
+    #print("end intro : ", end_index, blocks[end_index][4])
     string = ""
-    for i in range(intro_index+1, end_index) :
-        string += blocks[i][4]
+    for i in range(intro_index, end_index) :
+        string += blocks[i][4] + " "
     #print(string)
     return string
 

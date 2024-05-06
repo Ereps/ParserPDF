@@ -1,6 +1,6 @@
 import re
 
-def make_uchr(code: str):
+def make_uchr(code: str) -> str :
     return chr(int(code.lstrip("U+").zfill(8), 16))
 
 #return the normalize version of the text blocks
@@ -18,6 +18,7 @@ def replace_special_char(text : str) -> str :
     continus_word = re.compile(r'-( )*\n')
     text = re.sub(continus_word,"",text)
     text = text.replace('\n', ' ')
+    text = text.replace('  ', ' ')
     text = text.replace('- ', '')
     text = text.replace('`A', 'À')
     text = text.replace('^A', 'Â')
@@ -89,34 +90,34 @@ def replace_special_char(text : str) -> str :
     text = text.replace('"t', 'ẗ')
     text = text.replace('"x', 'ẍ')
     text = text.replace('`n', 'ǹ')
-    # XML BRGH TIME
+    # XML cid(?) TIME
     text = text.replace(' ⃗', '~')
     text = text.replace('(⃗', '(~')
     text = text.replace('’', '\'')
     text = text.replace('′', '\'')
-    text = text.replace('', 'BRGH')
-    text = text.replace('f', 'BRGH')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('f', 'cid(?)')
     #traitement xml
-    text = text.replace('', 'BRGH')
-    text = text.replace('<', 'BRGH')
-    text = text.replace('>', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('&', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
-    text = text.replace('', 'BRGH')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('<', 'cid(?)')
+    text = text.replace('>', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('&', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
 
 
     return text

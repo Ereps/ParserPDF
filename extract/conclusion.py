@@ -14,7 +14,7 @@ POUR CORRIGER TORRES : y'a References dans le titre qui gêne avec le regex, don
 """
 #TODO virer le potentiel chiffre à la fin de conclu (exemple avec Iria_Juan-Manuel)
 
-def extract(blocks, doc):
+def extract(blocks: list, doc: open) -> tuple[str, int] :
     """partie title pour ne pas dépendre d'une autre fonction"""
     title = ""
     i = 0

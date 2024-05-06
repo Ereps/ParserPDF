@@ -1,7 +1,7 @@
 import re
 from extract.block_treatement import *
 
-def extract(blocks, doc):
+def extract(blocks : list, doc : open) -> tuple[str, int] :
     """partie title pour ne pas dépendre d'une autre fonction"""
     title = ""
     i = 0

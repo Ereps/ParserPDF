@@ -7,7 +7,7 @@ def buildDir() :
     if not os.path.exists(output_directory_xml) :
         os.mkdir(output_directory_xml)
 
-def buildXML(pdf) :
+def buildXML(pdf, toBegin: int) :
     pdf_basename = os.path.basename(pdf)
     output_filename = output_directory_xml + os.sep + pdf_basename
     output_filename = str.replace(output_filename, '.pdf', '.xml')
@@ -20,15 +20,17 @@ def buildXML(pdf) :
     normal_blocks = block_treatement.blocks_normalization(blocks)
             
     with open(output_filename, 'w', encoding='utf-8') as output :
-        output.write(buildArticle(pdf_basename, doc, 0, normal_blocks))
+        output.write(buildArticle(pdf_basename, doc, 0, normal_blocks, toBegin))
     print('%s created' % os.path.basename(output_filename))
         
         
-def buildArticle(pdf, doc, tabcount, blocks) :
-    title_text = title.extract(blocks, doc)
+def buildArticle(pdf, doc, tabcount, blocks, toBegin: int) :
+    #print(blocks[0])
+    title_text, title_i = title.extract(blocks, doc, toBegin)
+    #print("Title I : ", title_i)
     abstract_i, abstract_text = abstract.getAbstract(blocks)
     #print(title)
-    authors_emails_list = authors_emails.extract(blocks, title_text, abstract_i)
+    authors_emails_list = authors_emails.extract(blocks, title_i, abstract_i)
     intro_text = introduction.toString(blocks)
     corps_text = corpus.toString(blocks)
     conclu_text, conclu_i = conclusion.extract(blocks, doc)

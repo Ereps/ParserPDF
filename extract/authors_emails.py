@@ -2,7 +2,45 @@ import re
 
 from extract.block_treatement import *
 
-def extract(blocks, title, abstract_index) -> list:
+
+import spacy
+import en_core_web_sm
+
+def extract_ner(text) ->list:
+    doc = nlp(text)
+    results = []
+    for ent in doc.ents:
+        if ent.label_ == "PERSON":
+            author = process_author(ent.text)
+            if(author !=""):
+                results.append(author)
+    print(results)
+    return results
+
+def process_author(text :str) ->str:
+    noNum = r'[0-9]+'
+    final_text = re.sub(noNum,"",text)
+    accent = "éèêëäâàáåïîìùǜüûòöôỳÿŷýẑŝĝĥḧĵẁŵẅĉçẗẍǹ"
+    #Remove non letter character
+    final_text = re.sub(r'[^a-zA-Z\s' +accent+r']', '', final_text)
+    #Remove space
+    final_text = final_text.strip()
+    #Remove if the text is 2 or less character
+    if(len(final_text) < 3):
+        final_text = ""
+    #Remove if the first character isn't in uppercase
+    elif(final_text[0].islower()):
+        final_text = ""
+    
+    return final_text
+    
+    
+nlp = en_core_web_sm.load()
+
+
+
+
+def extract(blocks, index, abstract_index) -> list:
     email = []
     author = []
     emails = []
@@ -11,20 +49,21 @@ def extract(blocks, title, abstract_index) -> list:
     affiliation = {}
     a = []
     e = []
+    date = []
     no_no_in = False
     affil_in = False
     affil = ''
     cpt = 1
-    author_pattern = re.compile(r'[A-Z][a-zàáâäçèéêëìíîïñòóôöùúûüýÿ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ]*)?(?: +[A-Zdlaeiouàáâäçèéêëìíîïñòóôöùúûüýÿ.]{0,3})?(?:[.]*)? [A-Z][A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿ-]*)?')
+    author_pattern = re.compile(r'[A-Z][a-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]*)?(?: +[A-Zinhugdlaeiouàáâäçèéêëìíîïñòóôöùúûüýÿﬁ.]*)?(?:[.]*)? [A-Z][A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ-]*)?')
     email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
     semi_mail_pattern = re.compile(r'[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}')
-    no_no_words = ['Université', 'Bretagne', 'Nord', 'Sud', 'Est', 'Ouest', 'University', 'North', 'South', 'West', 'Laboratoire', 'Laboratory', 'Rennes', 'Informatique', 'Google', 'Inc', 'Fondamentale', 'Marseille', 'France', 'Aix-Marseille', 'Vannes', 'Canada', 'Montréal', 'Polytechnique', 'Mexico', 'Avignon', 'Instituto', 'Ingeniería', 'Institute', 'Institue', 'Linguistics', 'Spain', 'Mexique', 'Espagne', 'Québec', 'Pays', 'Vaucluse', 'Meinajaries', 'Département', 'Centre-ville', 'New York', 'Department', 'Computer', 'Science', 'Columbia', 'Technologies', 'Carnegie', 'Mountain', 'View', 'Ecole', 'Centre', 'Ville', 'Cedex', 'Scalable', 'Approach', 'Sentence', 'Scoring', 'Multi', 'Document', 'Multi-Document', 'Update', 'Word', 'Representations', 'Vector', 'Space', 'System', 'Demonstrations', 'Processing', 'Tool', 'Matière', 'Condensée']
-    index = 0
+    date_pattern = re.compile(r'(?:(?:[January]{7})|(?:[February]{8})|(?:[March]{5})|(?:[April]{5})|(?:[May]{3})|(?:[June]{4})|(?:[July]{4})|(?:[August]{6})|(?:[September]{9})|(?:[October]{7})|(?:[November]{8})|(?:[December]{8}))[ ]*[0-9]{1,4}[, ]*[0-9]{1,4}')
+    no_no_words = ['Université', 'Bretagne', 'Nord', 'Sud', 'Est', 'Ouest', 'University', 'Universitat', 'North', 'South', 'West', 'Laboratoire', 'Laboratory', 'Rennes', 'Informatique', 'Centre', 'Center', 'Europe', 'Google', 'Inc', 'Fondamentale', 'Marseille', 'France', 'Aix-Marseille', 'Vannes', 'Canada', 'Montréal', 'Polytechnique', 'Mexico', 'Avignon', 'Instituto', 'Ingeniería', 'Institute', 'Institue', 'Linguistics', 'Spain', 'Mexique', 'Espagne', 'Québec', 'Pays', 'Vaucluse', 'Meinajaries', 'Département', 'Centre-ville', 'New York', 'Department', 'Computer', 'Science', 'Columbia', 'Technologies', 'Carnegie', 'Mountain', 'View', 'Ecole', 'Centre', 'Ville', 'Cedex', 'Scalable', 'Approach', 'Sentence', 'Scoring', 'Multi', 'Document', 'Multi-Document', 'Update', 'Word', 'Representations', 'Vector', 'Space', 'System', 'Demonstrations', 'Processing', 'Tool', 'Matière', 'Condensée', 'Compiled', 'April', 'November', 'January', 'February', 'March', 'May', 'June', 'July', 'August', 'September', 'December', 'Institut', 'Universitari', 'Lingüística', 'Aplicada', 'Barcelona', 'La', 'Rambla', 'Xerox', 'Research', 'Artiﬁcial', 'Arificial', 'Intelligence']
+    if index == 0:
+        index += 1
     # Trouver l'indice du bloc contenant le titre
-    for x in range(len(blocks)):
-        if title in blocks[x][4]:
-            index = x+1
-            break
+    print(index)
+    print(abstract_index)
     #abstract_index[0] == premier abstract block
     for i in range(index, abstract_index, 1):
         if 'Abstract' in blocks[i][4] or 'abstract' in blocks[i][4] or 'ABSTRACT' in blocks[i][4]:
@@ -35,18 +74,25 @@ def extract(blocks, title, abstract_index) -> list:
         author_match = author_pattern.search(block_text) #cherche les auteurs
         email_match = email_pattern.search(block_text) #cherche les mails
         semi_mail_match = semi_mail_pattern.search(block_text) #cherche les fins de mails
+        date_match = date_pattern.search(block_text)#cherche des dates
+        if(date_match):
+            date.append(date_pattern.findall(block_text))
+            for d in date[0]:
+                block_text = block_text.replace(d, '')#supprime les dates
+
         if 'J. Manuel Torres Moreno' in block_text:
             a.append(['J. Manuel Torres Moreno'])
         block_text = block_text.replace('J. Manuel Torres Moreno', '')
         #print(block_text)
         if(author_match): #si on a trouvé des auteurs
             a.append(author_pattern.findall(block_text)) #ajoute dans la liste auteurs
-
+        print(block_text)
         for w in a:
             for x in w:
                 author.append(x)
         a = []
 
+        #print(author)
         for y in range(len(author)): #boucle sur la liste auteur
             for z in no_no_words: #boucle sur la liste des mots non voulu
                 if z in author[y]: #si un mot non voulu est trouvé dans la string
@@ -55,6 +101,7 @@ def extract(blocks, title, abstract_index) -> list:
                 authors.append(author[y]) #on l'ajoute à la liste définitive des auteurs
             no_no_in = False #on remet no_no_in a false
         author = []
+        #print('après no_no_word')
         #print(authors)
         
         #print(block_text)
@@ -62,7 +109,8 @@ def extract(blocks, title, abstract_index) -> list:
             #print(t)
             block_text = block_text.replace(t, '') #supprime les auteurs du texte
             #print(block_text)
-
+        
+        print(authors)
         if(email_match): #si on a trouvé des mails
             email.append(email_pattern.findall(block_text)) #ajoute dans la liste de mails
             emails = [element for sous_liste in email for element in sous_liste]
@@ -70,14 +118,14 @@ def extract(blocks, title, abstract_index) -> list:
                 email_match = email_pattern.search(block_text)
                 email_index = email_match.start()
                 if block_text[email_index-1] == ',' or block_text[email_index-2] == ',': #si jamais on trouve une virgule avant le mail
-                    block_text = block_text.replace(' ', '')
+                    #block_text = block_text.replace(' ', '')
                     email_match = email_pattern.search(block_text)
                     email_index = email_match.start()
                     semi_mail_match = semi_mail_pattern.search(block_text)
                     end_email = semi_mail_pattern.findall(block_text)
-                    e = block_text.split(',') #on sépare le texte grâce qux virgules
+                    e = block_text.split(',') #on sépare le texte grâce aux virgules
                     for m in e: #on boucle sur les éléments du texte séparé
-                        if m != email[0][0]: #si l'élément est différent du mail
+                        if m != email[0][0] and ' ' not in m and m != '': #si l'élément est différent du mail
                             emails.append(m+end_email[0]) #on l'ajoute à la liste des mails
         elif(semi_mail_match): # sinon si on a trouvé une fin de mail
             block_text_no_space = block_text.replace(' ', '') #on enlève tous les espaces
@@ -128,18 +176,26 @@ def extract(blocks, title, abstract_index) -> list:
             block_text = block_text.replace(end_email[0], '')
         for z in emails:
             block_text = block_text.replace(z, '') #supprime les mails du texte
-        notWanted = re.compile(r' *[&♮♭*∗]+ *| *[0-9,sthrnd]{3}(?:[()A-Za-z]{3})?(?: +|$)|(?:[(][a-z-,.]*[)])')
+        notWanted = re.compile(r' *[&♮♭*∗†]+ *|[, ]+$|^[ ]+| *[0-9,sthrnd]{3}(?:[()A-Za-z]{3})?(?: +|$)|(?:[(][a-z-,.]*[)])')
         nw = notWanted.findall(block_text)
         for n in nw:
-            block_text = block_text.replace(n, '')
-        notAffiliation = re.compile(r' *[and,*∗ .]+ *')
+            block_text = block_text.replace(n, ' ')
+        notAffiliation = re.compile(r' *[,*.]+ *[,*. ]*| *[and]{3} *| +$')
         isAffiliation = notAffiliation.fullmatch(block_text)
+        if block_text == '':
+            isAffiliation = ''
         if isAffiliation == None:
+            if block_text.endswith(' '):
+                print('suffix')
+                block_text = block_text.removesuffix(' ')
+            if block_text.startswith(' '):
+                print('prefix')
+                block_text = block_text.removeprefix(' ')
             ajout = False
             same = True
             for r in authors:
                 if r not in affiliation:
-                    affiliation[r] = block_text
+                    affiliation[r] = block_text.strip()
                     affil_in = True
                     ajout = True
             if ajout == False and cpt < 3:
@@ -150,11 +206,14 @@ def extract(blocks, title, abstract_index) -> list:
                         same = False
                 if same:
                     for key, value in affiliation.items():
-                        affiliations[key] = value + ' ' + block_text
+                        affiliations[key] = value + ' ' + block_text.strip()
                     affiliation = affiliations
                     cpt += 1
 
 
+    print(author)
+    print(emails)
+    print(affiliation)
         
 
     for em in emails:
@@ -193,6 +252,14 @@ def extract(blocks, title, abstract_index) -> list:
         for d in authors:
             if affil_in == True:
                 affil = affiliation[d]
-            author_email.append([d, ' ', affil])
+            author_email.append([d, 'N/A', affil])
+    
+    print(author_email)
+
+    for aut in author_email:
+        if aut[-1] == '':
+            aut[-1] = 'N/A'
+
+    print(author_email)
 
     return author_email

@@ -20,7 +20,7 @@ def extract(blocks, index, abstract_index) -> list:
     email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
     semi_mail_pattern = re.compile(r'[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}')
     date_pattern = re.compile(r'(?:(?:[January]{7})|(?:[February]{8})|(?:[March]{5})|(?:[April]{5})|(?:[May]{3})|(?:[June]{4})|(?:[July]{4})|(?:[August]{6})|(?:[September]{9})|(?:[October]{7})|(?:[November]{8})|(?:[December]{8}))[ ]*[0-9]{1,4}[, ]*[0-9]{1,4}')
-    no_no_words = ['Université', 'Bretagne', 'Nord', 'Sud', 'Est ', 'Ouest', 'University', 'Universitat', 'North', 'South', 'West', 'Laboratoire', 'Laboratory', 'LIMSI-CNRS', 'Univ', 'Rennes', 'Informatique', 'Centre', 'Center', 'Europe', 'Google', 'Inc', 'Fondamentale', 'Marseille', 'France', 'Aix-Marseille', 'Vannes', 'Canada', 'Montréal', 'Polytechnique', 'Mexico', 'Avignon', 'Instituto', 'Ingeniería', 'Institute', 'Institue', 'Linguistics', 'Spain', 'Mexique', 'Espagne', 'Québec', 'Pays', 'Vaucluse', 'Meinajaries', 'Département', 'Centre-ville', 'New York', 'Department', 'Computer', 'Science', 'Columbia', 'Technologies', 'Carnegie', 'Mountain', 'View', 'Ecole', 'Centre', 'Ville', 'Cedex', 'Scalable', 'Approach', 'Sentence', 'Scoring', 'Multi', 'Document', 'Multi-Document', 'Update', 'Word', 'Representations', 'Vector', 'Space', 'System', 'Demonstrations', 'Processing', 'Tool', 'Matière', 'Condensée', 'Compiled', 'April', 'November', 'January', 'February', 'March', 'May', 'June', 'July', 'August', 'September', 'December', 'Institut', 'Universitari', 'Lingüística', 'Aplicada', 'Barcelona', 'La', 'Rambla', 'Xerox', 'Research', 'Artiﬁcial', 'Arificial', 'Intelligence']
+    no_no_words = ['Université', 'Bretagne', 'Nord', 'Sud', 'Est ', 'Ouest', 'University', 'Universitat', 'North', 'South', 'West', 'Laboratoire', 'Laboratory', 'LIMSI-CNRS', 'Univ', 'Rennes', 'Informatique', 'Centre', 'Center', 'Europe', 'Google', 'Inc', 'Fondamentale', 'Marseille', 'France', 'Aix-Marseille', 'Vannes', 'Canada', 'Montréal', 'Polytechnique', 'Mexico', 'Avignon', 'Instituto', 'Ingeniería', 'Institute', 'Institue', 'Linguistics', 'Spain', 'Mexique', 'Espagne', 'Québec', 'Pays', 'Vaucluse', 'Meinajaries', 'Département', 'Centre-ville', 'New York', 'Department', 'Computer', 'Science', 'Columbia', 'Technologies', 'Carnegie', 'Mountain', 'View', 'Ecole', 'Centre', 'Ville', 'Cedex', 'Scalable', 'Approach', 'Sentence', 'Scoring', 'Multi', 'Document', 'Multi-Document', 'Update', 'Word', 'Representations', 'Vector', 'Space', 'System', 'Demonstrations', 'Processing', 'Tool', 'Matière', 'Condensée', 'Compiled', 'April', 'November', 'January', 'February', 'March', 'May', 'June', 'July', 'August', 'September', 'December', 'Institut', 'Universitari', 'Lingüística', 'Aplicada', 'Barcelona', 'La', 'Rambla', 'Xerox', 'Research', 'Artiﬁcial', 'Arificial', 'Intelligence', 'Domaine', 'Chesnay']
     if index == 0:
         index += 1
     # Trouver l'indice du bloc contenant le titre
@@ -148,7 +148,7 @@ def extract(blocks, index, abstract_index) -> list:
             block_text = block_text.replace(end_email[0], '')
         for z in emails:
             block_text = block_text.replace(z, '') #supprime les mails du texte
-        notWanted = re.compile(r' *[&♮♭*∗†]+ *|[, ]+$|^[ ]+| *[0-9,sthrnd]{3}(?:[()A-Za-z]{3})?(?: +|$)|(?:[(][a-z-,.]*[)])')
+        notWanted = re.compile(r'[a-z]{0,1}[,]* *[&♮♭⇑*]+ *(?:[,]{0,1}[ ]*[a-z]{0,1})*| *[0-9,sthrnd]{3}(?:[(][A-Za-z]{0,1}[)])?(?: +|$)')
         nw = notWanted.findall(block_text)
         for n in nw:
             block_text = block_text.replace(n, ' ')
@@ -161,6 +161,7 @@ def extract(blocks, index, abstract_index) -> list:
             # if block_text.startswith(' '):
             #     print('prefix')
             #     block_text = block_text.removeprefix(' ')
+            print(block_text)
             ajout = False
             same = True
             for r in authors:
@@ -168,7 +169,9 @@ def extract(blocks, index, abstract_index) -> list:
                     affiliation[r] = block_text.strip()
                     affil_in = True
                     ajout = True
-            if ajout == False and cpt < 3:
+            print(affiliation)
+            print(authors)
+            if ajout == False and cpt < 3 and len(authors) > 0 :
                 affiliations = {}
                 v = affiliation[authors[0]]
                 for key, value in affiliation.items():

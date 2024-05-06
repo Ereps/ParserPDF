@@ -57,6 +57,8 @@ def replace_special_char(text : str) -> str :
     text = text.replace('^e', 'ê')
     text = text.replace('"e', 'ë')
     text = text.replace('"a', 'ä')
+    text = text.replace('a¨', 'ä')
+    text = text.replace('¨a', 'ä')
     text = text.replace('^a', 'â')
     text = text.replace('`a', 'à')
     text = text.replace('´a', 'á')
@@ -119,6 +121,9 @@ def replace_special_char(text : str) -> str :
     text = text.replace('', 'cid(?)')
     text = text.replace('', 'cid(?)')
     text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
 
 
     return text

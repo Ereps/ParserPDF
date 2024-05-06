@@ -179,6 +179,10 @@ def extract(blocks, index, abstract_index) -> list:
                         affiliations[key] = value + ' ' + block_text.strip()
                     affiliation = affiliations
                     cpt += 1
+                elif not same:
+                    k = [*affiliation.keys()]
+                    v = [*affiliation.values()]
+                    affiliation[k[-1]] = v[-1] + ' ' + block_text.strip()
 
 
     print(author)

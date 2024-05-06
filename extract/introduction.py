@@ -3,26 +3,12 @@ from extract.block_treatement import *
 from extract.abstract import getStartAbs
 
 def getStart(blocks: list) -> int :
-    pattern = re.compile(r'((I. [I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn]))') #|(1|I).*
+    pattern = re.compile(r'((I.)|(1.)|(1)) ([I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn])') #|(1|I).*
     for i in range(getStartAbs(blocks), len(blocks)):
         block_text = replace_special_char(blocks[i][4])
         if pattern.match(block_text) :
             #print("Intro", i)
-            print('found')
-            return i+1
-    pattern = re.compile(r'((1. [I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn]))') #|(1|I).*
-    for i in range(getStartAbs(blocks), len(blocks)):
-        block_text = replace_special_char(blocks[i][4])
-        if pattern.match(block_text) :
-            #print("Intro", i)
-            print('found')
-            return i+1
-    pattern = re.compile(r'1 ([I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn])') #|(1|I).*
-    for i in range(getStartAbs(blocks), len(blocks)):
-        block_text = replace_special_char(blocks[i][4])
-        if pattern.match(block_text) :
-            #print("Intro", i)
-            print('found')
+            #print('found')
             return i+1
     return -1
     ###pattern = re.compile(r'(1|I).*') #|(1|I).*

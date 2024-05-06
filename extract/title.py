@@ -17,7 +17,7 @@ def extract(blocks: list, doc: fitz.open, index_begin: int) -> tuple[str, int] :
     else: #si le titre n'est pas dans les metadatas
         #TODO trouver une solution avec la police d'écriture
         title = replace_special_char(blocks[index_begin][4]) #on récupère la ligne et on enlève le caractère de fin de ligne
-        print(title, index_begin)
+        #print(title, index_begin)
 
     title = title.replace('\n', '')
     title = title.strip()

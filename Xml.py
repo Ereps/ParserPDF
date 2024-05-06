@@ -7,14 +7,14 @@ def buildDir() :
     if not os.path.exists(output_directory_xml) :
         os.mkdir(output_directory_xml)
 
-def buildXML(pdf, toBegin: int) :
+def buildXML(pdf, toBegin: int, page_id: int) :
     pdf_basename = os.path.basename(pdf)
     output_filename = output_directory_xml + os.sep + pdf_basename
     output_filename = str.replace(output_filename, '.pdf', '.xml')
     print('exporting %s...' % pdf_basename)
     with fitz.open(pdf) as doc :
         blocks = []
-        for page_num in range(len(doc)):
+        for page_num in range(page_id, len(doc)):
             page = doc.load_page(page_num)
             blocks += page.get_text("blocks")
     normal_blocks = block_treatement.blocks_normalization(blocks)
@@ -24,7 +24,7 @@ def buildXML(pdf, toBegin: int) :
     print('%s created' % os.path.basename(output_filename))
         
         
-def buildArticle(pdf, doc, tabcount, blocks, toBegin: int) :
+def buildArticle(pdf, doc: fitz.open, tabcount: int, blocks: list, toBegin: int) :
     #print(blocks[0])
     title_text, title_i = title.extract(blocks, doc, toBegin)
     #print("Title I : ", title_i)

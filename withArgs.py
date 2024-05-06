@@ -14,8 +14,8 @@ def toXml(files : list) :
     print('--- exporting to xml ---')
     Xml.buildDir()
     for f in files :
-        begin = pre_processing.ADcheck(f)
-        Xml.buildXML(f, begin)
+        page_id, begin_index = pre_processing.ADcheck(f)
+        Xml.buildXML(f, begin_index, page_id)
     print('--- XML in %.3f seconds ---' % (time.time() - startTime))
     
 def toText(files : list) :
@@ -23,8 +23,8 @@ def toText(files : list) :
     print('--- exporting to text ---')
     Text.buildDir()
     for f in files :
-        pre_processing.ADcheck(f)
-        Text.buildTEXT(f)
+        page_id, begin_index = pre_processing.ADcheck(f)
+        Text.buildTEXT(f, page_id, begin_index)
     print('--- Text in %.3f seconds ---' % (time.time() - startTime))
 
 # main function with args

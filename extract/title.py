@@ -11,6 +11,7 @@ def extract(blocks: list, doc: fitz.open, index_begin: int) -> tuple[str, int] :
         #print(doc.metadata.get("title"))
         for i in range(index_begin, len(blocks)) :
             block_text = replace_special_char(blocks[i][4])
+            block_text = block_text.replace('*', '')
             #print(block_text)
             if pattern.match(block_text) :
                 return block_text, i+1
@@ -19,7 +20,8 @@ def extract(blocks: list, doc: fitz.open, index_begin: int) -> tuple[str, int] :
         title = replace_special_char(blocks[index_begin][4]) #on récupère la ligne et on enlève le caractère de fin de ligne
         #print(title, index_begin)
 
+    title = title.replace('*', '')
     title = title.replace('\n', '')
     title = title.strip()
-    #print('Title ', i)
+    print('Title ', i)
     return title, 0

@@ -3,10 +3,10 @@ import re
 from extract.block_treatement import *
 
 
-import spacy
 import en_core_web_sm
 
 def extract_ner(text) ->list:
+    nlp = en_core_web_sm.load()
     doc = nlp(text)
     results = []
     for ent in doc.ents:
@@ -20,7 +20,8 @@ def extract_ner(text) ->list:
 def process_author(text :str) ->str:
     noNum = r'[0-9]+'
     final_text = re.sub(noNum,"",text)
-    accent = "éèêëäâàáåïîìùǜüûòöôỳÿŷýẑŝĝĥḧĵẁŵẅĉçẗẍǹ"
+    final_text = replace_special_char(final_text)
+    accent = "ÀÂÄÉÈËÊÏÎÌÙÜǛÛÒÖÔỲŸŶẐŜĜĤḦĴẄŴẀĈẌǸéèêëäâàáåïîìùǜüûòöôỳÿŷýẑŝĝĥḧĵẁŵẅĉçẗẍǹ-"
     #Remove non letter character
     final_text = re.sub(r'[^a-zA-Z\s' +accent+r']', '', final_text)
     #Remove space
@@ -35,7 +36,6 @@ def process_author(text :str) ->str:
     return final_text
     
     
-nlp = en_core_web_sm.load()
 
 
 
@@ -93,6 +93,8 @@ def extract(blocks, index, abstract_index) -> list:
         a = []
 
         #print(author)
+        """
+        TODO TEST NER TKT MANUE CA VA ALLER
         for y in range(len(author)): #boucle sur la liste auteur
             for z in no_no_words: #boucle sur la liste des mots non voulu
                 if z in author[y]: #si un mot non voulu est trouvé dans la string
@@ -103,13 +105,14 @@ def extract(blocks, index, abstract_index) -> list:
         author = []
         #print('après no_no_word')
         #print(authors)
-        
+        """
+        authors = extract_ner(block_text)
         #print(block_text)
         for t in authors:
             #print(t)
             block_text = block_text.replace(t, '') #supprime les auteurs du texte
             #print(block_text)
-        
+
         print(authors)
         if(email_match): #si on a trouvé des mails
             email.append(email_pattern.findall(block_text)) #ajoute dans la liste de mails

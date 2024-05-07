@@ -3,10 +3,10 @@ import re
 from extract.block_treatement import *
 
 
-import spacy
 import en_core_web_sm
 
 def extract_ner(text) ->list:
+    nlp = en_core_web_sm.load()
     doc = nlp(text)
     results = []
     for ent in doc.ents:
@@ -20,7 +20,8 @@ def extract_ner(text) ->list:
 def process_author(text :str) ->str:
     noNum = r'[0-9]+'
     final_text = re.sub(noNum,"",text)
-    accent = "éèêëäâàáåïîìùǜüûòöôỳÿŷýẑŝĝĥḧĵẁŵẅĉçẗẍǹ"
+    final_text = replace_special_char(final_text)
+    accent = "ÀÂÄÉÈËÊÏÎÌÙÜǛÛÒÖÔỲŸŶẐŜĜĤḦĴẄŴẀĈẌǸéèêëäâàáåïîìùǜüûòöôỳÿŷýẑŝĝĥḧĵẁŵẅĉçẗẍǹ-"
     #Remove non letter character
     final_text = re.sub(r'[^a-zA-Z\s' +accent+r']', '', final_text)
     #Remove space
@@ -35,7 +36,6 @@ def process_author(text :str) ->str:
     return final_text
     
     
-nlp = en_core_web_sm.load()
 
 
 

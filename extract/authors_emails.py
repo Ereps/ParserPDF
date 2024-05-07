@@ -16,7 +16,7 @@ def extract(blocks, index, abstract_index) -> list:
     affil_in = False
     affil = ''
     cpt = 1
-    author_pattern = re.compile(r'[A-Z][a-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]*)?(?: +[A-Zinhugdlaeiouàáâäçèéêëìíîïñòóôöùúûüýÿﬁ.]*)?(?:[.]*)? [A-Z][A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ-]*)?')
+    author_pattern = re.compile(r'[A-Z][a-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]*)?(?: +[A-Zinhugdlaeiouàáâäçèéêëìíîïñòóôöùúûüýÿﬁ.]{0,5})?(?:[.]*)? [A-Z][A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ]+(?:-[A-Za-zàáâäçèéêëìíîïñòóôöùúûüýÿﬁ-]*)?')
     email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
     semi_mail_pattern = re.compile(r'[@qQ][A-Za-z0-9.-]+\.[A-Z|a-z]{2,}')
     date_pattern = re.compile(r'(?:(?:[January]{7})|(?:[February]{8})|(?:[March]{5})|(?:[April]{5})|(?:[May]{3})|(?:[June]{4})|(?:[July]{4})|(?:[August]{6})|(?:[September]{9})|(?:[October]{7})|(?:[November]{8})|(?:[December]{8}))[ ]*[0-9]{1,4}[, ]*[0-9]{1,4}')
@@ -148,19 +148,19 @@ def extract(blocks, index, abstract_index) -> list:
             block_text = block_text.replace(end_email[0], '')
         for z in emails:
             block_text = block_text.replace(z, '') #supprime les mails du texte
-        notWanted = re.compile(r'[a-z]{0,1}[,]* *[&♮♭⇑*]+ *(?:[,]{0,1}[ ]*[a-z]{0,1})*| *[0-9,sthrnd]{3}(?:[(][A-Za-z]{0,1}[)])?(?: +|$)')
+        notWanted = re.compile(r'^[a-z∗†]{0,1}[,]* *[&♮♭⇑*†]+ *(?:[,]{0,1}[ ]*[a-z†∗]{0,1})*| *[0-9,sthrnd]{3}(?:[(][A-Za-z]{0,1}[)])?(?: +|$)|[&♮♭⇑*† ]{2}|[ ,]+$|^(?:[and]{3}[ &♮♭⇑*∗†]*)+')
         nw = notWanted.findall(block_text)
         for n in nw:
             block_text = block_text.replace(n, ' ')
-        notAffiliation = re.compile(r' *[,*.]+ *[,*. ]*| *[and]{3} *| +$')
+        notAffiliation = re.compile(r'^ *[,*.]+ *[,*. ]*|^ *[and]{3} *[ &♮♭⇑*∗†]*| +$')
         isAffiliation = notAffiliation.fullmatch(block_text)
         if isAffiliation == None:
-            # if block_text.endswith(' '):
-            #     print('suffix')
-            #     block_text = block_text.removesuffix(' ')
-            # if block_text.startswith(' '):
-            #     print('prefix')
-            #     block_text = block_text.removeprefix(' ')
+            if block_text.endswith(' '):
+                print('suffix')
+                block_text = block_text.removesuffix(' ')
+            if block_text.startswith(' '):
+                print('prefix')
+                block_text = block_text.removeprefix(' ')
             print(block_text)
             ajout = False
             same = True
@@ -171,18 +171,20 @@ def extract(blocks, index, abstract_index) -> list:
                     ajout = True
             print(affiliation)
             print(authors)
-            if ajout == False and cpt < 3 and len(authors) > 0 :
+            if ajout == False and cpt < 4 and len(authors) > 0 :
+                print('in if')
                 affiliations = {}
                 v = affiliation[authors[0]]
                 for key, value in affiliation.items():
                     if value != v:
                         same = False
-                if same:
+                if same and block_text != '':
                     for key, value in affiliation.items():
                         affiliations[key] = value + ' ' + block_text.strip()
                     affiliation = affiliations
                     cpt += 1
-                elif not same:
+                elif not same and block_text != '':
+                    print('in not same')
                     k = [*affiliation.keys()]
                     v = [*affiliation.values()]
                     affiliation[k[-1]] = v[-1] + ' ' + block_text.strip()
@@ -222,14 +224,14 @@ def extract(blocks, index, abstract_index) -> list:
             cpt = 0
         if affil_in == True:
             affil = affiliation[auth]
-        author_email.append([auth, em, affil])
+        author_email.append([auth, em, affil.strip()])
     
     
     if not(emails):
         for d in authors:
             if affil_in == True:
                 affil = affiliation[d]
-            author_email.append([d, 'N/A', affil])
+            author_email.append([d, 'N/A', affil.strip()])
     
     print(author_email)
 

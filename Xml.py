@@ -63,7 +63,7 @@ def buildAuthors(authors, tabcount) :
 
 def buildAuthor(name, mail, affiliation, tabcount) :
     s = '\t' *tabcount + '<auteur>\n'
-    s += '\t' *(tabcount+1) + '<nom>' + name + '</nom>\n'
+    s += '\t' *(tabcount+1) + '<name>' + name + '</name>\n'
     s += '\t' *(tabcount+1) + '<mail>' + mail + '</mail>\n'
     s += '\t' *(tabcount+1) + '<affiliation>' + affiliation + '</affiliation>\n'
     s += '\t' *tabcount + '</auteur>\n'

@@ -23,5 +23,5 @@ def extract(blocks: list, doc: fitz.open, index_begin: int) -> tuple[str, int] :
     title = title.replace('*', '')
     title = title.replace('\n', '')
     title = title.strip()
-    print('Title ', i)
+    #print('Title ', i)
     return title, 0

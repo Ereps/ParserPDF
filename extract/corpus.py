@@ -2,9 +2,11 @@ import re
 from extract.block_treatement import *
 
 def getStart(blocks: list) -> int :
+    subtitle = templateSubtitle(blocks)
+    subtitle = subtitle.replace("C", "2").replace("L", "II").replace(".", "\.")
     for i in range(len(blocks)) :
         block_text = replace_special_char(blocks[i][4])
-        pattern = re.compile(r'(2|I{2})(\.|\ )+.*')
+        pattern = re.compile(r"((%s)(\ )?)+.*" % subtitle)
         if pattern.match(block_text) :
             return i
     return -1

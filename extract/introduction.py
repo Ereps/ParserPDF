@@ -3,28 +3,28 @@ from extract.block_treatement import *
 from extract.abstract import getStartAbs
 
 def getStart(blocks: list) -> int :
-    pattern = re.compile(r'((I.)|(1.)|(1)) ([I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn])') #|(1|I).*
+    subtitle = templateSubtitle(blocks)
+    subtitle = subtitle.replace("C", "1").replace("L", "I").replace(".", "\.")
+    pattern = re.compile(r"(%s) ([I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn])" % subtitle) #|(1|I).*
     for i in range(getStartAbs(blocks), len(blocks)):
         block_text = replace_special_char(blocks[i][4])
         if pattern.match(block_text) :
-            #print("Intro", i)
+            #print("Intro", block_text,  i)
             #print('found')
             return i+1
     return -1
-    ###pattern = re.compile(r'(1|I).*') #|(1|I).*
-    ###for i in range(getStartAbs(blocks), len(blocks)):
-    ###    block_text = replace_special_char(blocks[i][4])
-    ###    if pattern.match(block_text) :
-    ###        #print("Intro", i)
-    ###        return i
         
 
 def getEnd(blocks: list) -> int :
-    pattern = re.compile(r'(2|I{2})(\.|\ )+.*')
+    subtitle = templateSubtitle(blocks)
+    subtitle = subtitle.replace("C", "2").replace("L", "II").replace(".", "\.")
+    #print(subtitle)
+    pattern = re.compile(r"((%s)(\ )?)+.*" % subtitle)
+    #print(pattern)
     for i in range(getStart(blocks), len(blocks)) :
         text = replace_special_char(blocks[i][4])
         if pattern.match(text) :
-            #print(i)
+            #print(i, text)
             return i
         
 def toString(blocks: list) -> str :

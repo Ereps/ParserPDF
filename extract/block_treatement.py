@@ -1,5 +1,19 @@
 import re
 
+def templateSubtitle(blocks: list) -> str :
+    pattern = re.compile(r'((I.)|(1.)|(1)) ([I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn])')
+    for i in range(len(blocks)) :
+        block_text = replace_special_char(blocks[i][4])
+        if pattern.match(block_text) :
+            texts = block_text.split(' ')
+            if texts[0] == "1." :
+                return "C."
+            elif texts[0] == "I." :
+                return "L."
+            else :
+                return "C"
+    return ""
+
 def make_uchr(code: str) -> str :
     return chr(int(code.lstrip("U+").zfill(8), 16))
 

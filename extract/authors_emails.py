@@ -3,43 +3,6 @@ import re
 from extract.block_treatement import *
 
 
-import en_core_web_sm
-
-def extract_ner(text) ->list:
-    nlp = en_core_web_sm.load()
-    doc = nlp(text)
-    results = []
-    for ent in doc.ents:
-        if ent.label_ == "PERSON":
-            author = process_author(ent.text)
-            if(author !=""):
-                results.append(author)
-    print(results)
-    return results
-
-def process_author(text :str) ->str:
-    noNum = r'[0-9]+'
-    final_text = re.sub(noNum,"",text)
-    final_text = replace_special_char(final_text)
-    accent = "ÀÂÄÉÈËÊÏÎÌÙÜǛÛÒÖÔỲŸŶẐŜĜĤḦĴẄŴẀĈẌǸéèêëäâàáåïîìùǜüûòöôỳÿŷýẑŝĝĥḧĵẁŵẅĉçẗẍǹ-"
-    #Remove non letter character
-    final_text = re.sub(r'[^a-zA-Z\s' +accent+r']', '', final_text)
-    #Remove space
-    final_text = final_text.strip()
-    #Remove if the text is 2 or less character
-    if(len(final_text) < 3):
-        final_text = ""
-    #Remove if the first character isn't in uppercase
-    elif(final_text[0].islower()):
-        final_text = ""
-    
-    return final_text
-    
-    
-
-
-
-
 def extract(blocks, index, abstract_index) -> list:
     email = []
     author = []
@@ -80,19 +43,19 @@ def extract(blocks, index, abstract_index) -> list:
             for d in date[0]:
                 block_text = block_text.replace(d, '')#supprime les dates
 
-        if 'J. Manuel Torres Moreno' in block_text:
-            a.append(['J. Manuel Torres Moreno'])
-        block_text = block_text.replace('J. Manuel Torres Moreno', '')
-        if 'M. Teresa Cabré Castellví' in block_text:
-            a.append(['M. Teresa Cabré Castellví'])
-        block_text = block_text.replace('M. Teresa Cabré Castellví', '')
-        if 'Rosa Estopà Bagot' in block_text:
-            print('in')
-            a.append(['Rosa Estopà Bagot'])
-        block_text = block_text.replace('Rosa Estopà Bagot', '')
-        if 'Jordi Vivaldi Palatresi' in block_text:
-            a.append(['Jordi Vivaldi Palatresi'])
-        block_text = block_text.replace('Jordi Vivaldi Palatresi', '')
+        # if 'J. Manuel Torres Moreno' in block_text:
+        #     a.append(['J. Manuel Torres Moreno'])
+        # block_text = block_text.replace('J. Manuel Torres Moreno', '')
+        # if 'M. Teresa Cabré Castellví' in block_text:
+        #     a.append(['M. Teresa Cabré Castellví'])
+        # block_text = block_text.replace('M. Teresa Cabré Castellví', '')
+        # if 'Rosa Estopà Bagot' in block_text:
+        #     print('in')
+        #     a.append(['Rosa Estopà Bagot'])
+        # block_text = block_text.replace('Rosa Estopà Bagot', '')
+        # if 'Jordi Vivaldi Palatresi' in block_text:
+        #     a.append(['Jordi Vivaldi Palatresi'])
+        # block_text = block_text.replace('Jordi Vivaldi Palatresi', '')
         #print(block_text)
         if(author_match): #si on a trouvé des auteurs
             a.append(author_pattern.findall(block_text)) #ajoute dans la liste auteurs
@@ -103,8 +66,7 @@ def extract(blocks, index, abstract_index) -> list:
         a = []
 
         #print(author)
-        """
-        TODO TEST NER TKT MANUE CA VA ALLER
+        
         for y in range(len(author)): #boucle sur la liste auteur
             for z in no_no_words: #boucle sur la liste des mots non voulu
                 if z in author[y]: #si un mot non voulu est trouvé dans la string
@@ -115,8 +77,6 @@ def extract(blocks, index, abstract_index) -> list:
         author = []
         #print('après no_no_word')
         #print(authors)
-        """
-        authors = extract_ner(block_text)
         #print(block_text)
         for t in authors:
             #print(t)
@@ -243,26 +203,37 @@ def extract(blocks, index, abstract_index) -> list:
                 break
             else:
                 ema += c
-        cpta = 0
+        cpta = [0,'']
         cpt = 0
         auth=''
         sema = ema
         point = re.compile('^[.]+$')
         for aut in authors:
+            print(aut)
             for au in aut:
                 sau = suppr_special_char(au).lower()
                 ema = sema
-                onlypoint = point.search(ema)
+                onlypoint = point.fullmatch(ema)
                 if sau != '' and ema != '' and not onlypoint:
                     if sau in ema:
+                        print(sau)
+                        print(sema)
                         cpt += 1
                         iema = sema.find(sau)
+                        print(iema)
                         lema = list(sema)
+                        print(lema)
                         lema.pop(iema)
+                        print(lema)
                         sema = ''.join(lema)
-            if cpt > cpta:
-                auth = aut
+                        print(sema)
+            print(cpt)
+            if cpt > cpta[0]:
+                cpta[0] = cpt
+                cpta[1] = aut
             cpt = 0
+        auth = cpta[1]
+        authors.remove(auth)
         if affil_in == True:
             affil = affiliation[auth]
         author_email.append([auth, em, affil.strip()])

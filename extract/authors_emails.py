@@ -25,8 +25,8 @@ def extract(blocks, index, abstract_index) -> list:
     if index == 0:
         index += 1
     # Trouver l'indice du bloc contenant le titre
-    print(index)
-    print(abstract_index)
+    #print(index)
+    #print(abstract_index)
     #abstract_index[0] == premier abstract block
     for i in range(index, abstract_index, 1):
         if 'Abstract' in blocks[i][4] or 'abstract' in blocks[i][4] or 'ABSTRACT' in blocks[i][4]:
@@ -59,7 +59,7 @@ def extract(blocks, index, abstract_index) -> list:
         #print(block_text)
         if(author_match): #si on a trouvé des auteurs
             a.append(author_pattern.findall(block_text)) #ajoute dans la liste auteurs
-        print(block_text)
+        #print(block_text)
         for w in a:
             for x in w:
                 author.append(x)
@@ -83,7 +83,7 @@ def extract(blocks, index, abstract_index) -> list:
             block_text = block_text.replace(t, '') #supprime les auteurs du texte
             #print(block_text)
 
-        print(authors)
+        #print(authors)
         if(email_match): #si on a trouvé des mails
             email.append(email_pattern.findall(block_text)) #ajoute dans la liste de mails
             emails = [element for sous_liste in email for element in sous_liste]
@@ -157,12 +157,12 @@ def extract(blocks, index, abstract_index) -> list:
         isAffiliation = notAffiliation.fullmatch(block_text)
         if isAffiliation == None:
             if block_text.endswith(' '):
-                print('suffix')
+                #print('suffix')
                 block_text = block_text.removesuffix(' ')
             if block_text.startswith(' '):
-                print('prefix')
+                #print('prefix')
                 block_text = block_text.removeprefix(' ')
-            print(block_text)
+            #print(block_text)
             ajout = False
             same = True
             for r in authors:
@@ -170,10 +170,10 @@ def extract(blocks, index, abstract_index) -> list:
                     affiliation[r] = block_text.strip()
                     affil_in = True
                     ajout = True
-            print(affiliation)
-            print(authors)
+            #print(affiliation)
+            #print(authors)
             if ajout == False and cpt < 4 and len(authors) > 0 :
-                print('in if')
+                #print('in if')
                 affiliations = {}
                 v = affiliation[authors[0]]
                 for key, value in affiliation.items():
@@ -185,15 +185,15 @@ def extract(blocks, index, abstract_index) -> list:
                     affiliation = affiliations
                     cpt += 1
                 elif not same and block_text != '':
-                    print('in not same')
+                    #print('in not same')
                     k = [*affiliation.keys()]
                     v = [*affiliation.values()]
                     affiliation[k[-1]] = v[-1] + ' ' + block_text.strip()
 
 
-    print(author)
-    print(emails)
-    print(affiliation)
+    #print(author)
+    #print(emails)
+    #print(affiliation)
         
 
     for em in emails:
@@ -209,25 +209,25 @@ def extract(blocks, index, abstract_index) -> list:
         sema = ema
         point = re.compile('^[.]+$')
         for aut in authors:
-            print(aut)
+            #print(aut)
             for au in aut:
                 sau = suppr_special_char(au).lower()
                 ema = sema
                 onlypoint = point.fullmatch(ema)
                 if sau != '' and ema != '' and not onlypoint:
                     if sau in ema:
-                        print(sau)
-                        print(sema)
+                        #print(sau)
+                        #print(sema)
                         cpt += 1
                         iema = sema.find(sau)
-                        print(iema)
+                        #print(iema)
                         lema = list(sema)
-                        print(lema)
+                        #print(lema)
                         lema.pop(iema)
-                        print(lema)
+                        #print(lema)
                         sema = ''.join(lema)
-                        print(sema)
-            print(cpt)
+                        #print(sema)
+            #print(cpt)
             if cpt > cpta[0]:
                 cpta[0] = cpt
                 cpta[1] = aut
@@ -245,12 +245,12 @@ def extract(blocks, index, abstract_index) -> list:
                 affil = affiliation[d]
             author_email.append([d, 'N/A', affil.strip()])
     
-    print(author_email)
+    #print(author_email)
 
     for aut in author_email:
         if aut[-1] == '':
             aut[-1] = 'N/A'
 
-    print(author_email)
+    #print(author_email)
 
     return author_email

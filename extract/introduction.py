@@ -31,7 +31,7 @@ def toString(blocks: list) -> str :
     intro_index = getStart(blocks)
     end_index = getEnd(blocks)
     #print(intro_index, end_index)
-    print("end intro : ", end_index, blocks[end_index][4])
+    #print("end intro : ", end_index, blocks[end_index][4])
     string = ""
     if intro_index == -1 :
         return "N/A"

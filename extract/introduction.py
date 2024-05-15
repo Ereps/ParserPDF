@@ -19,7 +19,7 @@ def getEnd(blocks: list) -> int :
     subtitle = templateSubtitle(blocks)
     subtitle = subtitle.replace("C", "2").replace("L", "II").replace(".", "\.")
     #print(subtitle)
-    pattern = re.compile(r"((%s)(\ )?)+.*" % subtitle)
+    pattern = re.compile(r"((%s)(\ ))+.*" % subtitle)
     #print(pattern)
     for i in range(getStart(blocks), len(blocks)) :
         text = replace_special_char(blocks[i][4])
@@ -31,7 +31,7 @@ def toString(blocks: list) -> str :
     intro_index = getStart(blocks)
     end_index = getEnd(blocks)
     #print(intro_index, end_index)
-    #print("end intro : ", end_index, blocks[end_index][4])
+    print("end intro : ", end_index, blocks[end_index][4])
     string = ""
     if intro_index == -1 :
         return "N/A"

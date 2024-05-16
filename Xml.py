@@ -7,14 +7,14 @@ def buildDir() :
     if not os.path.exists(output_directory_xml) :
         os.mkdir(output_directory_xml)
 
-def buildXML(pdf, toBegin: int) :
+def buildXML(pdf, toBegin: int, page_id: int) :
     pdf_basename = os.path.basename(pdf)
     output_filename = output_directory_xml + os.sep + pdf_basename
     output_filename = str.replace(output_filename, '.pdf', '.xml')
     print('exporting %s...' % pdf_basename)
     with fitz.open(pdf) as doc :
         blocks = []
-        for page_num in range(len(doc)):
+        for page_num in range(page_id, len(doc)):
             page = doc.load_page(page_num)
             blocks += page.get_text("blocks")
     normal_blocks = block_treatement.blocks_normalization(blocks)
@@ -24,7 +24,7 @@ def buildXML(pdf, toBegin: int) :
     print('%s created' % os.path.basename(output_filename))
         
         
-def buildArticle(pdf, doc, tabcount, blocks, toBegin: int) :
+def buildArticle(pdf, doc: fitz.open, tabcount: int, blocks: list, toBegin: int) :
     #print(blocks[0])
     title_text, title_i = title.extract(blocks, doc, toBegin)
     #print("Title I : ", title_i)
@@ -63,7 +63,7 @@ def buildAuthors(authors, tabcount) :
 
 def buildAuthor(name, mail, affiliation, tabcount) :
     s = '\t' *tabcount + '<auteur>\n'
-    s += '\t' *(tabcount+1) + '<nom>' + name + '</nom>\n'
+    s += '\t' *(tabcount+1) + '<name>' + name + '</name>\n'
     s += '\t' *(tabcount+1) + '<mail>' + mail + '</mail>\n'
     s += '\t' *(tabcount+1) + '<affiliation>' + affiliation + '</affiliation>\n'
     s += '\t' *tabcount + '</auteur>\n'
@@ -71,21 +71,21 @@ def buildAuthor(name, mail, affiliation, tabcount) :
 
 def buildAbstract(abstract_string, tabcount) :
     # TODO: extract abstract
-    s = '\t' *tabcount + '<abstract>\n' + '\t' '\t' *tabcount + abstract_string + '\n\t' *tabcount + '</abstract>\n'
+    s = '\t' *tabcount + '<abstract>' + abstract_string + '</abstract>\n'
     return s
 
 def buildIntro(intro_string, tabcount) :
-    s = '\t' *tabcount + '<introduction>\n' + '\t' '\t' *tabcount + intro_string + '\n\t' *tabcount + '</introduction>\n'
+    s = '\t' *tabcount + '<introduction>' + intro_string + '</introduction>\n'
     return s
 
 def buildCorps(corps_string, tabcount) :
-    s = '\t' *tabcount + '<corps>\n' + '\t' '\t' *tabcount + corps_string + '\n\t' *tabcount + '</corps>\n'
+    s = '\t' *tabcount + '<body>' + corps_string + '</body>\n'
     return s
 
 def buildConclu(conclu_string, tabcount) :
     s = ""
     if len(conclu_string) :
-        s = '\t' *tabcount + '<conclusion>\n' + '\t' '\t' *tabcount + conclu_string + '\n\t' *tabcount + '</conclusion>\n'
+        s = '\t' *tabcount + '<conclusion>' + conclu_string + '</conclusion>\n'
     else :
         s = '\t' *tabcount + '<conclusion>' + 'N/A' + '</conclusion>\n'
     return s
@@ -93,11 +93,11 @@ def buildConclu(conclu_string, tabcount) :
 def buildDiscu(discu_string, tabcount) :
     s = ""
     if len(discu_string) :
-        s = '\t' *tabcount + '<discussion>\n' + '\t' '\t' *tabcount + discu_string + '\n\t' *tabcount + '</discussion>\n'
+        s = '\t' *tabcount + '<discussion>' + discu_string + '</discussion>\n'
     else :
         s = '\t' *tabcount + '<discussion>' + 'N/A' + '</discussion>\n'
     return s
 
 def buildRefs(refs, tabcount) :
-    s = '\t' *tabcount + '<biblio>\n' + '\t' '\t' *tabcount + refs + '\n\t' *tabcount + '</biblio>\n'
+    s = '\t' *tabcount + '<biblio>' + refs + '</biblio>\n'
     return s

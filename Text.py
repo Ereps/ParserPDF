@@ -7,14 +7,14 @@ def buildDir() :
     if not os.path.exists(output_directory_txt) :
         os.mkdir(output_directory_txt)
 
-def buildTEXT(pdf) :
+def buildTEXT(pdf, toBegin: int, page_index: int) :
     pdf_basename = os.path.basename(pdf)
     output_filename = output_directory_txt + os.sep + pdf_basename
     output_filename = str.replace(output_filename, '.pdf', '.txt')
     print('exporting %s...' % pdf_basename)
     with fitz.open(pdf) as doc :
         blocks = []
-        for page_num in range(len(doc)):
+        for page_num in range(page_index, len(doc)):
             page = doc.load_page(page_num)
             blocks += page.get_text("blocks")
     normal_blocks = block_treatement.blocks_normalization(blocks)
@@ -22,7 +22,7 @@ def buildTEXT(pdf) :
     with open(output_filename, 'w', encoding='utf-8') as output :
         output.write("PDF File:\n" + pdf_basename + "\n"*2)
         # Extract and write title
-        title_text, title_i = title.extract(normal_blocks, doc)
+        title_text, title_i = title.extract(normal_blocks, doc, toBegin)
         output.write("Title:\n" + title_text + "\n"*2)
         # Extract and write authors
         abstract_index, abstract_text = abstract.getAbstract(normal_blocks)

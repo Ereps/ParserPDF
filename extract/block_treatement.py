@@ -1,5 +1,19 @@
 import re
 
+def templateSubtitle(blocks: list) -> str :
+    pattern = re.compile(r'((I.)|(1.)|(1)) ([I][Nn][Tt][Rr][Oo][Dd][Uu][Cc][Tt][Ii][Oo][Nn])')
+    for i in range(len(blocks)) :
+        block_text = replace_special_char(blocks[i][4])
+        if pattern.match(block_text) :
+            texts = block_text.split(' ')
+            if texts[0] == "1." :
+                return "C."
+            elif texts[0] == "I." :
+                return "L."
+            else :
+                return "C"
+    return ""
+
 def make_uchr(code: str) -> str :
     return chr(int(code.lstrip("U+").zfill(8), 16))
 
@@ -58,11 +72,14 @@ def replace_special_char(text : str) -> str :
     text = text.replace('^e', 'ê')
     text = text.replace('"e', 'ë')
     text = text.replace('"a', 'ä')
+    text = text.replace('a¨', 'ä')
+    text = text.replace('¨a', 'ä')
     text = text.replace('^a', 'â')
     text = text.replace('`a', 'à')
     text = text.replace('´a', 'á')
     text = text.replace('°a', 'å')
     text = text.replace('"ı', 'ï')
+    text = text.replace('ı¨', 'ï')
     text = text.replace('ˆı', 'î')
     text = text.replace('`ı', 'ì')
     text = text.replace('`u', 'ù')
@@ -90,6 +107,7 @@ def replace_special_char(text : str) -> str :
     text = text.replace('"t', 'ẗ')
     text = text.replace('"x', 'ẍ')
     text = text.replace('`n', 'ǹ')
+    text = text.replace('ﬁ', 'fi')
     # XML cid(?) TIME
     text = text.replace(' ⃗', '~')
     text = text.replace('(⃗', '(~')
@@ -118,6 +136,9 @@ def replace_special_char(text : str) -> str :
     text = text.replace('', 'cid(?)')
     text = text.replace('', 'cid(?)')
     text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
+    text = text.replace('', 'cid(?)')
 
 
     return text

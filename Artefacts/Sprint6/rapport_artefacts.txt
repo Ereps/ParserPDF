@@ -1,0 +1,4 @@
+Pour les artéfacts de ce Sprint 6 :
+- Notre groupe a mis en place un Google Doc où la précision globale de notre Parser était évaluée régulièrement, afin de pouvoir voir au fil des semaines notre avancement ainsi que les points à retravailler.
+- Nous avons produit des documents listant des problèmes pour certains, des similarités pour d'autres, des articles scientifiques à étudier. 
+- Notre groupe a effectué différentes réunions d'évaluations des besoins, d'avancement, ou d'attributions de rôles. Cependant, nous ne possédons pas d'artéfact propres ces réunions ne nécessitant pas forcément de traces écrites.
